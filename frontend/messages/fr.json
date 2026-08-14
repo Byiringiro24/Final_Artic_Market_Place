@@ -1,0 +1,47 @@
+{
+  "Header": {
+    "deliverTo": "Livrer à",
+    "selectLocation": "Choisir l'emplacement",
+    "returns": "Retours",
+    "orders": "et commandes",
+    "cart": "Panier",
+    "allCategories": "Tout",
+    "search": "Rechercher sur ARTIC...",
+    "signIn": "Se connecter",
+    "account": "Compte"
+  },
+  "Footer": {
+    "aboutUs": "À propos de nous",
+    "terms": "Conditions d'utilisation",
+    "privacy": "Politique de confidentialité",
+    "yourAccount": "Votre compte",
+    "yourOrders": "Vos commandes",
+    "yourWishlist": "Votre liste de souhaits",
+    "help": "Centre d'aide"
+  },
+  "Product": {
+    "addToCart": "Ajouter au panier",
+    "buyNow": "Acheter maintenant",
+    "outOfStock": "Actuellement indisponible",
+    "inStock": "En stock",
+    "freeShipping": "Livraison GRATUITE",
+    "writeReview": "Écrire un avis"
+  },
+  "Auth": {
+    "signIn": "Se connecter",
+    "signUp": "Créer un compte",
+    "email": "Adresse e-mail",
+    "password": "Mot de passe"
+  },
+  "Cart": {
+    "title": "Panier",
+    "empty": "Votre panier ARTIC est vide.",
+    "checkout": "Passer à la caisse"
+  },
+  "Orders": {
+    "orderNumber": "Commande n°",
+    "placedOn": "Passée le",
+    "total": "Total",
+    "status": "Statut"
+  }
+}

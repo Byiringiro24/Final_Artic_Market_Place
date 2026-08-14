@@ -1,0 +1,66 @@
+{
+  "Header": {
+    "deliverTo": "Deliver to",
+    "selectLocation": "Select location",
+    "returns": "Returns",
+    "orders": "& Orders",
+    "cart": "Cart",
+    "allCategories": "All",
+    "search": "Search ARTIC Marketplace...",
+    "signIn": "Sign In",
+    "account": "Account"
+  },
+  "Footer": {
+    "getToKnowUs": "Get to Know Us",
+    "makeMoneyWithUs": "Make Money with Us",
+    "paymentProducts": "ARTIC Payment Products",
+    "helpUs": "Let Us Help You",
+    "aboutUs": "About Us",
+    "careers": "Careers",
+    "blog": "Blog",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "yourAccount": "Your Account",
+    "yourOrders": "Your Orders",
+    "yourWishlist": "Your Wishlist",
+    "returnPolicy": "Return Policy",
+    "help": "Help Center"
+  },
+  "Product": {
+    "addToCart": "Add to Cart",
+    "buyNow": "Buy Now",
+    "addToWishlist": "Add to Wishlist",
+    "outOfStock": "Currently Unavailable",
+    "inStock": "In Stock",
+    "lowStock": "Only {count} left in stock",
+    "freeShipping": "FREE delivery",
+    "reviews": "{count} ratings",
+    "writeReview": "Write a review"
+  },
+  "Auth": {
+    "signIn": "Sign In",
+    "signUp": "Create Account",
+    "email": "Email address",
+    "password": "Password",
+    "forgotPassword": "Forgot your password?",
+    "noAccount": "New to ARTIC Marketplace?",
+    "createAccount": "Create your ARTIC account",
+    "haveAccount": "Already have an account?"
+  },
+  "Cart": {
+    "title": "Shopping Cart",
+    "empty": "Your ARTIC cart is empty.",
+    "subtotal": "Subtotal ({count} items)",
+    "checkout": "Proceed to checkout",
+    "remove": "Remove",
+    "saveForLater": "Save for later"
+  },
+  "Orders": {
+    "orderNumber": "Order #",
+    "placedOn": "Placed on",
+    "total": "Total",
+    "status": "Status",
+    "trackOrder": "Track package",
+    "viewDetails": "View order details"
+  }
+}

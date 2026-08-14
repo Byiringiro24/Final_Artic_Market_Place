@@ -1,0 +1,47 @@
+{
+  "Header": {
+    "deliverTo": "التسليم إلى",
+    "selectLocation": "اختر الموقع",
+    "returns": "المرتجعات",
+    "orders": "والطلبات",
+    "cart": "عربة التسوق",
+    "allCategories": "الكل",
+    "search": "ابحث في ARTIC...",
+    "signIn": "تسجيل الدخول",
+    "account": "الحساب"
+  },
+  "Footer": {
+    "aboutUs": "معرفة المزيد عنا",
+    "terms": "شروط الخدمة",
+    "privacy": "سياسة الخصوصية",
+    "yourAccount": "حسابك",
+    "yourOrders": "طلباتك",
+    "yourWishlist": "قائمة أمنياتك",
+    "help": "مركز المساعدة"
+  },
+  "Product": {
+    "addToCart": "أضف إلى السلة",
+    "buyNow": "اشتر الآن",
+    "outOfStock": "غير متوفر حالياً",
+    "inStock": "متوفر",
+    "freeShipping": "شحن مجاني",
+    "writeReview": "اكتب تقييماً"
+  },
+  "Auth": {
+    "signIn": "تسجيل الدخول",
+    "signUp": "إنشاء حساب",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور"
+  },
+  "Cart": {
+    "title": "سلة التسوق",
+    "empty": "سلة تسوق ARTIC فارغة.",
+    "checkout": "إتمام الشراء"
+  },
+  "Orders": {
+    "orderNumber": "طلب رقم",
+    "placedOn": "تم تقديمه في",
+    "total": "المجموع",
+    "status": "الحالة"
+  }
+}
