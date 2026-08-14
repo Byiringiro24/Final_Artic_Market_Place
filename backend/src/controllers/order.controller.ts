@@ -4,6 +4,7 @@ import { ApiResponse, buildPagination } from '../lib/apiResponse';
 import { AppError } from '../middleware/error.middleware';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { sendEmail } from '../lib/email';
+import { createOrderNotification } from '../lib/notifications';
 import { format } from 'date-fns';
 
 // ─── Generate order number ────────────────────────────────────────────────────
@@ -319,7 +320,7 @@ export async function updateOrderStatus(req: Request, res: Response) {
     }),
   ]);
 
-  // Notify customer
+  // Notify customer (email + in-app)
   const emailMap: Record<string, string> = {
     CONFIRMED: `Your order ${order.orderNumber} has been confirmed!`,
     SHIPPED: `Your order ${order.orderNumber} is on its way! Tracking: ${trackingNumber}`,
@@ -328,13 +329,16 @@ export async function updateOrderStatus(req: Request, res: Response) {
   };
 
   if (emailMap[status] && order.user) {
-    await sendEmail({
-      to: order.user.email,
-      toName: order.user.name,
-      subject: `Order Update — ${order.orderNumber}`,
-      template: `order-${status.toLowerCase()}`,
-      html: `<h2>${emailMap[status]}</h2>`,
-    });
+    await Promise.all([
+      sendEmail({
+        to: order.user.email,
+        toName: order.user.name,
+        subject: `Order Update — ${order.orderNumber}`,
+        template: `order-${status.toLowerCase()}`,
+        html: `<h2>${emailMap[status]}</h2>`,
+      }),
+      createOrderNotification(order.userId, order.orderNumber, order.id, status),
+    ]);
   }
 
   return ApiResponse.success(res, updated, 'Order status updated');

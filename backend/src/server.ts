@@ -3,6 +3,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
+import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import compression from 'compression';
@@ -15,6 +16,7 @@ import { logger } from './lib/logger';
 import { errorHandler } from './middleware/error.middleware';
 import { rateLimiter } from './middleware/rateLimiter.middleware';
 import { setupSwagger } from './lib/swagger';
+import { startScheduler } from './lib/scheduler';
 
 // ─── Route Imports ─────────────────────────────────────────────────────────────
 import authRoutes from './routes/auth.routes';
@@ -36,6 +38,7 @@ import notificationRoutes from './routes/notification.routes';
 import uploadRoutes from './routes/upload.routes';
 import adminRoutes from './routes/admin.routes';
 import webhookRoutes from './routes/webhook.routes';
+import paymentRoutes from './routes/payment.routes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -54,6 +57,9 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   })
 );
+
+// ─── Static file serving for uploads ──────────────────────────────────────────
+app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 
 // ─── Stripe Webhooks (raw body required before json parser) ────────────────────
 app.use('/api/v1/webhooks', webhookRoutes);
@@ -96,6 +102,7 @@ app.use(`${API}/settings`, settingRoutes);
 app.use(`${API}/notifications`, notificationRoutes);
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/admin`, adminRoutes);
+app.use(`${API}/payments`, paymentRoutes);
 
 // ─── Swagger Docs ──────────────────────────────────────────────────────────────
 setupSwagger(app);
@@ -129,6 +136,7 @@ async function startServer() {
     app.listen(PORT, () => {
       logger.info(`🚀 ARTIC API running on http://localhost:${PORT}/api/v1`);
       logger.info(`📚 API Docs at http://localhost:${PORT}/api/docs`);
+      startScheduler();
     });
   } catch (error) {
     logger.error('❌ Failed to start server:', error);
