@@ -31,7 +31,14 @@ export async function createOrder(req: AuthRequest, res: Response) {
 
   // Validate and price items
   let itemsPrice = 0;
-  const orderItems = [];
+  const orderItems: Array<{
+    productId: string;
+    name: string;
+    image: string;
+    price: number;
+    quantity: number;
+    variantInfo: Record<string, string> | null;
+  }> = [];
 
   for (const item of items) {
     const product = await prisma.product.findUnique({

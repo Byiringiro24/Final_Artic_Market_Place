@@ -1,5 +1,4 @@
 import nodemailer from 'nodemailer';
-import { render } from '@react-email/render';
 import { prisma } from '../db/prisma';
 import { logger } from './logger';
 
@@ -72,6 +71,8 @@ export async function sendEmail(options: SendEmailOptions): Promise<boolean> {
 
     let htmlContent = options.html || '';
     if (options.reactComponent) {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      const { render } = require('@react-email/render');
       htmlContent = await render(options.reactComponent);
     }
 

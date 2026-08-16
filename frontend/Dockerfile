@@ -1,32 +1,24 @@
-FROM node:20-alpine AS base
+FROM node:20-alpine
 WORKDIR /app
 
-# ─── Dependencies ─────────────────────────────────────────────────────────────
-FROM base AS deps
+# Install dependencies
 COPY package*.json ./
 RUN npm ci --ignore-scripts --legacy-peer-deps
 
-# ─── Builder ──────────────────────────────────────────────────────────────────
-FROM base AS builder
-COPY package*.json ./
-RUN npm ci --ignore-scripts --legacy-peer-deps
+# Copy source
 COPY . .
+
 # Copy production env for build
 COPY .env.production .env.local
+
 ENV NEXT_TELEMETRY_DISABLED=1
+
+# Build Next.js
 RUN npm run build
-
-# ─── Runner ───────────────────────────────────────────────────────────────────
-FROM base AS runner
-ENV NODE_ENV=production
-ENV NEXT_TELEMETRY_DISABLED=1
-ENV PORT=3000
-ENV HOSTNAME=0.0.0.0
-
-COPY --from=builder /app/public ./public
-COPY --from=builder /app/.next/standalone ./
-COPY --from=builder /app/.next/static ./.next/static
 
 EXPOSE 3000
 
-CMD ["node", "server.js"]
+ENV PORT=3000
+ENV HOSTNAME=0.0.0.0
+
+CMD ["npm", "start"]
