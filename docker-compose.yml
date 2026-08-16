@@ -1,38 +1,51 @@
 name: artic-marketplace
 
 services:
-  postgres:
-    image: postgres:16-alpine
-    container_name: artic_postgres
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: Market_Place
-      POSTGRES_USER: artic_user
-      POSTGRES_PASSWORD: Artic$2026
-    ports:
-      - '5432:5432'
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-    healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U artic_user -d Market_Place']
-      interval: 10s
-      timeout: 5s
-      retries: 5
-
   redis:
     image: redis:7-alpine
-    container_name: artic_redis
+    container_name: artic_marketplace_redis
     restart: unless-stopped
     ports:
-      - '6379:6379'
+      - '6380:6379'
     volumes:
-      - redis_data:/data
+      - artic_redis_data:/data
     healthcheck:
       test: ['CMD', 'redis-cli', 'ping']
       interval: 10s
       timeout: 5s
       retries: 5
 
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: artic_marketplace_backend
+    restart: unless-stopped
+    ports:
+      - '5010:5010'
+    depends_on:
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    volumes:
+      - artic_uploads:/app/uploads
+      - artic_logs:/app/logs
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: artic_marketplace_frontend
+    restart: unless-stopped
+    ports:
+      - '3010:3000'
+    depends_on:
+      - backend
+    env_file:
+      - ./frontend/.env.production
+
 volumes:
-  postgres_data:
-  redis_data:
+  artic_redis_data:
+  artic_uploads:
+  artic_logs:
