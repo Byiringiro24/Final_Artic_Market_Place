@@ -1,9 +1,11 @@
 FROM node:20-alpine
 WORKDIR /app
 
-# Install dependencies
+# Copy package files
 COPY package*.json ./
-RUN npm ci --ignore-scripts --legacy-peer-deps
+
+# Use npm install (not ci) to handle lock file differences
+RUN npm install --ignore-scripts --legacy-peer-deps
 
 # Copy source
 COPY . .

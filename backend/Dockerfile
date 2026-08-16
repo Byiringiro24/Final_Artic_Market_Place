@@ -1,9 +1,11 @@
 FROM node:20-alpine
 WORKDIR /app
 
-# Install dependencies (including dev for tsx)
+# Copy package files
 COPY package*.json ./
-RUN npm ci --ignore-scripts
+
+# Use npm install (not ci) to handle lock file differences
+RUN npm install --ignore-scripts
 
 # Copy all source files
 COPY . .
@@ -16,5 +18,5 @@ RUN mkdir -p uploads logs
 
 EXPOSE 5010
 
-# Run directly with tsx (no compilation needed)
+# Run with tsx — no TypeScript compilation needed
 CMD ["npx", "tsx", "src/server.ts"]
