@@ -1,4 +1,4 @@
-version: '3.9'
+name: artic-marketplace
 
 services:
   postgres:
@@ -6,15 +6,15 @@ services:
     container_name: artic_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_DB: artic_marketplace
+      POSTGRES_DB: Market_Place
       POSTGRES_USER: artic_user
-      POSTGRES_PASSWORD: artic_secure_pass
+      POSTGRES_PASSWORD: Artic$2026
     ports:
       - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U artic_user -d artic_marketplace']
+      test: ['CMD-SHELL', 'pg_isready -U artic_user -d Market_Place']
       interval: 10s
       timeout: 5s
       retries: 5
@@ -32,41 +32,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-  backend:
-    build:
-      context: ./backend
-      dockerfile: Dockerfile
-    container_name: artic_backend
-    restart: unless-stopped
-    ports:
-      - '5000:5000'
-    depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    env_file:
-      - ./backend/.env
-    volumes:
-      - ./backend:/app
-      - /app/node_modules
-
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: artic_frontend
-    restart: unless-stopped
-    ports:
-      - '3000:3000'
-    depends_on:
-      - backend
-    env_file:
-      - ./frontend/.env.local
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
 
 volumes:
   postgres_data:

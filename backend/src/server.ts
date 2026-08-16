@@ -11,7 +11,6 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 
 import { prisma } from './db/prisma';
-import { redisClient } from './lib/redis';
 import { logger } from './lib/logger';
 import { errorHandler } from './middleware/error.middleware';
 import { rateLimiter } from './middleware/rateLimiter.middleware';
@@ -130,8 +129,8 @@ async function startServer() {
     await prisma.$connect();
     logger.info('✅ PostgreSQL connected via Prisma');
 
-    await redisClient.ping();
-    logger.info('✅ Redis connected');
+    // Redis is optional — don't block startup
+    logger.info('ℹ️  Redis: optional cache (connecting in background)');
 
     app.listen(PORT, () => {
       logger.info(`🚀 ARTIC API running on http://localhost:${PORT}/api/v1`);
@@ -149,6 +148,5 @@ startServer();
 process.on('SIGTERM', async () => {
   logger.info('SIGTERM received — graceful shutdown');
   await prisma.$disconnect();
-  redisClient.quit();
   process.exit(0);
 });

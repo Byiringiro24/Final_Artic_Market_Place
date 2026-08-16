@@ -19,7 +19,7 @@ const jsonFormat = winston.format.combine(
 );
 
 export const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+  level: process.env.NODE_ENV === 'production' ? 'info' : 'http',
   transports: [
     // Console (colored in development)
     new winston.transports.Console({
@@ -45,10 +45,3 @@ export const logger = winston.createLogger({
     }),
   ],
 });
-
-// HTTP level for morgan
-logger.add(
-  new winston.transports.Stream({
-    stream: { write: (msg: string) => logger.http(msg.trim()) } as NodeJS.WritableStream,
-  })
-);

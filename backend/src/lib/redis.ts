@@ -1,38 +1,89 @@
 import Redis from 'ioredis';
 import { logger } from './logger';
 
+// ─── Create Redis client with graceful fallback ────────────────────────────────
+// If Redis is not available, cache operations become no-ops so the app still works.
+
+let redisAvailable = false;
+
 export const redisClient = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
-  retryStrategy: (times) => Math.min(times * 50, 2000),
-  maxRetriesPerRequest: 3,
+  retryStrategy: (times) => {
+    if (times > 3) {
+      // Stop retrying after 3 attempts — Redis is optional
+      return null;
+    }
+    return Math.min(times * 200, 1000);
+  },
+  maxRetriesPerRequest: 1,
   enableReadyCheck: true,
-  lazyConnect: false,
+  lazyConnect: true, // Don't connect until first command
+  connectTimeout: 3000,
 });
 
 redisClient.on('connect', () => logger.info('Redis connecting...'));
-redisClient.on('ready', () => logger.info('Redis ready'));
-redisClient.on('error', (err) => logger.error('Redis error:', err));
-redisClient.on('close', () => logger.warn('Redis connection closed'));
+redisClient.on('ready', () => {
+  redisAvailable = true;
+  logger.info('✅ Redis connected');
+});
+redisClient.on('error', (err) => {
+  if (redisAvailable) {
+    logger.warn('Redis error (cache disabled):', err.message);
+  }
+  redisAvailable = false;
+});
+redisClient.on('close', () => {
+  redisAvailable = false;
+});
 
-// ─── Cache helpers ─────────────────────────────────────────────────────────────
+// Try to connect — failure is non-fatal
+redisClient.connect().catch(() => {
+  logger.warn('⚠️  Redis not available — caching disabled. App continues without cache.');
+});
+
+// ─── Cache helpers (no-op when Redis unavailable) ─────────────────────────────
 
 export async function getCache<T>(key: string): Promise<T | null> {
-  const data = await redisClient.get(key);
-  if (!data) return null;
-  return JSON.parse(data) as T;
+  if (!redisAvailable) return null;
+  try {
+    const data = await redisClient.get(key);
+    if (!data) return null;
+    return JSON.parse(data) as T;
+  } catch {
+    return null;
+  }
 }
 
-export async function setCache(key: string, value: unknown, ttlSeconds = 300): Promise<void> {
-  await redisClient.setex(key, ttlSeconds, JSON.stringify(value));
+export async function setCache(
+  key: string,
+  value: unknown,
+  ttlSeconds = 300
+): Promise<void> {
+  if (!redisAvailable) return;
+  try {
+    await redisClient.setex(key, ttlSeconds, JSON.stringify(value));
+  } catch {
+    // Silently skip cache writes
+  }
 }
 
 export async function deleteCache(key: string): Promise<void> {
-  await redisClient.del(key);
+  if (!redisAvailable) return;
+  try {
+    await redisClient.del(key);
+  } catch {
+    // Silently skip
+  }
 }
 
 export async function deleteCachePattern(pattern: string): Promise<void> {
-  const keys = await redisClient.keys(pattern);
-  if (keys.length > 0) {
-    await redisClient.del(...keys);
+  if (!redisAvailable) return;
+  try {
+    const keys = await redisClient.keys(pattern);
+    if (keys.length > 0) {
+      await redisClient.del(...keys);
+    }
+  } catch {
+    // Silently skip
   }
 }
 
