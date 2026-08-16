@@ -1,16 +1,19 @@
 FROM node:20-alpine
 WORKDIR /app
 
+# Install OpenSSL 1.1 compatibility required by Prisma engine
+RUN apk add --no-cache openssl openssl-dev libc6-compat
+
 # Copy package files
 COPY package*.json ./
 
-# Use npm install (not ci) to handle lock file differences
+# Install all dependencies
 RUN npm install --ignore-scripts
 
 # Copy all source files
 COPY . .
 
-# Generate Prisma client
+# Generate Prisma client (targeting linux-musl with openssl-1.1)
 RUN npx prisma generate
 
 # Create runtime directories
