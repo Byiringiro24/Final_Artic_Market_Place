@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
-import { User, LogOut, Package, Heart, Settings, ChevronDown } from 'lucide-react';
+import { User, LogOut, Package, Heart, LayoutDashboard, ChevronDown, Shield } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,13 +48,38 @@ export default function UserMenu() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button className="hidden md:flex flex-col text-xs text-white hover:text-artic-orange transition-colors px-2 py-1 rounded">
-          <span className="text-gray-300">Hello, {user?.name?.split(' ')[0]}</span>
+          <span className="text-gray-300 flex items-center gap-1">
+            Hello, {user?.name?.split(' ')[0]}
+            {isAdmin() && (
+              <span className="bg-artic-orange text-black text-[10px] font-bold px-1 rounded leading-tight">
+                ADMIN
+              </span>
+            )}
+          </span>
           <span className="font-bold flex items-center gap-1">
             Account & Lists <ChevronDown className="h-3 w-3" />
           </span>
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-52">
+
+      <DropdownMenuContent align="end" className="w-56">
+        {/* Admin section at the top for admins */}
+        {isAdmin() && (
+          <>
+            <div className="px-2 py-1.5 bg-artic-orange/10 border-b">
+              <p className="text-xs font-semibold text-artic-orange-dark flex items-center gap-1">
+                <Shield className="h-3 w-3" /> Administrator Account
+              </p>
+            </div>
+            <DropdownMenuItem asChild className="text-artic-orange-dark font-semibold">
+              <Link href={`/${locale}/admin/overview`}>
+                <LayoutDashboard className="h-4 w-4 mr-2" /> Admin Dashboard
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+          </>
+        )}
+
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
 
@@ -75,17 +100,6 @@ export default function UserMenu() {
             <Heart className="h-4 w-4 mr-2" /> Wishlist
           </Link>
         </DropdownMenuItem>
-
-        {isAdmin() && (
-          <>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
-              <Link href={`/${locale}/admin/overview`}>
-                <Settings className="h-4 w-4 mr-2" /> Admin Panel
-              </Link>
-            </DropdownMenuItem>
-          </>
-        )}
 
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={handleLogout} className="text-red-500">

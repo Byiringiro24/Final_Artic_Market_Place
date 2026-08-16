@@ -44,7 +44,13 @@ export default function SignInForm() {
       );
       setUser(res.data.user, res.data.accessToken);
       toast({ title: `Welcome back, ${res.data.user.name.split(' ')[0]}!` });
-      router.push(redirect);
+
+      // Redirect admins to admin dashboard, users to their intended page
+      if (res.data.user.role === 'ADMIN') {
+        router.push(`/${locale}/admin/overview`);
+      } else {
+        router.push(redirect);
+      }
       router.refresh();
     } catch (err: unknown) {
       const msg =
