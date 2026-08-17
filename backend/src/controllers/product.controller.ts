@@ -214,7 +214,77 @@ export async function deleteProduct(req: Request, res: Response) {
   return ApiResponse.success(res, null, 'Product deleted successfully');
 }
 
-// ─── Featured Products ────────────────────────────────────────────────────────
+// ─── Admin: List ALL Products (including drafts) ─────────────────────────────
+export async function adminListProducts(req: Request, res: Response) {
+  const {
+    page = '1',
+    limit = '20',
+    search,
+    category,
+    isPublished,
+  } = req.query as Record<string, string>;
+
+  const pageNum = Math.max(1, parseInt(page));
+  const limitNum = Math.min(100, Math.max(1, parseInt(limit)));
+  const skip = (pageNum - 1) * limitNum;
+
+  // Admin sees ALL products (no isPublished filter)
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const where: any = {};
+
+  if (isPublished !== undefined) where.isPublished = isPublished === 'true';
+  if (category) where.category = { slug: category };
+  if (search) {
+    where.OR = [
+      { name: { contains: search, mode: 'insensitive' } },
+      { sku: { contains: search, mode: 'insensitive' } },
+    ];
+  }
+
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      skip,
+      take: limitNum,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        price: true,
+        listPrice: true,
+        countInStock: true,
+        isPublished: true,
+        isFeatured: true,
+        numSales: true,
+        images: true,
+        createdAt: true,
+        category: { select: { name: true } },
+        brand: { select: { name: true } },
+      },
+    }),
+    prisma.product.count({ where }),
+  ]);
+
+  return ApiResponse.paginated(res, products, buildPagination(pageNum, limitNum, total));
+}
+
+// ─── Admin: Get Single Product by ID ─────────────────────────────────────────
+export async function getProductById(req: Request, res: Response) {
+  const { id } = req.params;
+
+  const product = await prisma.product.findUnique({
+    where: { id },
+    include: {
+      category: true,
+      brand: true,
+      variants: true,
+    },
+  });
+
+  if (!product) throw new AppError('Product not found', 404);
+  return ApiResponse.success(res, product);
+}
 export async function getFeaturedProducts(req: Request, res: Response) {
   const { limit = '8' } = req.query as Record<string, string>;
 

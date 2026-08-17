@@ -13,13 +13,19 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
+      // Production server
+      { protocol: 'http', hostname: '102.37.128.81' },
+      // Development
+      { protocol: 'http', hostname: 'localhost' },
+      // Cloud storage
       { protocol: 'https', hostname: '**.amazonaws.com' },
       { protocol: 'https', hostname: 'utfs.io' },
       { protocol: 'https', hostname: 'lh3.googleusercontent.com' },
-      { protocol: 'http', hostname: 'localhost' },
-      { protocol: 'http', hostname: '102.37.128.81' },
       { protocol: 'https', hostname: 'res.cloudinary.com' },
+      { protocol: 'https', hostname: '**.googleusercontent.com' },
     ],
+    // Allow all unoptimized images from the backend
+    unoptimized: false,
   },
   experimental: {
     optimizePackageImports: ['lucide-react', '@radix-ui/react-icons'],
