@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -68,7 +68,7 @@ export default function AdminProductsPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Products</h1>
-        <Button asChild className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-lg gap-2">
+        <Button asChild className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-lg gap-2">
           <Link href={`/${locale}/admin/products/create`}>
             <Plus className="h-4 w-4" /> Add Product
           </Link>
@@ -89,7 +89,7 @@ export default function AdminProductsPage() {
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="border rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-artic-orange focus:outline-none"
+          className="border rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-artic-teal focus:outline-none"
           aria-label="Filter by status"
         >
           <option value="">All Status</option>
@@ -191,7 +191,7 @@ export default function AdminProductsPage() {
                         </Link>
                         <Link
                           href={`/${locale}/admin/products/${product.id}`}
-                          className="p-1.5 text-gray-400 hover:text-artic-orange hover:bg-orange-50 rounded"
+                          className="p-1.5 text-gray-400 hover:text-artic-teal hover:bg-orange-50 rounded"
                           title="Edit product"
                         >
                           <Edit2 className="h-4 w-4" />

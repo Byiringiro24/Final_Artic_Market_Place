@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -63,7 +63,7 @@ export default function AdminSettingsPage() {
               key={id}
               onClick={() => setActiveGroup(id)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors text-left ${
-                activeGroup === id ? 'bg-artic-orange text-black' : 'text-gray-600 hover:bg-gray-100'
+                activeGroup === id ? 'bg-artic-teal text-black' : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
               <Icon className="h-4 w-4 flex-shrink-0" />
@@ -111,7 +111,7 @@ export default function AdminSettingsPage() {
               <Button
                 onClick={() => saveSettings()}
                 disabled={isPending}
-                className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-lg gap-2"
+                className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-lg gap-2"
               >
                 {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
                 Save {SETTING_GROUPS.find((g) => g.id === activeGroup)?.label} Settings

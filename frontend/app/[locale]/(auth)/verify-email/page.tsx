@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -37,7 +37,7 @@ export default function VerifyEmailPage() {
     <div className="w-full max-w-sm bg-white border rounded-lg p-8 text-center space-y-4">
       {status === 'loading' && (
         <>
-          <Loader2 className="h-14 w-14 text-artic-orange animate-spin mx-auto" />
+          <Loader2 className="h-14 w-14 text-artic-teal animate-spin mx-auto" />
           <h2 className="text-xl font-semibold">Verifying your email…</h2>
         </>
       )}
@@ -51,7 +51,7 @@ export default function VerifyEmailPage() {
           </p>
           <Button
             onClick={() => router.push(`/${locale}/sign-in`)}
-            className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full"
+            className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full"
           >
             Sign In
           </Button>

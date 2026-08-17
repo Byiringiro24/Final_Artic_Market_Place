@@ -92,7 +92,7 @@ export default function SignUpForm() {
         </p>
         <Button
           onClick={() => router.push(`/${locale}/sign-in`)}
-          className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full"
+          className="w-full bg-artic-teal hover:bg-artic-teal-dark text-white rounded-full"
         >
           Go to Sign In
         </Button>
@@ -169,7 +169,7 @@ export default function SignUpForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black font-medium rounded-full"
+        className="w-full bg-artic-teal hover:bg-artic-teal-dark text-white font-medium rounded-full"
       >
         {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create your ARTIC account'}
       </Button>

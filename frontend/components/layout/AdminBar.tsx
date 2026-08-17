@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
@@ -29,7 +29,7 @@ export default function AdminBar() {
     <div className="bg-artic-navy-light border-b border-white/10 text-white text-xs">
       <div className="max-w-[1500px] mx-auto px-4 h-8 flex items-center gap-1">
         {/* Admin badge */}
-        <span className="bg-artic-orange text-black text-[10px] font-black px-1.5 py-0.5 rounded flex-shrink-0 mr-2">
+        <span className="bg-artic-teal text-white text-[10px] font-black px-1.5 py-0.5 rounded flex-shrink-0 mr-2">
           ADMIN MODE
         </span>
 
@@ -39,7 +39,7 @@ export default function AdminBar() {
             <Link
               key={href}
               href={`/${locale}${href}`}
-              className="flex items-center gap-1 text-gray-300 hover:text-artic-orange transition-colors px-2 py-1 rounded whitespace-nowrap flex-shrink-0"
+              className="flex items-center gap-1 text-gray-300 hover:text-artic-teal transition-colors px-2 py-1 rounded whitespace-nowrap flex-shrink-0"
             >
               <Icon className="h-3 w-3" />
               {label}
@@ -67,3 +67,4 @@ export default function AdminBar() {
     </div>
   );
 }
+

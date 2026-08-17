@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -57,7 +57,7 @@ export default function AdminWebPagesPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Web Pages (CMS)</h1>
-        <Button onClick={() => { setEditing(null); setTitle(''); setContent(''); setShowForm(true); }} className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-lg gap-2">
+        <Button onClick={() => { setEditing(null); setTitle(''); setContent(''); setShowForm(true); }} className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-lg gap-2">
           <Plus className="h-4 w-4" /> New Page
         </Button>
       </div>
@@ -72,7 +72,7 @@ export default function AdminWebPagesPage() {
           <div>
             <Label>Content (Markdown)</Label>
             <textarea
-              className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-orange resize-y font-mono"
+              className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal resize-y font-mono"
               rows={10}
               value={content}
               onChange={(e) => setContent(e.target.value)}
@@ -84,7 +84,7 @@ export default function AdminWebPagesPage() {
             <span className="text-sm">Published</span>
           </label>
           <div className="flex gap-3">
-            <Button onClick={() => savePage()} disabled={!title || saving} className="bg-artic-orange text-black rounded-lg">
+            <Button onClick={() => savePage()} disabled={!title || saving} className="bg-artic-teal text-black rounded-lg">
               {saving ? 'Saving...' : 'Save Page'}
             </Button>
             <Button variant="outline" onClick={() => { setShowForm(false); setEditing(null); }} className="rounded-lg">Cancel</Button>
@@ -123,7 +123,7 @@ export default function AdminWebPagesPage() {
                     <a href={`/${locale}/page/${page.slug}`} target="_blank" className="p-1.5 text-gray-400 hover:text-artic-link rounded" aria-label="View page">
                       <Eye className="h-4 w-4" />
                     </a>
-                    <button onClick={() => openEdit(page)} className="p-1.5 text-gray-400 hover:text-artic-orange rounded" aria-label="Edit page">
+                    <button onClick={() => openEdit(page)} className="p-1.5 text-gray-400 hover:text-artic-teal rounded" aria-label="Edit page">
                       <Edit2 className="h-4 w-4" />
                     </button>
                     <button onClick={() => { if (confirm('Delete this page?')) deletePage(page.id); }} className="p-1.5 text-gray-400 hover:text-red-500 rounded" aria-label="Delete page">

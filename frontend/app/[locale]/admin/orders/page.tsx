@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -57,7 +57,7 @@ export default function AdminOrdersPage() {
         <select
           value={statusFilter}
           onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="border rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-artic-orange focus:outline-none"
+          className="border rounded-md px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-artic-teal focus:outline-none"
           aria-label="Filter by status"
         >
           <option value="">All Statuses</option>
@@ -115,7 +115,7 @@ export default function AdminOrdersPage() {
                         value={order.status}
                         onChange={(e) => { setUpdatingId(order.id); updateStatus({ id: order.id, status: e.target.value }); }}
                         disabled={updatingId === order.id}
-                        className="text-xs border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-artic-orange bg-white"
+                        className="text-xs border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-artic-teal bg-white"
                         aria-label={`Update status for order ${order.orderNumber}`}
                       >
                         {STATUS_OPTIONS.map((s) => <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>)}

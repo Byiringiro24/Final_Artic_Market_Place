@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect } from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
@@ -17,7 +17,7 @@ export default function ErrorPage({ error, reset }: Props) {
 
   return (
     <div className="min-h-screen bg-artic-light-bg flex flex-col items-center justify-center px-4 text-center">
-      <div className="text-artic-orange text-3xl font-black mb-6">ARTIC</div>
+      <div className="text-artic-teal text-3xl font-black mb-6">ARTIC</div>
 
       <div className="bg-white border rounded-2xl p-10 max-w-md w-full shadow-sm">
         <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">
@@ -37,7 +37,7 @@ export default function ErrorPage({ error, reset }: Props) {
         <div className="flex gap-3 justify-center">
           <Button
             onClick={reset}
-            className="gap-2 bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full"
+            className="gap-2 bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full"
           >
             <RefreshCw className="h-4 w-4" /> Try Again
           </Button>

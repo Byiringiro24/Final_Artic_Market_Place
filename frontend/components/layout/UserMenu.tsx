@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
@@ -34,7 +34,7 @@ export default function UserMenu() {
     return (
       <Link
         href={`/${locale}/sign-in`}
-        className="hidden md:flex flex-col text-xs text-white hover:text-artic-orange transition-colors px-2 py-1 rounded"
+        className="hidden md:flex flex-col text-xs text-white hover:text-artic-teal transition-colors px-2 py-1 rounded"
       >
         <span className="text-gray-300">Hello, sign in</span>
         <span className="font-bold flex items-center gap-1">
@@ -47,11 +47,11 @@ export default function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="hidden md:flex flex-col text-xs text-white hover:text-artic-orange transition-colors px-2 py-1 rounded">
+        <button className="hidden md:flex flex-col text-xs text-white hover:text-artic-teal transition-colors px-2 py-1 rounded">
           <span className="text-gray-300 flex items-center gap-1">
             Hello, {user?.name?.split(' ')[0]}
             {isAdmin() && (
-              <span className="bg-artic-orange text-black text-[10px] font-bold px-1 rounded leading-tight">
+              <span className="bg-artic-teal text-white text-[10px] font-bold px-1 rounded leading-tight">
                 ADMIN
               </span>
             )}
@@ -66,12 +66,12 @@ export default function UserMenu() {
         {/* Admin section at the top for admins */}
         {isAdmin() && (
           <>
-            <div className="px-2 py-1.5 bg-artic-orange/10 border-b">
-              <p className="text-xs font-semibold text-artic-orange-dark flex items-center gap-1">
+            <div className="px-2 py-1.5 bg-artic-teal/10 border-b">
+              <p className="text-xs font-semibold text-artic-teal-dark flex items-center gap-1">
                 <Shield className="h-3 w-3" /> Administrator Account
               </p>
             </div>
-            <DropdownMenuItem asChild className="text-artic-orange-dark font-semibold">
+            <DropdownMenuItem asChild className="text-artic-teal-dark font-semibold">
               <Link href={`/${locale}/admin/overview`}>
                 <LayoutDashboard className="h-4 w-4 mr-2" /> Admin Dashboard
               </Link>
@@ -109,3 +109,4 @@ export default function UserMenu() {
     </DropdownMenu>
   );
 }
+

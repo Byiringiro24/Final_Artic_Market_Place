@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -95,7 +95,7 @@ export default function ReviewList({ productId, productName, avgRating, numRevie
                   <span className="text-artic-link hover:underline cursor-pointer w-10 text-right">{star} star</span>
                   <div className="flex-1 bg-gray-200 rounded-full h-3 overflow-hidden">
                     <div
-                      className="bg-artic-orange h-full rounded-full"
+                      className="bg-artic-teal h-full rounded-full"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -148,7 +148,7 @@ export default function ReviewList({ productId, productName, avgRating, numRevie
                       onMouseLeave={() => setHoveredStar(0)}
                       onClick={() => setValue('rating', s)}
                       className={`text-2xl transition-colors ${
-                        s <= (hoveredStar || selectedRating) ? 'text-artic-orange' : 'text-gray-300'
+                        s <= (hoveredStar || selectedRating) ? 'text-artic-teal' : 'text-gray-300'
                       }`}
                       aria-label={`Rate ${s} star${s > 1 ? 's' : ''}`}
                     >
@@ -163,7 +163,7 @@ export default function ReviewList({ productId, productName, avgRating, numRevie
                 <input
                   {...register('title')}
                   placeholder="What's most important to know?"
-                  className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-orange"
+                  className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal"
                 />
               </div>
 
@@ -173,13 +173,13 @@ export default function ReviewList({ productId, productName, avgRating, numRevie
                   {...register('comment')}
                   rows={4}
                   placeholder="What did you like or dislike? What did you use this product for?"
-                  className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-orange resize-none"
+                  className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal resize-none"
                 />
                 {errors.comment && <p className="text-sm text-destructive mt-1">{errors.comment.message}</p>}
               </div>
 
               <div className="flex gap-3">
-                <Button type="submit" disabled={isPending || selectedRating === 0} className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full">
+                <Button type="submit" disabled={isPending || selectedRating === 0} className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full">
                   {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Submit Review'}
                 </Button>
                 <Button type="button" variant="outline" onClick={() => setShowForm(false)} className="rounded-full">
@@ -206,7 +206,7 @@ export default function ReviewList({ productId, productName, avgRating, numRevie
             reviews.map((review) => (
               <article key={review.id} className="border-b pb-6 last:border-0">
                 <div className="flex items-center gap-3 mb-2">
-                  <div className="w-8 h-8 rounded-full bg-artic-orange flex items-center justify-center text-black text-sm font-bold">
+                  <div className="w-8 h-8 rounded-full bg-artic-teal flex items-center justify-center text-black text-sm font-bold">
                     {review.user.name[0].toUpperCase()}
                   </div>
                   <span className="font-medium text-sm">{review.user.name}</span>

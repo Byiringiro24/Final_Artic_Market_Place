@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -59,7 +59,7 @@ export default function AdminOverviewPage() {
         <select
           value={days}
           onChange={(e) => setDays(Number(e.target.value))}
-          className="border rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-artic-orange focus:outline-none"
+          className="border rounded-lg px-3 py-2 text-sm bg-white focus:ring-2 focus:ring-artic-teal focus:outline-none"
           aria-label="Select time range"
         >
           <option value={7}>Last 7 days</option>

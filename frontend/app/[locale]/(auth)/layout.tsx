@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -6,7 +6,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       {/* Minimal header */}
       <header className="bg-white border-b py-4 px-6 flex justify-center">
         <Link href="/" className="flex items-center gap-2">
-          <div className="bg-artic-orange rounded px-2 py-1 text-black font-black text-xl">ARTIC</div>
+          <div className="bg-artic-teal rounded px-2 py-1 text-black font-black text-xl">ARTIC</div>
           <span className="text-gray-600 text-sm">marketplace</span>
         </Link>
       </header>

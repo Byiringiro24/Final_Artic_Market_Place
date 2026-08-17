@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useQuery } from '@tanstack/react-query';
 import useEmblaCarousel from 'embla-carousel-react';
@@ -63,7 +63,7 @@ export default function HeroCarousel() {
                   {banner.linkUrl && (
                     <Button
                       asChild
-                      className="bg-artic-orange hover:bg-artic-orange-dark text-black font-bold rounded-full px-8"
+                      className="bg-artic-teal hover:bg-artic-teal-dark text-black font-bold rounded-full px-8"
                     >
                       <Link href={`/${locale}${banner.linkUrl}`}>
                         {banner.buttonText || 'Shop Now'}
@@ -95,3 +95,4 @@ export default function HeroCarousel() {
     </div>
   );
 }
+

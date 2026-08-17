@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useTheme } from 'next-themes';
 import { Sun, Moon, Monitor } from 'lucide-react';
@@ -23,7 +23,7 @@ export default function ThemeSwitcher() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="text-white hover:text-artic-orange transition-colors p-2"
+          className="text-white hover:text-artic-teal transition-colors p-2"
           aria-label="Switch theme"
         >
           <Icon className="h-4 w-4" />
@@ -43,3 +43,4 @@ export default function ThemeSwitcher() {
     </DropdownMenu>
   );
 }
+

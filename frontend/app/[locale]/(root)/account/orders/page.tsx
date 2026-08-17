@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useQuery } from '@tanstack/react-query';
 import { useLocale } from 'next-intl';
@@ -69,7 +69,7 @@ export default function OrdersPage() {
                 <div className="flex gap-2 flex-shrink-0">
                   <Link
                     href={`/${locale}/account/orders/${order.id}`}
-                    className="border border-artic-orange text-artic-orange-dark text-sm px-4 py-2 rounded hover:bg-orange-50 transition-colors"
+                    className="border border-artic-teal text-artic-teal-dark text-sm px-4 py-2 rounded hover:bg-orange-50 transition-colors"
                   >
                     View Order
                   </Link>

@@ -5,18 +5,19 @@ import { useLocale } from 'next-intl';
 
 const COLUMNS = [
   {
-    heading: 'Get to Know Us',
+    heading: 'ARTIC Marketplace',
     links: [
-      { label: 'About ARTIC', href: '/page/about-us' },
-      { label: 'Careers', href: '/page/careers' },
-      { label: 'Press', href: '/page/press' },
+      { label: 'About Us', href: '/page/about-us' },
+      { label: 'Services', href: '/services' },
       { label: 'Blog', href: '/blog' },
+      { label: 'Careers', href: '/page/careers' },
     ],
   },
   {
-    heading: 'Make Money with Us',
+    heading: 'Sell With Us',
     links: [
-      { label: 'Sell on ARTIC', href: '/page/sell' },
+      { label: 'Sell on ARTIC', href: '/sell' },
+      { label: 'Seller Guide', href: '/page/seller-guide' },
       { label: 'Affiliate Program', href: '/page/affiliates' },
       { label: 'Advertise', href: '/page/advertise' },
     ],
@@ -25,19 +26,18 @@ const COLUMNS = [
     heading: 'Payment & Shipping',
     links: [
       { label: 'Payment Methods', href: '/page/payment' },
-      { label: 'ARTIC Wallet', href: '/page/wallet' },
       { label: 'Shipping Rates', href: '/page/shipping' },
       { label: 'Returns Policy', href: '/page/returns' },
+      { label: 'Track Order', href: '/account/orders' },
     ],
   },
   {
-    heading: 'Let Us Help You',
+    heading: 'Customer Support',
     links: [
+      { label: 'Help Center', href: '/customer-service' },
       { label: 'Your Account', href: '/account' },
       { label: 'Your Orders', href: '/account/orders' },
-      { label: 'Shipping & Delivery', href: '/page/shipping' },
-      { label: 'Returns & Replacements', href: '/page/returns' },
-      { label: 'Help Center', href: '/page/faq' },
+      { label: 'Contact Us', href: '/customer-service' },
     ],
   },
 ];
@@ -49,7 +49,7 @@ export default function FooterLinks() {
     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 border-b border-white/10 pb-10">
       {COLUMNS.map((col) => (
         <div key={col.heading}>
-          <h3 className="font-bold text-sm mb-4">{col.heading}</h3>
+          <h3 className="font-bold text-sm mb-4 text-artic-teal">{col.heading}</h3>
           <ul className="space-y-2">
             {col.links.map((link) => (
               <li key={link.label}>

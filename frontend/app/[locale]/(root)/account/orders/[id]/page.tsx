@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { use } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -141,7 +141,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                 {/* Progress bar */}
                 <div className="absolute top-5 left-5 right-5 h-0.5 bg-gray-200">
                   <div
-                    className="h-full bg-artic-orange transition-all duration-500"
+                    className="h-full bg-artic-teal transition-all duration-500"
                     style={{ width: `${(progressIndex / (STATUS_STEPS.length - 1)) * 100}%` }}
                   />
                 </div>
@@ -156,7 +156,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                         <div
                           className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all z-10 ${
                             isCompleted
-                              ? 'bg-artic-orange border-artic-orange'
+                              ? 'bg-artic-teal border-artic-teal'
                               : 'bg-white border-gray-300'
                           }`}
                         >
@@ -165,7 +165,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
                           />
                         </div>
                         <div className="text-center">
-                          <p className={`text-xs font-medium ${isCurrent ? 'text-artic-orange' : isCompleted ? 'text-gray-700' : 'text-gray-400'}`}>
+                          <p className={`text-xs font-medium ${isCurrent ? 'text-artic-teal' : isCompleted ? 'text-gray-700' : 'text-gray-400'}`}>
                             {step.label}
                           </p>
                           {isCurrent && order.expectedDelivery && step.key === 'SHIPPED' && (
@@ -249,7 +249,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               <ol className="relative border-l border-gray-200 ml-2 space-y-4">
                 {order.statusHistory.map((h, i) => (
                   <li key={i} className="ml-4">
-                    <div className="absolute -left-1.5 w-3 h-3 rounded-full bg-artic-orange border-2 border-white" />
+                    <div className="absolute -left-1.5 w-3 h-3 rounded-full bg-artic-teal border-2 border-white" />
                     <div className="flex items-baseline justify-between">
                       <p className="font-medium text-sm">
                         {h.status.replace(/_/g, ' ')}
@@ -335,7 +335,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           {order.status === 'DELIVERED' && (
             <Button
               asChild
-              className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full"
+              className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full"
             >
               <Link href={`/${locale}/search`}>Buy Again</Link>
             </Button>

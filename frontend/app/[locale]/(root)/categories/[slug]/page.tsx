@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { use } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -56,7 +56,7 @@ export default function CategoryPage({ params }: { params: Promise<{ slug: strin
             <Link
               key={child.id}
               href={`/${locale}/categories/${child.slug}`}
-              className="px-4 py-2 border rounded-full text-sm hover:bg-artic-orange hover:text-black hover:border-artic-orange transition-colors"
+              className="px-4 py-2 border rounded-full text-sm hover:bg-artic-teal hover:text-black hover:border-artic-teal transition-colors"
             >
               {child.name}
             </Link>

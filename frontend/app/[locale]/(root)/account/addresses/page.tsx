@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -89,7 +89,7 @@ export default function AddressesPage() {
         <h1 className="text-2xl font-bold">Your Addresses</h1>
         <Button
           onClick={openNew}
-          className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full gap-2"
+          className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full gap-2"
         >
           <Plus className="h-4 w-4" /> Add Address
         </Button>
@@ -140,7 +140,7 @@ export default function AddressesPage() {
               <label htmlFor="isDefault" className="text-sm cursor-pointer">Set as default address</label>
             </div>
             <div className="sm:col-span-2 flex gap-3">
-              <Button type="submit" disabled={isSubmitting} className="bg-artic-orange text-black rounded-full">
+              <Button type="submit" disabled={isSubmitting} className="bg-artic-teal text-black rounded-full">
                 {isSubmitting ? 'Saving…' : 'Save Address'}
               </Button>
               <Button type="button" variant="outline" onClick={() => { setShowForm(false); setEditing(null); reset(); }} className="rounded-full">
@@ -164,10 +164,10 @@ export default function AddressesPage() {
           {addresses.map((addr) => (
             <div
               key={addr.id}
-              className={`bg-white border rounded-lg p-4 relative ${addr.isDefault ? 'border-artic-orange' : ''}`}
+              className={`bg-white border rounded-lg p-4 relative ${addr.isDefault ? 'border-artic-teal' : ''}`}
             >
               {addr.isDefault && (
-                <span className="absolute top-3 right-3 text-xs bg-artic-orange text-black px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+                <span className="absolute top-3 right-3 text-xs bg-artic-teal text-black px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
                   <Star className="h-3 w-3 fill-black" /> Default
                 </span>
               )}

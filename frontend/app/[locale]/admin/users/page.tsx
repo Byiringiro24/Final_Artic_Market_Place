@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -71,7 +71,7 @@ export default function AdminUsersPage() {
                   <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-artic-orange flex items-center justify-center text-black font-bold text-sm flex-shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-artic-teal flex items-center justify-center text-black font-bold text-sm flex-shrink-0">
                           {user.name?.[0]?.toUpperCase()}
                         </div>
                         <div>
@@ -84,7 +84,7 @@ export default function AdminUsersPage() {
                       <select
                         value={user.role}
                         onChange={(e) => updateUser({ id: user.id, role: e.target.value })}
-                        className="text-xs border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-artic-orange"
+                        className="text-xs border rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-artic-teal"
                         aria-label={`Change role for ${user.name}`}
                       >
                         <option value="USER">User</option>

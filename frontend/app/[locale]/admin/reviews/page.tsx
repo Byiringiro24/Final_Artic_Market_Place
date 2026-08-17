@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -48,7 +48,7 @@ export default function AdminReviewsPage() {
             key={s}
             onClick={() => { setStatus(s); setPage(1); }}
             className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-              status === s ? 'bg-artic-orange text-black' : 'border hover:bg-gray-50'
+              status === s ? 'bg-artic-teal text-black' : 'border hover:bg-gray-50'
             }`}
           >
             {s}

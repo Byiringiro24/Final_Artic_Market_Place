@@ -90,4 +90,22 @@ export const queryKeys = {
   promotions: {
     all: ['promotions'] as const,
   },
+
+  // Services
+  services: {
+    all: ['services'] as const,
+    detail: (slug: string) => ['services', slug] as const,
+    admin: ['services', 'admin'] as const,
+  },
+
+  // Sellers
+  sellers: {
+    my: ['sellers', 'my'] as const,
+    admin: (status?: string) => ['sellers', 'admin', status] as const,
+  },
+
+  // Contact
+  contact: {
+    all: ['contact'] as const,
+  },
 };

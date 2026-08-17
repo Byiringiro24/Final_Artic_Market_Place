@@ -1,4 +1,4 @@
-import { Star, StarHalf } from 'lucide-react';
+﻿import { Star, StarHalf } from 'lucide-react';
 import { generateStarArray } from '@/lib/utils';
 import { cn } from '@/lib/utils';
 
@@ -19,7 +19,7 @@ export default function StarRating({
   const sizeMap = { sm: 'h-3 w-3', md: 'h-4 w-4', lg: 'h-5 w-5' };
 
   return (
-    <div className={cn('flex items-center gap-0.5 text-artic-orange', className)}>
+    <div className={cn('flex items-center gap-0.5 text-artic-teal', className)}>
       {stars.map((type, i) => (
         <span key={i} aria-hidden="true">
           {type === 'full' && <Star className={cn(sizeMap[size], 'fill-current')} />}
@@ -36,3 +36,4 @@ export default function StarRating({
     </div>
   );
 }
+

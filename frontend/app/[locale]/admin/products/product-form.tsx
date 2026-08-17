@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -203,7 +203,7 @@ export default function ProductForm({ initialData, productId }: Props) {
             onClick={() => setActiveTab(tab.id)}
             className={`px-5 py-2.5 text-sm font-medium border-b-2 transition-colors whitespace-nowrap ${
               activeTab === tab.id
-                ? 'border-artic-orange text-artic-orange'
+                ? 'border-artic-teal text-artic-teal'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -224,7 +224,7 @@ export default function ProductForm({ initialData, productId }: Props) {
 
             <div>
               <Label>Category *</Label>
-              <select {...register('categoryId')} className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-orange">
+              <select {...register('categoryId')} className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal">
                 <option value="">Select category...</option>
                 {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
               </select>
@@ -233,7 +233,7 @@ export default function ProductForm({ initialData, productId }: Props) {
 
             <div>
               <Label>Brand</Label>
-              <select {...register('brandId')} className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-orange">
+              <select {...register('brandId')} className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal">
                 <option value="">No brand</option>
                 {brands.map((b) => <option key={b.id} value={b.id}>{b.name}</option>)}
               </select>
@@ -277,7 +277,7 @@ export default function ProductForm({ initialData, productId }: Props) {
                 {...register('description')}
                 rows={7}
                 placeholder="## Product Features&#10;&#10;- Feature 1&#10;- Feature 2"
-                className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-orange resize-y font-mono"
+                className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal resize-y font-mono"
               />
             </div>
 
@@ -344,7 +344,7 @@ export default function ProductForm({ initialData, productId }: Props) {
             {/* Media grid */}
             {mediaItems.length === 0 ? (
               <div
-                className="border-2 border-dashed border-gray-200 rounded-lg p-12 text-center cursor-pointer hover:border-artic-orange transition-colors"
+                className="border-2 border-dashed border-gray-200 rounded-lg p-12 text-center cursor-pointer hover:border-artic-teal transition-colors"
                 onClick={() => fileInputRef.current?.click()}
               >
                 <ImagePlus className="h-12 w-12 text-gray-300 mx-auto mb-3" />
@@ -357,12 +357,12 @@ export default function ProductForm({ initialData, productId }: Props) {
                   <div
                     key={i}
                     className={`relative group border rounded-lg overflow-hidden bg-gray-50 aspect-square ${
-                      i === 0 ? 'ring-2 ring-artic-orange' : ''
+                      i === 0 ? 'ring-2 ring-artic-teal' : ''
                     }`}
                   >
                     {/* Main badge */}
                     {i === 0 && (
-                      <span className="absolute top-1 left-1 z-10 bg-artic-orange text-black text-[10px] font-bold px-1.5 rounded">
+                      <span className="absolute top-1 left-1 z-10 bg-artic-teal text-black text-[10px] font-bold px-1.5 rounded">
                         MAIN
                       </span>
                     )}
@@ -429,7 +429,7 @@ export default function ProductForm({ initialData, productId }: Props) {
 
                 {/* Add more button */}
                 <div
-                  className="border-2 border-dashed border-gray-200 rounded-lg aspect-square flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-artic-orange hover:bg-orange-50 transition-colors"
+                  className="border-2 border-dashed border-gray-200 rounded-lg aspect-square flex flex-col items-center justify-center gap-1 cursor-pointer hover:border-artic-teal hover:bg-orange-50 transition-colors"
                   onClick={() => fileInputRef.current?.click()}
                 >
                   <Plus className="h-6 w-6 text-gray-400" />
@@ -475,7 +475,7 @@ export default function ProductForm({ initialData, productId }: Props) {
               {...register('metaDesc')}
               rows={3}
               placeholder="Brief description for search engines..."
-              className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-orange resize-none"
+              className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal resize-none"
             />
             <p className="text-xs text-gray-400 mt-1">Recommended: 150–160 characters</p>
           </div>
@@ -492,7 +492,7 @@ export default function ProductForm({ initialData, productId }: Props) {
                 aria-checked={isPublished}
                 onClick={() => setValue('isPublished', !isPublished)}
                 className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                  isPublished ? 'bg-artic-orange' : 'bg-gray-300'
+                  isPublished ? 'bg-artic-teal' : 'bg-gray-300'
                 }`}
               >
                 <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${
@@ -512,7 +512,7 @@ export default function ProductForm({ initialData, productId }: Props) {
                 aria-checked={isFeatured}
                 onClick={() => setValue('isFeatured', !isFeatured)}
                 className={`w-12 h-6 rounded-full transition-colors relative cursor-pointer ${
-                  isFeatured ? 'bg-artic-orange' : 'bg-gray-300'
+                  isFeatured ? 'bg-artic-teal' : 'bg-gray-300'
                 }`}
               >
                 <div className={`absolute top-1 w-4 h-4 rounded-full bg-white shadow transition-transform ${
@@ -529,7 +529,7 @@ export default function ProductForm({ initialData, productId }: Props) {
         <Button
           type="submit"
           disabled={isPending}
-          className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-lg px-8 font-semibold"
+          className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-lg px-8 font-semibold"
         >
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
           {productId ? 'Update Product' : 'Create Product'}

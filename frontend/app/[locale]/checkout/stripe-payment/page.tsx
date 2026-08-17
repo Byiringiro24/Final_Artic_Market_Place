@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -91,7 +91,7 @@ function StripeCheckoutForm({
       <Button
         type="submit"
         disabled={!stripe || isLoading}
-        className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black font-bold rounded-full h-12 text-base"
+        className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black font-bold rounded-full h-12 text-base"
       >
         {isLoading ? (
           <Loader2 className="h-5 w-5 animate-spin" />
@@ -137,7 +137,7 @@ export default function StripePaymentPage() {
   if (loading || !clientSecret) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-artic-orange" />
+        <Loader2 className="h-8 w-8 animate-spin text-artic-teal" />
       </div>
     );
   }
@@ -146,7 +146,7 @@ export default function StripePaymentPage() {
     <div className="min-h-screen bg-artic-light-bg py-10">
       <div className="max-w-md mx-auto px-4">
         <div className="text-center mb-8">
-          <div className="text-xl font-black text-artic-orange mb-1">ARTIC</div>
+          <div className="text-xl font-black text-artic-teal mb-1">ARTIC</div>
           <h1 className="text-2xl font-bold">Complete Payment</h1>
           <p className="text-gray-500 text-sm mt-1">Order #{orderId.slice(-8).toUpperCase()}</p>
         </div>

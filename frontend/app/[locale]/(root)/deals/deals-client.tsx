@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useQuery } from '@tanstack/react-query';
 import { Tag } from 'lucide-react';
@@ -19,7 +19,7 @@ export default function DealsClient() {
     <div className="container mx-auto px-4 py-8">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="p-2 bg-artic-orange rounded-lg">
+        <div className="p-2 bg-artic-teal rounded-lg">
           <Tag className="h-6 w-6 text-black" />
         </div>
         <div>

@@ -118,7 +118,7 @@ export default function SignInForm() {
       <Button
         type="submit"
         disabled={isSubmitting}
-        className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black font-medium rounded-full"
+        className="w-full bg-artic-teal hover:bg-artic-teal-dark text-white font-medium rounded-full"
       >
         {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign In'}
       </Button>

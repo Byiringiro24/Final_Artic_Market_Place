@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -94,7 +94,7 @@ export default function SearchBar() {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => suggestions.length > 0 && setIsOpen(true)}
           placeholder="Search ARTIC Marketplace..."
-          className="flex-1 px-4 py-2 text-black text-sm focus:outline-none focus:ring-2 focus:ring-artic-orange bg-white"
+          className="flex-1 px-4 py-2 text-black text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal bg-white"
           aria-label="Search products"
           aria-autocomplete="list"
           aria-expanded={isOpen}
@@ -103,7 +103,7 @@ export default function SearchBar() {
         {/* Submit button */}
         <button
           type="submit"
-          className="bg-artic-orange hover:bg-artic-orange-dark text-black px-4 rounded-r-md transition-colors flex items-center"
+          className="bg-artic-teal hover:bg-artic-teal-dark text-black px-4 rounded-r-md transition-colors flex items-center"
           aria-label="Search"
         >
           <Search className="h-5 w-5" />
@@ -143,3 +143,4 @@ export default function SearchBar() {
     </div>
   );
 }
+

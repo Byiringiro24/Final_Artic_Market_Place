@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useQuery } from '@tanstack/react-query';
 import { useLocale } from 'next-intl';
@@ -44,7 +44,7 @@ export default function AccountPage() {
             className="flex items-start gap-4 p-4 bg-white border rounded-lg hover:shadow-md transition-shadow group"
           >
             <div className="p-2 bg-artic-light-bg rounded-lg group-hover:bg-orange-50">
-              <Icon className="h-6 w-6 text-artic-orange" />
+              <Icon className="h-6 w-6 text-artic-teal" />
             </div>
             <div>
               <p className="font-medium">{label}</p>

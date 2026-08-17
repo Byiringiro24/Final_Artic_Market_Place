@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
@@ -94,7 +94,7 @@ export default function SearchPage() {
             <select
               value={sort}
               onChange={(e) => updateParam('sort', e.target.value)}
-              className="border rounded px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-artic-orange"
+              className="border rounded px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-artic-teal"
               aria-label="Sort products"
             >
               {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
@@ -116,7 +116,7 @@ export default function SearchPage() {
                     <button
                       onClick={() => { updateParam('minPrice', r.min); updateParam('maxPrice', r.max); }}
                       className={`text-sm hover:text-artic-link transition-colors ${
-                        minPrice === r.min && maxPrice === r.max ? 'text-artic-orange font-medium' : 'text-artic-link'
+                        minPrice === r.min && maxPrice === r.max ? 'text-artic-teal font-medium' : 'text-artic-link'
                       }`}
                     >
                       {r.label}
@@ -134,7 +134,7 @@ export default function SearchPage() {
                   <li key={r}>
                     <button
                       onClick={() => updateParam('rating', rating === String(r) ? '' : String(r))}
-                      className={`flex items-center gap-1 text-sm hover:text-artic-link ${rating === String(r) ? 'text-artic-orange font-medium' : 'text-artic-link'}`}
+                      className={`flex items-center gap-1 text-sm hover:text-artic-link ${rating === String(r) ? 'text-artic-teal font-medium' : 'text-artic-link'}`}
                     >
                       {'★'.repeat(r)}{'☆'.repeat(5 - r)} & Up
                     </button>
@@ -179,7 +179,7 @@ export default function SearchPage() {
                       onClick={() => updateParam('page', String(p))}
                       className={`w-10 h-10 rounded text-sm font-medium transition-colors ${
                         p === pagination.page
-                          ? 'bg-artic-orange text-black'
+                          ? 'bg-artic-teal text-black'
                           : 'border hover:bg-gray-50'
                       }`}
                       aria-label={`Page ${p}`}

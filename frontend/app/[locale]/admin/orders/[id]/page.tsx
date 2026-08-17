@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { use } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -134,7 +134,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
                   <select
                     {...register('status')}
                     defaultValue={order.status}
-                    className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-orange"
+                    className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal"
                   >
                     {ORDER_STATUSES.map((s) => (
                       <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
@@ -170,14 +170,14 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
                   {...register('note')}
                   rows={2}
                   placeholder="Optional note..."
-                  className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-orange resize-none"
+                  className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal resize-none"
                 />
               </div>
 
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-lg gap-2"
+                className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-lg gap-2"
               >
                 {isSubmitting && <Loader2 className="h-4 w-4 animate-spin" />}
                 Update Status
@@ -235,7 +235,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
               <ol className="relative border-l-2 border-gray-200 ml-2 space-y-4">
                 {order.statusHistory.map((h, i) => (
                   <li key={i} className="ml-5">
-                    <div className="absolute -left-2 w-4 h-4 rounded-full bg-artic-orange border-2 border-white" />
+                    <div className="absolute -left-2 w-4 h-4 rounded-full bg-artic-teal border-2 border-white" />
                     <div className="flex items-baseline justify-between gap-4">
                       <p className="font-medium text-sm">{h.status.replace(/_/g, ' ')}</p>
                       <time className="text-xs text-gray-400 flex-shrink-0">{formatDate(h.createdAt)}</time>
@@ -256,7 +256,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
               <User className="h-4 w-4 text-gray-500" /> Customer
             </h2>
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-artic-orange flex items-center justify-center text-black font-bold">
+              <div className="w-10 h-10 rounded-full bg-artic-teal flex items-center justify-center text-black font-bold">
                 {order.user.name[0].toUpperCase()}
               </div>
               <div>

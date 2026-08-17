@@ -1,4 +1,4 @@
-import Link from 'next/link';
+﻿import Link from 'next/link';
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
 import BackToTop from './BackToTop';
 import FooterLinks from './FooterLinks';
@@ -24,7 +24,6 @@ export default function Footer() {
 
   return (
     <footer className="bg-artic-navy text-white mt-auto">
-      {/* Back to top button — client component (needs onClick) */}
       <BackToTop />
 
       <div className="max-w-[1500px] mx-auto px-6 py-10">
@@ -34,7 +33,7 @@ export default function Footer() {
         {/* Logo + social */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <div className="bg-artic-orange rounded px-2 py-1 text-black font-black text-lg">
+            <div className="bg-artic-teal rounded px-2 py-1 text-black font-black text-lg">
               ARTIC
             </div>
             <span className="text-white text-sm">marketplace</span>
@@ -69,3 +68,4 @@ export default function Footer() {
     </footer>
   );
 }
+

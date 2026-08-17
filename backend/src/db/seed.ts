@@ -356,7 +356,8 @@ async function main() {
       { key: 'site_name', value: 'ARTIC Marketplace', group: 'site', label: 'Site Name' },
       { key: 'site_description', value: 'The Premier Online Marketplace', group: 'site' },
       { key: 'site_logo', value: '/icons/logo.svg', group: 'site' },
-      { key: 'site_email', value: 'support@articmarketplace.com', group: 'site' },
+      { key: 'site_email', value: 'articltd1@gmail.com', group: 'site' },
+      { key: 'site_phone', value: '0787585826 / 0785424098', group: 'site' },
       { key: 'default_currency', value: 'USD', group: 'site' },
       { key: 'default_language', value: 'en-US', group: 'site' },
       { key: 'tax_rate', value: 0.18, group: 'site', label: 'Default Tax Rate' },
@@ -365,6 +366,7 @@ async function main() {
       { key: 'social_facebook', value: 'https://facebook.com/articmarketplace', group: 'social' },
       { key: 'social_twitter', value: 'https://twitter.com/articmarket', group: 'social' },
       { key: 'social_instagram', value: 'https://instagram.com/articmarketplace', group: 'social' },
+      { key: 'social_whatsapp', value: '0787585826', group: 'social' },
     ],
   });
 
@@ -425,6 +427,83 @@ async function main() {
   });
 
   console.log('✅ Shipping zones created');
+
+  // ─── Services ──────────────────────────────────────────────────────────────
+  await prisma.service.createMany({
+    data: [
+      {
+        title: 'Product Photography',
+        slug: 'product-photography',
+        description: '## Professional Product Photography\n\nHigh-quality product photos that sell. Studio lighting, multiple angles, and retouching included.',
+        shortDesc: 'Professional studio product photography for your listings',
+        price: 99,
+        priceType: 'fixed',
+        category: 'Photography',
+        images: [],
+        isActive: true,
+        isFeatured: true,
+        sortOrder: 1,
+      },
+      {
+        title: 'Delivery & Logistics',
+        slug: 'delivery-logistics',
+        description: '## Fast & Reliable Delivery\n\nSame-day and next-day delivery services within the city. Track your packages in real time.',
+        shortDesc: 'Same-day and next-day delivery within the city',
+        price: 5,
+        priceType: 'fixed',
+        category: 'Logistics',
+        images: [],
+        isActive: true,
+        isFeatured: true,
+        sortOrder: 2,
+      },
+      {
+        title: 'Seller Onboarding Consultation',
+        slug: 'seller-onboarding',
+        description: '## Start Selling Successfully\n\nOne-on-one consultation to help you set up your store, list products, and start selling on ARTIC Marketplace.',
+        shortDesc: '1-on-1 consultation to launch your seller account',
+        price: 49,
+        priceType: 'fixed',
+        category: 'Consulting',
+        images: [],
+        isActive: true,
+        isFeatured: false,
+        sortOrder: 3,
+      },
+      {
+        title: 'Custom Packaging',
+        slug: 'custom-packaging',
+        description: '## Branded Packaging Solutions\n\nCustom packaging with your logo to elevate your brand and create a memorable unboxing experience.',
+        shortDesc: 'Custom branded packaging for your business',
+        priceType: 'quote',
+        category: 'Branding',
+        images: [],
+        isActive: true,
+        isFeatured: false,
+        sortOrder: 4,
+      },
+    ],
+  });
+
+  // ─── Contact info ───────────────────────────────────────────────────────────
+  await prisma.contactInfo.createMany({
+    data: [
+      { key: 'email', value: 'articltd1@gmail.com', label: 'Email Address', group: 'contact' },
+      { key: 'phone1', value: '0787585826', label: 'Phone 1', group: 'contact' },
+      { key: 'phone2', value: '0785424098', label: 'Phone 2', group: 'contact' },
+      { key: 'whatsapp', value: '0787585826', label: 'WhatsApp', group: 'contact' },
+      { key: 'address', value: 'Kigali, Rwanda', label: 'Address', group: 'contact' },
+      { key: 'support_hours', value: 'Mon–Fri: 8AM–6PM | Sat: 9AM–3PM', label: 'Hours', group: 'contact' },
+      { key: 'facebook', value: 'https://facebook.com/articmarketplace', label: 'Facebook', group: 'social' },
+      { key: 'twitter', value: 'https://twitter.com/articmarket', label: 'Twitter', group: 'social' },
+      { key: 'instagram', value: 'https://instagram.com/articmarketplace', label: 'Instagram', group: 'social' },
+      { key: 'linkedin', value: 'https://linkedin.com/company/artic-marketplace', label: 'LinkedIn', group: 'social' },
+      { key: 'youtube', value: 'https://youtube.com/@articmarketplace', label: 'YouTube', group: 'social' },
+      { key: 'tiktok', value: 'https://tiktok.com/@articmarketplace', label: 'TikTok', group: 'social' },
+    ],
+  });
+
+  console.log('✅ Services and contact info created');
 
   console.log('\n🎉 Database seeded successfully!\n');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');

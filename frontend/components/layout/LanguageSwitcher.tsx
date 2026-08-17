@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useLocale } from 'next-intl';
 import { useRouter, usePathname } from 'next/navigation';
@@ -34,7 +34,7 @@ export default function LanguageSwitcher() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <button
-          className="flex items-center gap-1 text-white hover:text-artic-orange transition-colors text-xs px-2 py-1"
+          className="flex items-center gap-1 text-white hover:text-artic-teal transition-colors text-xs px-2 py-1"
           aria-label="Switch language"
         >
           <Globe className="h-4 w-4" />
@@ -55,3 +55,4 @@ export default function LanguageSwitcher() {
     </DropdownMenu>
   );
 }
+

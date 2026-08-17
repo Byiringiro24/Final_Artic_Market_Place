@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -42,7 +42,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
         <aside className="hidden md:block w-52 flex-shrink-0">
           {/* User info */}
           <div className="flex items-center gap-3 mb-5 pb-5 border-b">
-            <div className="w-12 h-12 rounded-full bg-artic-orange flex items-center justify-center text-black font-bold text-lg flex-shrink-0">
+            <div className="w-12 h-12 rounded-full bg-artic-teal flex items-center justify-center text-black font-bold text-lg flex-shrink-0">
               {user?.name?.[0]?.toUpperCase()}
             </div>
             <div className="min-w-0">
@@ -65,7 +65,7 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
                   className={cn(
                     'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
                     isActive
-                      ? 'bg-artic-orange/10 text-artic-orange-dark font-semibold'
+                      ? 'bg-artic-teal/10 text-artic-teal-dark font-semibold'
                       : 'text-gray-600 hover:bg-gray-100'
                   )}
                 >

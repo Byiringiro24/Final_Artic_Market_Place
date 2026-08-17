@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Bell, CheckCheck, Trash2 } from 'lucide-react';
@@ -50,7 +50,7 @@ export default function NotificationsPage() {
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-bold">Notifications</h1>
           {unreadCount > 0 && (
-            <span className="bg-artic-orange text-black text-xs font-bold px-2 py-0.5 rounded-full">
+            <span className="bg-artic-teal text-black text-xs font-bold px-2 py-0.5 rounded-full">
               {unreadCount} new
             </span>
           )}

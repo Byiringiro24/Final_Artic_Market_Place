@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -40,7 +40,7 @@ export default function AdminPromotionsPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Promotions & Coupons</h1>
-        <Button onClick={() => setShowForm(!showForm)} className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-lg gap-2">
+        <Button onClick={() => setShowForm(!showForm)} className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-lg gap-2">
           <Plus className="h-4 w-4" /> Create Coupon
         </Button>
       </div>
@@ -59,7 +59,7 @@ export default function AdminPromotionsPage() {
           <div><Label>Min Order ($)</Label><Input type="number" className="mt-1" value={form.minOrderAmount} onChange={(e) => setForm({ ...form, minOrderAmount: Number(e.target.value) })} /></div>
           <div><Label>Max Uses (blank = unlimited)</Label><Input type="number" className="mt-1" value={form.maxUses} onChange={(e) => setForm({ ...form, maxUses: e.target.value })} /></div>
           <div className="sm:col-span-2 flex gap-3 pt-2">
-            <Button onClick={() => createPromo()} disabled={!form.code || isPending} className="bg-artic-orange text-black rounded-lg">
+            <Button onClick={() => createPromo()} disabled={!form.code || isPending} className="bg-artic-teal text-black rounded-lg">
               {isPending ? 'Saving...' : 'Create Coupon'}
             </Button>
             <Button variant="outline" onClick={() => setShowForm(false)} className="rounded-lg">Cancel</Button>
@@ -87,7 +87,7 @@ export default function AdminPromotionsPage() {
             ) : promos.map((p) => (
               <tr key={p.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3">
-                  <span className="font-mono font-bold text-artic-orange flex items-center gap-1">
+                  <span className="font-mono font-bold text-artic-teal flex items-center gap-1">
                     <Tag className="h-3 w-3" /> {p.code}
                   </span>
                 </td>

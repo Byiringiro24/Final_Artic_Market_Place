@@ -6,14 +6,9 @@ const config: Config = {
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx}',
   ],
   theme: {
-    container: {
-      center: true,
-      padding: '2rem',
-      screens: { '2xl': '1400px' },
-    },
+    container: { center: true, padding: '1rem', screens: { '2xl': '1400px' } },
     extend: {
       colors: {
         border: 'hsl(var(--border))',
@@ -49,16 +44,16 @@ const config: Config = {
           DEFAULT: 'hsl(var(--card))',
           foreground: 'hsl(var(--card-foreground))',
         },
-        // ARTIC brand colors
+        // ARTIC Brand
         artic: {
-          orange: '#FF9900',
-          'orange-dark': '#E47911',
-          navy: '#131921',
-          'navy-light': '#232F3E',
-          teal: '#37475A',
-          'light-bg': '#EAEDED',
-          link: '#007185',
-          'link-hover': '#C7511F',
+          primary: '#18A89A',
+          'primary-dark': '#0F7A70',
+          navy: '#1A2332',
+          'navy-light': '#243044',
+          gold: '#FFB800',
+          'light-bg': '#F0F4F8',
+          teal: '#18A89A',
+          'teal-dark': '#0F7A70',
         },
       },
       borderRadius: {
@@ -67,22 +62,18 @@ const config: Config = {
         sm: 'calc(var(--radius) - 4px)',
       },
       keyframes: {
-        'accordion-down': {
-          from: { height: '0' },
-          to: { height: 'var(--radix-accordion-content-height)' },
-        },
-        'accordion-up': {
-          from: { height: 'var(--radix-accordion-content-height)' },
-          to: { height: '0' },
-        },
-        shimmer: {
-          '100%': { transform: 'translateX(100%)' },
-        },
+        'accordion-down': { from: { height: '0' }, to: { height: 'var(--radix-accordion-content-height)' } },
+        'accordion-up': { from: { height: 'var(--radix-accordion-content-height)' }, to: { height: '0' } },
+        shimmer: { '100%': { transform: 'translateX(100%)' } },
+        'scroll-left': { '0%': { transform: 'translateX(0)' }, '100%': { transform: 'translateX(-50%)' } },
+        'fade-in': { from: { opacity: '0', transform: 'translateY(-8px)' }, to: { opacity: '1', transform: 'translateY(0)' } },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         shimmer: 'shimmer 1.5s infinite',
+        'scroll-left': 'scroll-left 30s linear infinite',
+        'fade-in': 'fade-in 0.2s ease-out',
       },
     },
   },

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
@@ -138,7 +138,7 @@ export default function CheckoutPage() {
     return (
       <div className="container mx-auto px-4 py-16 text-center">
         <h1 className="text-2xl font-bold mb-4">Your cart is empty</h1>
-        <Button onClick={() => router.push(`/${locale}`)} className="bg-artic-orange text-black rounded-full">
+        <Button onClick={() => router.push(`/${locale}`)} className="bg-artic-teal text-black rounded-full">
           Continue Shopping
         </Button>
       </div>
@@ -156,7 +156,7 @@ export default function CheckoutPage() {
       {/* Checkout header */}
       <header className="bg-white border-b py-3 px-6">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <div className="text-xl font-bold text-artic-orange">ARTIC</div>
+          <div className="text-xl font-bold text-artic-teal">ARTIC</div>
           <h1 className="text-lg font-medium">Checkout</h1>
           <div className="w-16" />
         </div>
@@ -170,7 +170,7 @@ export default function CheckoutPage() {
             {steps.map((s, i) => (
               <div key={s.id} className="flex items-center">
                 <div className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                  step === s.id ? 'bg-artic-orange text-black' : 'bg-white border text-gray-400'
+                  step === s.id ? 'bg-artic-teal text-black' : 'bg-white border text-gray-400'
                 }`}>
                   {s.icon} {s.label}
                 </div>
@@ -191,7 +191,7 @@ export default function CheckoutPage() {
                       key={addr.id}
                       className={`flex items-start gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${
                         (selectedAddressId || (addr.isDefault ? addr.id : '')) === addr.id
-                          ? 'border-artic-orange bg-orange-50'
+                          ? 'border-artic-teal bg-orange-50'
                           : 'hover:border-gray-400'
                       }`}
                     >
@@ -204,7 +204,7 @@ export default function CheckoutPage() {
                         className="mt-1"
                       />
                       <div className="text-sm">
-                        <p className="font-medium">{addr.fullName} {addr.isDefault && <span className="text-artic-orange text-xs ml-1">Default</span>}</p>
+                        <p className="font-medium">{addr.fullName} {addr.isDefault && <span className="text-artic-teal text-xs ml-1">Default</span>}</p>
                         <p className="text-gray-600">{addr.street}, {addr.city}, {addr.province} {addr.postalCode}</p>
                         <p className="text-gray-600">{addr.country}</p>
                         <p className="text-gray-600">{addr.phone}</p>
@@ -254,7 +254,7 @@ export default function CheckoutPage() {
                     </div>
                   </div>
                   <div className="flex gap-3 pt-2">
-                    <Button type="submit" disabled={savingAddress} className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full">
+                    <Button type="submit" disabled={savingAddress} className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full">
                       {savingAddress ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Use this address'}
                     </Button>
                     {addresses.length > 0 && (
@@ -267,7 +267,7 @@ export default function CheckoutPage() {
               {addresses.length > 0 && !addingAddress && (
                 <Button
                   onClick={() => { setSelectedAddressId(selectedAddressId || addresses.find((a) => a.isDefault)?.id || addresses[0].id); setStep('payment'); }}
-                  className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full"
+                  className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full"
                 >
                   Continue to payment
                 </Button>
@@ -284,7 +284,7 @@ export default function CheckoutPage() {
                   <label
                     key={pm.id}
                     className={`flex items-center gap-3 p-3 border rounded-lg cursor-pointer transition-colors ${
-                      paymentMethod === pm.id ? 'border-artic-orange bg-orange-50' : 'hover:border-gray-400'
+                      paymentMethod === pm.id ? 'border-artic-teal bg-orange-50' : 'hover:border-gray-400'
                     }`}
                   >
                     <input type="radio" name="payment" value={pm.id} checked={paymentMethod === pm.id} onChange={() => setPaymentMethod(pm.id)} />
@@ -314,7 +314,7 @@ export default function CheckoutPage() {
               </div>
 
               <div className="flex gap-3 pt-2">
-                <Button onClick={() => setStep('review')} className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full">
+                <Button onClick={() => setStep('review')} className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full">
                   Review your order
                 </Button>
                 <Button variant="outline" onClick={() => setStep('address')} className="rounded-full">Back</Button>
@@ -366,7 +366,7 @@ export default function CheckoutPage() {
               <Button
                 onClick={() => placeOrder()}
                 disabled={placing}
-                className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black font-bold rounded-full h-12"
+                className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black font-bold rounded-full h-12"
               >
                 {placing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
                 Place Order · {formatPrice(total)}
@@ -409,7 +409,7 @@ export default function CheckoutPage() {
               <Button
                 onClick={() => placeOrder()}
                 disabled={placing}
-                className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full font-bold"
+                className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full font-bold"
               >
                 {placing ? <Loader2 className="h-4 w-4 animate-spin" /> : `Place Order`}
               </Button>

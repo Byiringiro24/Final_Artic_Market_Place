@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -77,7 +77,7 @@ export default function CartSidebar() {
                             .join(', ')}
                         </p>
                       )}
-                      <p className="text-sm font-bold mt-1 text-artic-orange">
+                      <p className="text-sm font-bold mt-1 text-artic-teal">
                         {formatPrice(item.price)}
                       </p>
 
@@ -132,7 +132,7 @@ export default function CartSidebar() {
               </p>
               <Button
                 onClick={handleCheckout}
-                className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black font-bold rounded-full h-12 text-base"
+                className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black font-bold rounded-full h-12 text-base"
               >
                 {t('checkout')}
               </Button>
@@ -143,3 +143,4 @@ export default function CartSidebar() {
     </Sheet>
   );
 }
+

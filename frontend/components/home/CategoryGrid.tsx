@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
@@ -35,7 +35,7 @@ export default function CategoryGrid() {
             href={`/${locale}/categories/${cat.slug}`}
             className="flex flex-col items-center gap-2 group"
           >
-            <div className="w-16 h-16 rounded-full bg-artic-light-bg flex items-center justify-center overflow-hidden group-hover:ring-2 ring-artic-orange transition-all">
+            <div className="w-16 h-16 rounded-full bg-artic-light-bg flex items-center justify-center overflow-hidden group-hover:ring-2 ring-artic-teal transition-all">
               {cat.image ? (
                 <Image src={cat.image} alt={cat.name} width={64} height={64} className="object-cover" />
               ) : (
@@ -51,3 +51,4 @@ export default function CategoryGrid() {
     </section>
   );
 }
+

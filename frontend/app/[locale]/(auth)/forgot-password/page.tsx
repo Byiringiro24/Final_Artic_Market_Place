@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
           <Input id="email" type="email" className="mt-1" autoFocus {...register('email')} />
           {errors.email && <p className="text-sm text-destructive mt-1">{errors.email.message}</p>}
         </div>
-        <Button type="submit" disabled={isSubmitting} className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full">
+        <Button type="submit" disabled={isSubmitting} className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full">
           {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Send reset link'}
         </Button>
       </form>

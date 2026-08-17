@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -40,7 +40,7 @@ export default function AdminCategoriesPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Categories</h1>
-        <Button onClick={() => { setEditing(null); setName(''); setShowForm(!showForm); }} className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-lg gap-2">
+        <Button onClick={() => { setEditing(null); setName(''); setShowForm(!showForm); }} className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-lg gap-2">
           <Plus className="h-4 w-4" /> Add Category
         </Button>
       </div>
@@ -53,7 +53,7 @@ export default function AdminCategoriesPage() {
             <Input className="mt-1" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g., Electronics" autoFocus />
           </div>
           <div className="flex gap-3">
-            <Button onClick={() => save()} disabled={!name || isPending} className="bg-artic-orange text-black rounded-lg">
+            <Button onClick={() => save()} disabled={!name || isPending} className="bg-artic-teal text-black rounded-lg">
               {isPending ? 'Saving...' : 'Save'}
             </Button>
             <Button variant="outline" onClick={() => { setShowForm(false); setEditing(null); }} className="rounded-lg">Cancel</Button>
@@ -85,7 +85,7 @@ export default function AdminCategoriesPage() {
                 </td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-end gap-2">
-                    <button onClick={() => { setEditing(cat); setName(cat.name); setShowForm(true); }} className="p-1.5 text-gray-400 hover:text-artic-orange rounded" aria-label="Edit category">
+                    <button onClick={() => { setEditing(cat); setName(cat.name); setShowForm(true); }} className="p-1.5 text-gray-400 hover:text-artic-teal rounded" aria-label="Edit category">
                       <Edit2 className="h-4 w-4" />
                     </button>
                     <button onClick={() => { if (confirm('Delete this category?')) deleteCategory(cat.id); }} className="p-1.5 text-gray-400 hover:text-red-500 rounded" aria-label="Delete category">

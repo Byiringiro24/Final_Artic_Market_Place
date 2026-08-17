@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useMutation } from '@tanstack/react-query';
@@ -95,7 +95,7 @@ export default function AccountSettingsPage() {
             onClick={() => setTab(t.id)}
             className={`flex items-center gap-2 px-5 py-2.5 text-sm font-medium border-b-2 transition-colors ${
               tab === t.id
-                ? 'border-artic-orange text-artic-orange'
+                ? 'border-artic-teal text-artic-teal'
                 : 'border-transparent text-gray-500 hover:text-gray-700'
             }`}
           >
@@ -111,7 +111,7 @@ export default function AccountSettingsPage() {
 
           {/* Avatar */}
           <div className="flex items-center gap-4 mb-6 pb-6 border-b">
-            <div className="w-16 h-16 rounded-full bg-artic-orange flex items-center justify-center text-black font-bold text-2xl">
+            <div className="w-16 h-16 rounded-full bg-artic-teal flex items-center justify-center text-black font-bold text-2xl">
               {user?.name?.[0]?.toUpperCase()}
             </div>
             <div>
@@ -158,7 +158,7 @@ export default function AccountSettingsPage() {
             <Button
               type="submit"
               disabled={savingProfile}
-              className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full"
+              className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full"
             >
               {savingProfile ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Save Changes
@@ -219,7 +219,7 @@ export default function AccountSettingsPage() {
             <Button
               type="submit"
               disabled={changingPwd}
-              className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full"
+              className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full"
             >
               {changingPwd ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
               Update Password

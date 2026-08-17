@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import Image from 'next/image';
@@ -95,7 +95,7 @@ export default function ProductCard({
           </Badge>
         )}
         {isFeatured && (
-          <Badge className="bg-artic-orange text-black text-xs px-1.5 py-0.5 rounded">
+          <Badge className="bg-artic-teal text-black text-xs px-1.5 py-0.5 rounded">
             Featured
           </Badge>
         )}
@@ -178,7 +178,7 @@ export default function ProductCard({
             'w-full mt-2 text-xs font-medium rounded-full transition-all',
             inCart
               ? 'bg-green-600 hover:bg-green-700 text-white'
-              : 'bg-artic-orange hover:bg-artic-orange-dark text-black'
+              : 'bg-artic-teal hover:bg-artic-teal-dark text-white'
           )}
           aria-label={outOfStock ? 'Out of stock' : `Add ${name} to cart`}
         >
@@ -200,3 +200,4 @@ export default function ProductCard({
     </article>
   );
 }
+

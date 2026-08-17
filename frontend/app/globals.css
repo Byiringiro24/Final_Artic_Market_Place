@@ -5,47 +5,47 @@
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --foreground: 215 28% 17%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 215 28% 17%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 36 100% 50%;       /* ARTIC Orange #FF9900 */
-    --primary-foreground: 0 0% 0%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 36 100% 50%;
+    --popover-foreground: 215 28% 17%;
+    --primary: 174 72% 38%;       /* ARTIC Teal #18A89A */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 28% 17%;     /* ARTIC Dark Navy */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 210 20% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 51 100% 50%;        /* ARTIC Gold accent */
+    --accent-foreground: 215 28% 17%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 174 72% 38%;
     --radius: 0.5rem;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
+    --background: 215 28% 12%;
     --foreground: 210 40% 98%;
-    --card: 222.2 84% 4.9%;
+    --card: 215 28% 15%;
     --card-foreground: 210 40% 98%;
-    --popover: 222.2 84% 4.9%;
+    --popover: 215 28% 15%;
     --popover-foreground: 210 40% 98%;
-    --primary: 36 100% 50%;
-    --primary-foreground: 0 0% 0%;
-    --secondary: 217.2 32.6% 17.5%;
+    --primary: 174 72% 44%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 215 28% 22%;
     --secondary-foreground: 210 40% 98%;
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 62.8% 30.6%;
+    --muted: 215 28% 20%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 51 100% 50%;
+    --accent-foreground: 215 28% 17%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 36 100% 50%;
+    --border: 215 28% 22%;
+    --input: 215 28% 22%;
+    --ring: 174 72% 44%;
   }
 }
 
@@ -54,26 +54,94 @@
   body { @apply bg-background text-foreground; }
 }
 
-/* ─── Custom scrollbar ─────────────────────────────────────────────────────── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { @apply bg-muted; }
-::-webkit-scrollbar-thumb { @apply bg-muted-foreground/40 rounded-full; }
-::-webkit-scrollbar-thumb:hover { @apply bg-muted-foreground/60; }
+/* ─── ARTIC Brand Colors ──────────────────────────────────────────────────── */
+:root {
+  --artic-primary: #18A89A;       /* Main teal */
+  --artic-primary-dark: #0F7A70;  /* Darker teal for hover */
+  --artic-navy: #1A2332;          /* Deep navy header */
+  --artic-navy-light: #243044;    /* Lighter navy sub-header */
+  --artic-gold: #FFB800;          /* Gold accent (deals/badges) */
+  --artic-light-bg: #F0F4F8;      /* Page background */
+  --artic-link: #18A89A;          /* Link color */
+  --artic-text: #1A2332;          /* Main text */
+}
 
-/* ─── Skeleton shimmer ─────────────────────────────────────────────────────── */
+/* ─── Custom scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { @apply bg-muted; }
+::-webkit-scrollbar-thumb { background: var(--artic-primary); border-radius: 99px; }
+
+/* ─── Skeleton shimmer ───────────────────────────────────────────────────── */
 .skeleton {
-  @apply relative overflow-hidden bg-muted;
+  @apply relative overflow-hidden bg-muted rounded;
 }
 .skeleton::after {
   content: '';
   @apply absolute inset-0 -translate-x-full;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
   animation: shimmer 1.5s infinite;
 }
+@keyframes shimmer { 100% { transform: translateX(100%); } }
 
-/* ─── ARTIC-specific utilities ─────────────────────────────────────────────── */
-.artic-nav { @apply bg-artic-navy text-white; }
-.artic-nav-secondary { @apply bg-artic-navy-light text-white; }
-.btn-artic { @apply bg-artic-orange hover:bg-artic-orange-dark text-black font-medium rounded-full px-6 py-2 transition-colors; }
-.price-display { @apply text-artic-link font-semibold; }
-.star-rating { @apply text-artic-orange; }
+/* ─── Nav scroll animation ───────────────────────────────────────────────── */
+@keyframes scroll-left {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.nav-scroll-track {
+  animation: scroll-left 30s linear infinite;
+  display: flex;
+  width: max-content;
+}
+.nav-scroll-track:hover { animation-play-state: paused; }
+
+/* ─── ARTIC utility classes ──────────────────────────────────────────────── */
+.artic-nav      { background-color: var(--artic-navy); color: white; }
+.artic-sub-nav  { background-color: var(--artic-navy-light); color: white; }
+.btn-artic      {
+  background-color: var(--artic-primary);
+  color: white;
+  font-weight: 600;
+  border-radius: 6px;
+  padding: 10px 20px;
+  transition: background-color 0.2s;
+}
+.btn-artic:hover { background-color: var(--artic-primary-dark); }
+.btn-artic-gold {
+  background-color: var(--artic-gold);
+  color: var(--artic-navy);
+  font-weight: 700;
+  border-radius: 6px;
+}
+.text-artic-primary { color: var(--artic-primary); }
+.text-artic-gold    { color: var(--artic-gold); }
+.bg-artic-primary   { background-color: var(--artic-primary); }
+.bg-artic-navy      { background-color: var(--artic-navy); }
+.bg-artic-navy-light{ background-color: var(--artic-navy-light); }
+.bg-artic-gold      { background-color: var(--artic-gold); }
+.bg-artic-light     { background-color: var(--artic-light-bg); }
+.border-artic       { border-color: var(--artic-primary); }
+.star-rating        { color: var(--artic-gold); }
+.price-display      { color: var(--artic-primary); font-weight: 700; }
+
+/* ─── All-categories mega dropdown ──────────────────────────────────────── */
+.mega-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 200;
+  min-width: 280px;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+}
+
+/* ─── Product card hover ─────────────────────────────────────────────────── */
+.product-card-hover {
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+.product-card-hover:hover {
+  box-shadow: 0 4px 20px rgba(24, 168, 154, 0.15);
+  transform: translateY(-2px);
+}

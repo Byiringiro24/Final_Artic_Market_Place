@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocale } from 'next-intl';
@@ -68,7 +68,7 @@ export default function WishlistPage() {
           <Heart className="h-16 w-16 text-gray-200 mx-auto mb-4" />
           <p className="text-xl text-gray-600 mb-2">Your wish list is empty</p>
           <p className="text-gray-400 text-sm mb-6">Save items you love to come back to later.</p>
-          <Button asChild className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full">
+          <Button asChild className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full">
             <Link href={`/${locale}`}>Continue Shopping</Link>
           </Button>
         </div>
@@ -119,7 +119,7 @@ export default function WishlistPage() {
                     <Button
                       onClick={() => handleAddToCart({ id, product })}
                       size="sm"
-                      className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full text-xs gap-1"
+                      className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full text-xs gap-1"
                     >
                       <ShoppingCart className="h-3 w-3" /> Add to Cart
                     </Button>

@@ -117,6 +117,7 @@ model User {
   sessions           RefreshToken[]
   passwordResetToken PasswordResetToken?
   emailVerifyToken   EmailVerifyToken?
+  sellerApplication  SellerApplication?
 
   @@map("users")
 }
@@ -560,7 +561,73 @@ model EmailLog {
   @@map("email_logs")
 }
 
-// ─── BROWSING HISTORY ─────────────────────────────────────────────────────────
+// ─── SERVICES ─────────────────────────────────────────────────────────────────
+
+model Service {
+  id          String   @id @default(uuid())
+  title       String
+  slug        String   @unique
+  description String   @db.Text
+  shortDesc   String?
+  price       Decimal? @db.Decimal(10, 2)
+  priceType   String   @default("fixed") // fixed, hourly, quote
+  images      String[] @default([])
+  videos      String[] @default([])
+  category    String
+  isActive    Boolean  @default(true)
+  isFeatured  Boolean  @default(false)
+  sortOrder   Int      @default(0)
+  metaTitle   String?
+  metaDesc    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("services")
+}
+
+// ─── SELLER APPLICATIONS ──────────────────────────────────────────────────────
+
+enum SellerStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
+}
+
+model SellerApplication {
+  id              String       @id @default(uuid())
+  userId          String       @unique
+  businessName    String
+  businessType    String
+  description     String?      @db.Text
+  website         String?
+  phone           String?
+  address         String?
+  documents       String[]     @default([])
+  status          SellerStatus @default(PENDING)
+  adminNotes      String?
+  approvedAt      DateTime?
+  rejectedAt      DateTime?
+  createdAt       DateTime     @default(now())
+  updatedAt       DateTime     @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("seller_applications")
+}
+
+// ─── SITE CONTACT INFO ────────────────────────────────────────────────────────
+
+model ContactInfo {
+  id          String   @id @default(uuid())
+  key         String   @unique
+  value       String
+  label       String?
+  group       String   @default("contact")
+  updatedAt   DateTime @updatedAt
+
+  @@map("contact_info")
+}
 
 model BrowsingHistory {
   id        String   @id @default(uuid())

@@ -38,6 +38,9 @@ import uploadRoutes from './routes/upload.routes';
 import adminRoutes from './routes/admin.routes';
 import webhookRoutes from './routes/webhook.routes';
 import paymentRoutes from './routes/payment.routes';
+import serviceRoutes from './routes/service.routes';
+import sellerRoutes from './routes/seller.routes';
+import contactRoutes from './routes/contact.routes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -104,6 +107,9 @@ app.use(`${API}/notifications`, notificationRoutes);
 app.use(`${API}/upload`, uploadRoutes);
 app.use(`${API}/admin`, adminRoutes);
 app.use(`${API}/payments`, paymentRoutes);
+app.use(`${API}/services`, serviceRoutes);
+app.use(`${API}/sellers`, sellerRoutes);
+app.use(`${API}/contact`, contactRoutes);
 
 // ─── Swagger Docs ──────────────────────────────────────────────────────────────
 setupSwagger(app);

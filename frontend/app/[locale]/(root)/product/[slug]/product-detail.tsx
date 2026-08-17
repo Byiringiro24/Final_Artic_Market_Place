@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -101,7 +101,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
                     key={i}
                     onClick={() => setActiveImage(i)}
                     className={`w-14 h-14 border-2 rounded overflow-hidden transition-colors ${
-                      activeImage === i ? 'border-artic-orange' : 'border-gray-200'
+                      activeImage === i ? 'border-artic-teal' : 'border-gray-200'
                     }`}
                     aria-label={`View image ${i + 1}`}
                   >
@@ -184,7 +184,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
                       disabled={v.stock === 0}
                       className={`px-3 py-1.5 border rounded text-sm transition-colors ${
                         selectedVariants[groupName] === v.value
-                          ? 'border-artic-orange bg-orange-50 text-artic-orange-dark font-medium'
+                          ? 'border-artic-teal bg-orange-50 text-artic-teal-dark font-medium'
                           : v.stock === 0
                           ? 'border-gray-200 text-gray-300 cursor-not-allowed'
                           : 'border-gray-300 hover:border-gray-500'
@@ -261,7 +261,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
             <Button
               onClick={handleAddToCart}
               disabled={product.countInStock === 0}
-              className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black font-medium rounded-full"
+              className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black font-medium rounded-full"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
               {isInCart(product.id) ? 'Add More to Cart' : 'Add to Cart'}
@@ -271,7 +271,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
               onClick={handleBuyNow}
               disabled={product.countInStock === 0}
               variant="outline"
-              className="w-full border-artic-orange text-artic-orange-dark hover:bg-orange-50 rounded-full"
+              className="w-full border-artic-teal text-artic-teal-dark hover:bg-orange-50 rounded-full"
             >
               Buy Now
             </Button>

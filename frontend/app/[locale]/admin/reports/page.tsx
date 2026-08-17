@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
@@ -21,7 +21,7 @@ export default function AdminReportsPage() {
         {reports.map(({ icon: Icon, title, description, href }) => (
           <Link key={title} href={href} className="bg-white border rounded-lg p-5 flex gap-4 items-start hover:shadow-md transition-shadow group">
             <div className="p-3 bg-artic-light-bg rounded-lg group-hover:bg-orange-50">
-              <Icon className="h-6 w-6 text-artic-orange" />
+              <Icon className="h-6 w-6 text-artic-teal" />
             </div>
             <div>
               <h2 className="font-semibold">{title}</h2>

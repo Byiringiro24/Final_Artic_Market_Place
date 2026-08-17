@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -44,7 +44,7 @@ export default function AdminBannersPage() {
     <div className="space-y-5">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold">Homepage Banners</h1>
-        <Button onClick={() => setShowForm(!showForm)} className="bg-artic-orange hover:bg-artic-orange-dark text-black rounded-lg gap-2">
+        <Button onClick={() => setShowForm(!showForm)} className="bg-artic-teal hover:bg-artic-teal-dark text-black rounded-lg gap-2">
           <Plus className="h-4 w-4" /> Add Banner
         </Button>
       </div>
@@ -58,7 +58,7 @@ export default function AdminBannersPage() {
           <div><Label>Button Text</Label><Input className="mt-1" value={form.buttonText} onChange={(e) => setForm({ ...form, buttonText: e.target.value })} placeholder="Shop Now" /></div>
           <div><Label>Sort Order</Label><Input type="number" className="mt-1" value={form.sortOrder} onChange={(e) => setForm({ ...form, sortOrder: Number(e.target.value) })} /></div>
           <div className="sm:col-span-2 flex gap-3">
-            <Button onClick={() => createBanner()} disabled={!form.title || !form.imageUrl || isPending} className="bg-artic-orange text-black rounded-lg">
+            <Button onClick={() => createBanner()} disabled={!form.title || !form.imageUrl || isPending} className="bg-artic-teal text-black rounded-lg">
               {isPending ? 'Saving...' : 'Save Banner'}
             </Button>
             <Button variant="outline" onClick={() => setShowForm(false)} className="rounded-lg">Cancel</Button>

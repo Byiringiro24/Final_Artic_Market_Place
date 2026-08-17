@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -63,7 +63,7 @@ export default function ResetPasswordPage() {
         <p className="text-gray-600 text-sm">Your password has been changed. You can now sign in.</p>
         <Button
           onClick={() => router.push(`/${locale}/sign-in`)}
-          className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black rounded-full"
+          className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black rounded-full"
         >
           Sign In
         </Button>
@@ -133,7 +133,7 @@ export default function ResetPasswordPage() {
         <Button
           type="submit"
           disabled={isSubmitting}
-          className="w-full bg-artic-orange hover:bg-artic-orange-dark text-black font-medium rounded-full"
+          className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black font-medium rounded-full"
         >
           {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Reset Password'}
         </Button>

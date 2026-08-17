@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
@@ -7,7 +7,7 @@ import Link from 'next/link';
 import {
   LayoutDashboard, Package, ShoppingBag, Users, Tag,
   FileText, Settings, Star, Megaphone, Image, Truck,
-  BarChart3, ChevronRight, LogOut, Menu, X
+  BarChart3, ChevronRight, LogOut, Menu, X, Store, Wrench, Phone,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useAuthStore } from '@/store/auth.store';
@@ -19,12 +19,15 @@ const NAV = [
   { label: 'Categories', icon: Tag, href: '/admin/categories' },
   { label: 'Orders', icon: ShoppingBag, href: '/admin/orders' },
   { label: 'Users', icon: Users, href: '/admin/users' },
+  { label: 'Sellers', icon: Store, href: '/admin/sellers' },
+  { label: 'Services', icon: Wrench, href: '/admin/services' },
   { label: 'Reviews', icon: Star, href: '/admin/reviews' },
   { label: 'Promotions', icon: Megaphone, href: '/admin/promotions' },
   { label: 'Banners', icon: Image, href: '/admin/banners' },
   { label: 'Web Pages', icon: FileText, href: '/admin/web-pages' },
   { label: 'Shipping', icon: Truck, href: '/admin/shipping' },
   { label: 'Reports', icon: BarChart3, href: '/admin/reports' },
+  { label: 'Contact & Social', icon: Phone, href: '/admin/contact' },
   { label: 'Settings', icon: Settings, href: '/admin/settings' },
 ];
 
@@ -57,7 +60,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           </button>
           {sidebarOpen && (
             <Link href={`/${locale}/admin/overview`} className="flex items-center gap-2">
-              <div className="bg-artic-orange rounded px-1.5 py-0.5 text-black font-black text-sm">A</div>
+              <div className="bg-artic-teal rounded px-1.5 py-0.5 text-black font-black text-sm">A</div>
               <span className="font-semibold text-sm">Admin Panel</span>
             </Link>
           )}
@@ -75,7 +78,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 title={!sidebarOpen ? label : undefined}
                 className={cn(
                   'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
-                  active ? 'bg-artic-orange text-black font-medium' : 'text-white/70 hover:bg-white/10 hover:text-white'
+                  active ? 'bg-artic-teal text-white font-medium' : 'text-white/70 hover:bg-white/10 hover:text-white'
                 )}
               >
                 <Icon className="h-4 w-4 flex-shrink-0" />
@@ -89,7 +92,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <div className="border-t border-white/10 p-3">
           {sidebarOpen ? (
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-artic-orange flex items-center justify-center text-black font-bold text-sm flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-artic-teal flex items-center justify-center text-black font-bold text-sm flex-shrink-0">
                 {user?.name?.[0]?.toUpperCase()}
               </div>
               <div className="min-w-0">
