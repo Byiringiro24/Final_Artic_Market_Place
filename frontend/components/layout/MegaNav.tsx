@@ -4,37 +4,71 @@ import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import { useQuery } from '@tanstack/react-query';
-import { Menu, X, ChevronRight } from 'lucide-react';
+import { Menu, ChevronRight, X } from 'lucide-react';
 import { get } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 
-interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  icon?: string;
-  children?: Category[];
-}
+interface Category { id: string; name: string; slug: string }
 
-// Static well-known sub-groups per top-level category
-const SUBCATEGORY_MAP: Record<string, string[]> = {
-  electronics: ['Phones & Tablets', 'Computers & Laptops', 'Audio & Headphones', 'Cameras', 'Smart Home', 'Gaming', 'Accessories'],
-  fashion: ["Men's Clothing", "Women's Clothing", "Kids' Clothing", 'Shoes', 'Bags & Luggage', 'Jewelry & Watches', 'Accessories'],
-  'home-kitchen': ['Furniture', 'Kitchen & Dining', 'Bedding & Bath', 'Storage', 'Decor', 'Garden & Outdoor', 'Tools'],
-  'sports-outdoors': ['Exercise & Fitness', 'Outdoor Recreation', 'Team Sports', 'Water Sports', 'Cycling', 'Footwear'],
-  'phones': ['Smartphones', 'Feature Phones', 'Phone Cases', 'Chargers & Cables', 'Screen Protectors'],
+// Rich subcategory map with sub-groups
+const CATEGORY_DATA: Record<string, { icon: string; groups: { name: string; items: string[] }[] }> = {
+  electronics: {
+    icon: '💻',
+    groups: [
+      { name: 'Phones & Tablets', items: ['Smartphones', 'Tablets', 'Feature Phones', 'Phone Cases', 'Chargers'] },
+      { name: 'Computers', items: ['Laptops', 'Desktops', 'Monitors', 'Keyboards', 'Printers'] },
+      { name: 'Audio & TV', items: ['Headphones', 'Speakers', 'Smart TVs', 'Home Theater', 'Streaming'] },
+      { name: 'Gaming & Smart', items: ['Gaming Consoles', 'Games', 'Smart Home', 'Cameras', 'Drones'] },
+    ],
+  },
+  fashion: {
+    icon: '👗',
+    groups: [
+      { name: "Men's Fashion", items: ["T-Shirts", "Trousers", "Suits", "Shoes", "Watches", "Bags"] },
+      { name: "Women's Fashion", items: ["Dresses", "Tops", "Heels", "Handbags", "Jewelry", "Perfume"] },
+      { name: "Kids' Fashion", items: ["Boys' Clothing", "Girls' Clothing", "School Uniforms", "Baby Wear"] },
+      { name: 'Accessories', items: ['Sunglasses', 'Belts', 'Hats', 'Socks', 'Scarves'] },
+    ],
+  },
+  'home-kitchen': {
+    icon: '🏠',
+    groups: [
+      { name: 'Furniture', items: ['Sofas', 'Beds', 'Tables', 'Chairs', 'Wardrobes', 'Shelves'] },
+      { name: 'Kitchen', items: ['Cookware', 'Appliances', 'Utensils', 'Storage', 'Coffee Makers'] },
+      { name: 'Decor & Bedding', items: ['Cushions', 'Curtains', 'Bed Sheets', 'Towels', 'Rugs'] },
+      { name: 'Garden & Tools', items: ['Outdoor Furniture', 'Garden Tools', 'Power Tools', 'Lighting'] },
+    ],
+  },
+  'sports-outdoors': {
+    icon: '⚽',
+    groups: [
+      { name: 'Fitness', items: ['Gym Equipment', 'Yoga', 'Running', 'Cycling', 'Swimming'] },
+      { name: 'Team Sports', items: ['Football', 'Basketball', 'Volleyball', 'Cricket', 'Tennis'] },
+      { name: 'Outdoor', items: ['Camping', 'Hiking', 'Climbing', 'Fishing', 'Water Sports'] },
+      { name: 'Sports Gear', items: ['Shoes', 'Clothing', 'Bags', 'Nutrition', 'Accessories'] },
+    ],
+  },
 };
 
-const CATEGORY_ICONS: Record<string, string> = {
-  electronics: '💻', fashion: '👗', 'home-kitchen': '🏠', 'sports-outdoors': '⚽',
-  phones: '📱', laptops: '💻', audio: '🎧', gaming: '🎮',
-  default: '📦',
+const DEFAULT_ICON_MAP: Record<string, string> = {
+  electronics: '💻', fashion: '👗', 'home-kitchen': '🏠',
+  'sports-outdoors': '⚽', phones: '📱', groceries: '🛒',
+  beauty: '💄', cars: '🚗', farming: '🌾', building: '🏗',
 };
+
+// Static top-level nav links for the menu sidebar
+const STATIC_ITEMS = [
+  { label: "Today's Deals", href: '/deals', icon: '🔥' },
+  { label: 'New Arrivals', href: '/search?sort=newest', icon: '✨' },
+  { label: 'Services', href: '/services', icon: '🛠' },
+  { label: 'Sell on ARTIC', href: '/sell', icon: '💼' },
+  { label: 'Help & Support', href: '/customer-service', icon: '💬' },
+];
 
 export default function MegaNav() {
   const locale = useLocale();
   const [open, setOpen] = useState(false);
-  const [activeCategory, setActiveCategory] = useState<Category | null>(null);
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const { data } = useQuery({
@@ -44,119 +78,155 @@ export default function MegaNav() {
   });
 
   const categories = (data?.data as unknown as Category[]) || [];
-  const topLevel = categories.filter((c) => !c.children?.length === false || true);
 
-  // Close on outside click
   useEffect(() => {
     function handler(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setOpen(false);
+        setActiveSlug(null);
       }
     }
     if (open) document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
   }, [open]);
 
-  const subs = activeCategory ? (SUBCATEGORY_MAP[activeCategory.slug] || []) : [];
+  const activeCatData = activeSlug ? CATEGORY_DATA[activeSlug] : null;
+  const activeCat = categories.find((c) => c.slug === activeSlug);
 
   return (
-    <div ref={menuRef} className="relative flex-shrink-0">
+    <div ref={menuRef} className="relative flex-shrink-0 self-stretch flex items-stretch">
+      {/* Trigger button */}
       <button
-        onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 text-sm font-semibold px-3 py-1.5 rounded hover:bg-white/10 transition-colors"
+        onClick={() => { setOpen((v) => !v); if (!activeSlug && categories.length) setActiveSlug(categories[0]?.slug); }}
+        onMouseEnter={() => { setOpen(true); if (!activeSlug && categories.length) setActiveSlug(categories[0]?.slug); }}
+        className={`flex items-center gap-2 px-4 text-sm font-bold transition-colors self-stretch ${
+          open ? 'bg-[#18A89A] text-white' : 'text-white hover:bg-white/10'
+        }`}
         aria-haspopup="true"
         aria-expanded={open}
       >
-        {open ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+        <Menu className="h-4 w-4" />
         All
       </button>
 
+      {/* MEGA DROPDOWN — full height, from nav bottom to viewport */}
       {open && (
-        <div className="absolute top-full left-0 z-[200] flex bg-white shadow-2xl rounded-b-lg border border-gray-100 animate-fade-in" style={{ minWidth: 560 }}>
-          {/* Left: top-level categories */}
-          <div className="w-52 border-r bg-gray-50 py-2 rounded-bl-lg">
-            <p className="text-[10px] font-bold text-gray-400 uppercase px-4 pb-1 pt-2 tracking-wider">Browse by Category</p>
-            {topLevel.map((cat) => (
-              <button
-                key={cat.id}
-                onMouseEnter={() => setActiveCategory(cat)}
-                onClick={() => { setOpen(false); }}
-                className={`w-full flex items-center justify-between px-4 py-2 text-sm text-left transition-colors ${
-                  activeCategory?.id === cat.id ? 'bg-artic-teal/10 text-artic-teal font-semibold' : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <span className="flex items-center gap-2">
-                  <span>{CATEGORY_ICONS[cat.slug] || CATEGORY_ICONS.default}</span>
-                  {cat.name}
-                </span>
-                {subs.length > 0 && activeCategory?.id === cat.id && <ChevronRight className="h-3 w-3" />}
-              </button>
-            ))}
-            <div className="border-t mt-2 pt-2 px-4">
-              <Link
-                href={`/${locale}/services`}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 text-sm text-artic-teal hover:text-artic-teal font-medium py-1"
-              >
-                🛠 Services
-              </Link>
-              <Link
-                href={`/${locale}/deals`}
-                onClick={() => setOpen(false)}
-                className="flex items-center gap-2 text-sm text-artic-teal hover:text-artic-teal font-medium py-1"
-              >
-                🔥 Today&apos;s Deals
-              </Link>
+        <div
+          className="fixed left-0 right-0 z-[300] flex shadow-2xl"
+          style={{ top: 100, bottom: 0 }}
+          onMouseLeave={() => { setOpen(false); setActiveSlug(null); }}
+        >
+          {/* Left sidebar: category list */}
+          <div className="w-56 bg-[#1A2332] flex flex-col overflow-y-auto flex-shrink-0">
+            <div className="px-4 py-2 border-b border-white/10">
+              <p className="text-[10px] text-[#18A89A] font-bold uppercase tracking-wider">Browse Categories</p>
+            </div>
+
+            {categories.map((cat) => {
+              const icon = DEFAULT_ICON_MAP[cat.slug] || '📦';
+              const isActive = activeSlug === cat.slug;
+              return (
+                <button
+                  key={cat.id}
+                  onMouseEnter={() => setActiveSlug(cat.slug)}
+                  onClick={() => setOpen(false)}
+                  className={`flex items-center justify-between w-full px-4 py-2.5 text-sm text-left transition-colors ${
+                    isActive ? 'bg-[#18A89A] text-white font-semibold' : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                  }`}
+                >
+                  <span className="flex items-center gap-3">
+                    <span className="text-base w-5 text-center">{icon}</span>
+                    {cat.name}
+                  </span>
+                  <ChevronRight className="h-3 w-3 opacity-60" />
+                </button>
+              );
+            })}
+
+            {/* Divider + static links */}
+            <div className="border-t border-white/10 mt-2 pt-2">
+              {STATIC_ITEMS.map((item) => (
+                <Link
+                  key={item.href}
+                  href={`/${locale}${item.href}`}
+                  onClick={() => setOpen(false)}
+                  className="flex items-center gap-3 px-4 py-2 text-sm text-[#18A89A] hover:bg-white/5 hover:text-white transition-colors"
+                >
+                  <span className="w-5 text-center">{item.icon}</span>
+                  {item.label}
+                </Link>
+              ))}
             </div>
           </div>
 
-          {/* Right: subcategories */}
-          {activeCategory && subs.length > 0 ? (
-            <div className="flex-1 p-5">
-              <h3 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                <span>{CATEGORY_ICONS[activeCategory.slug] || '📦'}</span>
-                {activeCategory.name}
-              </h3>
-              <div className="grid grid-cols-2 gap-x-6 gap-y-1">
-                {subs.map((sub) => (
+          {/* Right panel: subcategory grid */}
+          <div className="flex-1 bg-white overflow-y-auto">
+            {activeCat && (
+              <div className="p-6">
+                {/* Header */}
+                <div className="flex items-center justify-between mb-5 pb-3 border-b">
+                  <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                    <span className="text-2xl">{DEFAULT_ICON_MAP[activeCat.slug] || '📦'}</span>
+                    {activeCat.name}
+                  </h2>
                   <Link
-                    key={sub}
-                    href={`/${locale}/categories/${activeCategory.slug}?sub=${encodeURIComponent(sub)}`}
+                    href={`/${locale}/categories/${activeCat.slug}`}
                     onClick={() => setOpen(false)}
-                    className="text-sm text-gray-600 hover:text-artic-teal hover:translate-x-1 transition-all py-1 block"
+                    className="text-sm text-[#18A89A] hover:underline font-medium"
                   >
-                    {sub}
+                    View all →
                   </Link>
-                ))}
-                <Link
-                  href={`/${locale}/categories/${activeCategory.slug}`}
-                  onClick={() => setOpen(false)}
-                  className="text-sm text-artic-teal font-semibold hover:underline py-1 block col-span-2 mt-2"
-                >
-                  View all in {activeCategory.name} →
-                </Link>
-              </div>
-            </div>
-          ) : (
-            <div className="flex-1 p-5">
-              {activeCategory ? (
-                <>
-                  <h3 className="font-bold text-gray-800 mb-3">{activeCategory.name}</h3>
-                  <Link
-                    href={`/${locale}/categories/${activeCategory.slug}`}
-                    onClick={() => setOpen(false)}
-                    className="text-sm text-artic-teal font-semibold hover:underline"
-                  >
-                    View all in {activeCategory.name} →
-                  </Link>
-                </>
-              ) : (
-                <div className="text-gray-400 text-sm flex items-center h-full">
-                  Hover a category to see subcategories
                 </div>
-              )}
-            </div>
-          )}
+
+                {/* Subgroups grid */}
+                {activeCatData ? (
+                  <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    {activeCatData.groups.map((group) => (
+                      <div key={group.name}>
+                        <h3 className="text-xs font-bold text-[#18A89A] uppercase tracking-wider mb-2 pb-1 border-b border-gray-100">
+                          {group.name}
+                        </h3>
+                        <ul className="space-y-1">
+                          {group.items.map((item) => (
+                            <li key={item}>
+                              <Link
+                                href={`/${locale}/search?search=${encodeURIComponent(item)}&category=${activeCat.slug}`}
+                                onClick={() => setOpen(false)}
+                                className="text-sm text-gray-600 hover:text-[#18A89A] hover:translate-x-1 transition-all inline-block"
+                              >
+                                {item}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-16 text-gray-400">
+                    <span className="text-6xl mb-4">{DEFAULT_ICON_MAP[activeCat.slug] || '📦'}</span>
+                    <p className="text-lg font-medium mb-2">Explore {activeCat.name}</p>
+                    <Link
+                      href={`/${locale}/categories/${activeCat.slug}`}
+                      onClick={() => setOpen(false)}
+                      className="text-[#18A89A] hover:underline text-sm"
+                    >
+                      Browse all products →
+                    </Link>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Close button */}
+          <button
+            onClick={() => { setOpen(false); setActiveSlug(null); }}
+            className="absolute top-3 right-4 text-gray-400 hover:text-gray-600 bg-white rounded-full p-1 shadow"
+            aria-label="Close menu"
+          >
+            <X className="h-4 w-4" />
+          </button>
         </div>
       )}
     </div>

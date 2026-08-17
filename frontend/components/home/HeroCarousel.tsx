@@ -6,11 +6,10 @@ import Autoplay from 'embla-carousel-autoplay';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ArrowRight } from 'lucide-react';
 import { useCallback } from 'react';
 import { get } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
-import { Button } from '@/components/ui/button';
 
 interface Banner {
   id: string;
@@ -23,7 +22,7 @@ interface Banner {
 
 export default function HeroCarousel() {
   const locale = useLocale();
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000 })]);
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 5000, stopOnInteraction: false })]);
 
   const { data } = useQuery({
     queryKey: queryKeys.banners.active,
@@ -31,44 +30,68 @@ export default function HeroCarousel() {
     staleTime: 5 * 60 * 1000,
   });
 
-  const banners = data?.data || [];
-
+  const banners = (data?.data as unknown as Banner[]) || [];
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
-  if (!banners.length) return null;
+  if (!banners.length) {
+    // Fallback banner with Unsplash image
+    return (
+      <div className="relative h-[280px] md:h-[460px] overflow-hidden">
+        <div
+          className="absolute inset-0 bg-cover bg-center"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1607082348824-0a96f2a4b9da?w=1500&q=85')" }}
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#1A2332]/90 via-[#1A2332]/60 to-transparent" />
+        <div className="absolute inset-0 flex items-center px-8 md:px-20">
+          <div className="text-white max-w-xl">
+            <p className="text-[#18A89A] text-sm font-bold uppercase tracking-widest mb-3">🔥 Welcome to ARTIC</p>
+            <h2 className="text-4xl md:text-6xl font-black mb-4 leading-tight">
+              Shop Smart.<br />
+              <span className="text-[#18A89A]">Live Better.</span>
+            </h2>
+            <p className="text-gray-300 text-lg mb-8">Products, services & more — all in one place</p>
+            <Link href={`/${locale}/search`}
+              className="inline-flex items-center gap-2 bg-[#18A89A] hover:bg-[#0F7A70] text-white font-bold px-8 py-3.5 rounded-full transition-all hover:scale-105 shadow-xl">
+              Shop Now <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative overflow-hidden">
       <div className="overflow-hidden" ref={emblaRef}>
         <div className="flex">
           {banners.map((banner) => (
-            <div key={banner.id} className="flex-[0_0_100%] relative h-[300px] md:h-[500px]">
-              <Image
-                src={banner.imageUrl}
-                alt={banner.title}
-                fill
-                className="object-cover"
-                priority
+            <div key={banner.id} className="flex-[0_0_100%] relative h-[280px] md:h-[460px]">
+              {/* Background image */}
+              <div
+                className="absolute inset-0 bg-cover bg-center transition-transform duration-700"
+                style={{ backgroundImage: `url('${banner.imageUrl}')` }}
               />
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
+              {/* Dark gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-r from-[#1A2332]/85 via-[#1A2332]/50 to-transparent" />
+
               {/* Content */}
-              <div className="absolute inset-0 flex items-center px-8 md:px-16">
-                <div className="text-white max-w-xl">
-                  <h2 className="text-3xl md:text-5xl font-bold mb-3">{banner.title}</h2>
+              <div className="absolute inset-0 flex items-center px-8 md:px-20">
+                <div className="text-white max-w-2xl">
+                  <p className="text-[#18A89A] text-xs font-bold uppercase tracking-widest mb-3 flex items-center gap-2">
+                    <span className="w-8 h-0.5 bg-[#18A89A]" /> Limited Time Offer
+                  </p>
+                  <h2 className="text-3xl md:text-5xl font-black mb-3 leading-tight">{banner.title}</h2>
                   {banner.subtitle && (
-                    <p className="text-lg md:text-xl mb-6 text-gray-200">{banner.subtitle}</p>
+                    <p className="text-lg text-gray-200 mb-7 max-w-lg">{banner.subtitle}</p>
                   )}
                   {banner.linkUrl && (
-                    <Button
-                      asChild
-                      className="bg-artic-teal hover:bg-artic-teal-dark text-black font-bold rounded-full px-8"
+                    <Link
+                      href={`/${locale}${banner.linkUrl.startsWith('/') ? banner.linkUrl : '/' + banner.linkUrl}`}
+                      className="inline-flex items-center gap-2 bg-[#18A89A] hover:bg-[#0F7A70] text-white font-bold px-8 py-3.5 rounded-full transition-all hover:scale-105 shadow-xl text-sm"
                     >
-                      <Link href={`/${locale}${banner.linkUrl}`}>
-                        {banner.buttonText || 'Shop Now'}
-                      </Link>
-                    </Button>
+                      {banner.buttonText || 'Shop Now'} <ArrowRight className="h-4 w-4" />
+                    </Link>
                   )}
                 </div>
               </div>
@@ -78,21 +101,12 @@ export default function HeroCarousel() {
       </div>
 
       {/* Navigation arrows */}
-      <button
-        onClick={scrollPrev}
-        className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white rounded-full p-2 transition-colors"
-        aria-label="Previous banner"
-      >
-        <ChevronLeft className="h-6 w-6" />
+      <button onClick={scrollPrev} className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all" aria-label="Previous">
+        <ChevronLeft className="h-5 w-5" />
       </button>
-      <button
-        onClick={scrollNext}
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/30 hover:bg-black/60 text-white rounded-full p-2 transition-colors"
-        aria-label="Next banner"
-      >
-        <ChevronRight className="h-6 w-6" />
+      <button onClick={scrollNext} className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-sm text-white rounded-full flex items-center justify-center transition-all" aria-label="Next">
+        <ChevronRight className="h-5 w-5" />
       </button>
     </div>
   );
 }
-

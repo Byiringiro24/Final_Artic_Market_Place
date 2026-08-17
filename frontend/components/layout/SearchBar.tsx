@@ -94,7 +94,7 @@ export default function SearchBar() {
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => suggestions.length > 0 && setIsOpen(true)}
           placeholder="Search ARTIC Marketplace..."
-          className="flex-1 px-4 py-2 text-black text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal bg-white"
+          className="flex-1 px-4 py-2 text-black text-sm focus:outline-none focus:ring-2 focus:ring-[#18A89A] bg-white"
           aria-label="Search products"
           aria-autocomplete="list"
           aria-expanded={isOpen}
@@ -103,7 +103,7 @@ export default function SearchBar() {
         {/* Submit button */}
         <button
           type="submit"
-          className="bg-artic-teal hover:bg-artic-teal-dark text-black px-4 rounded-r-md transition-colors flex items-center"
+          className="bg-[#18A89A] hover:bg-[#0F7A70] text-black px-4 rounded-r-md transition-colors flex items-center"
           aria-label="Search"
         >
           <Search className="h-5 w-5" />
@@ -121,7 +121,7 @@ export default function SearchBar() {
                 <li key={s.id}>
                   <button
                     onClick={() => handleSelect(s)}
-                    className="w-full text-left px-4 py-3 hover:bg-artic-light-bg text-sm flex items-center justify-between group"
+                    className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm flex items-center justify-between group"
                     role="option"
                   >
                     <span className="flex items-center gap-2">
