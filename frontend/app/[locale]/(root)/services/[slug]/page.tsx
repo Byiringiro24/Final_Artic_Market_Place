@@ -1,13 +1,14 @@
 'use client';
 
-import { use } from 'react';
+import { use, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
-import { ArrowLeft, CheckCircle2, MessageCircle, Phone, Mail } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, MessageCircle, Phone, Mail, Calendar, Clock } from 'lucide-react';
 import { get } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 import ReactMarkdown from 'react-markdown';
+import BookingModal from '@/components/services/BookingModal';
 
 interface Service {
   id: string; title: string; slug: string; description: string;
@@ -18,16 +19,37 @@ interface Service {
 export default function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const locale = useLocale();
+  const [showBooking, setShowBooking] = useState(false);
 
   const { data, isLoading } = useQuery({
     queryKey: ['service', slug],
     queryFn: () => get<Service>(`/services/${slug}`),
   });
 
-  if (isLoading) return <div className="container mx-auto px-4 py-12"><div className="skeleton h-96 rounded-xl" /></div>;
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-12 max-w-5xl">
+        <div className="skeleton h-10 w-32 rounded mb-6" />
+        <div className="grid md:grid-cols-[1fr_300px] gap-8">
+          <div className="space-y-4">
+            <div className="skeleton h-64 rounded-xl" />
+            <div className="skeleton h-96 rounded-xl" />
+          </div>
+          <div className="skeleton h-64 rounded-xl" />
+        </div>
+      </div>
+    );
+  }
 
   const service = data?.data as unknown as Service;
-  if (!service) return <div className="container mx-auto px-4 py-12 text-center text-gray-500">Service not found</div>;
+  if (!service) {
+    return (
+      <div className="container mx-auto px-4 py-12 text-center">
+        <p className="text-gray-500 text-lg">Service not found</p>
+        <Link href={`/${locale}/services`} className="text-[#18A89A] hover:underline mt-3 block">Back to Services</Link>
+      </div>
+    );
+  }
 
   const priceDisplay =
     service.priceType === 'quote' ? 'Get a Free Quote' :
@@ -35,91 +57,150 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
     service.price ? `From $${service.price}` : 'Contact for pricing';
 
   return (
-    <div className="bg-artic-light min-h-screen py-8">
+    <div className="bg-[#F0F4F8] min-h-screen py-8">
+      {showBooking && (
+        <BookingModal
+          serviceId={service.id}
+          serviceTitle={service.title}
+          onClose={() => setShowBooking(false)}
+        />
+      )}
+
       <div className="max-w-5xl mx-auto px-4">
-        <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 text-artic-teal hover:underline text-sm mb-6">
-          <ArrowLeft className="h-4 w-4" /> Back to Services
+        {/* Breadcrumb */}
+        <Link href={`/${locale}/services`}
+          className="inline-flex items-center gap-2 text-[#18A89A] hover:underline text-sm mb-6 group">
+          <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+          Back to Services
         </Link>
 
-        <div className="grid md:grid-cols-[1fr_320px] gap-8">
+        <div className="grid md:grid-cols-[1fr_320px] gap-6">
           {/* Main content */}
-          <div className="space-y-6">
-            {/* Media */}
+          <div className="space-y-5">
+            {/* Image gallery */}
             {service.images.length > 0 && (
-              <div className="grid grid-cols-2 gap-3">
+              <div className={`grid gap-3 ${service.images.length > 1 ? 'grid-cols-2' : ''}`}>
                 {service.images.slice(0, 4).map((img, i) => (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img key={i} src={img} alt={`${service.title} ${i + 1}`}
-                    className={`rounded-xl object-cover w-full ${i === 0 ? 'col-span-2 h-64' : 'h-40'}`} />
+                    className={`rounded-xl object-cover w-full ${i === 0 && service.images.length > 1 ? 'col-span-2 h-64' : 'h-48'}`} />
                 ))}
               </div>
             )}
 
-            {service.videos.length > 0 && (
-              <div className="space-y-3">
-                <h3 className="font-semibold">Service Videos</h3>
+            {/* Videos */}
+            {service.videos?.length > 0 && (
+              <div className="bg-white border rounded-xl p-4 space-y-3">
+                <h3 className="font-semibold text-gray-800">Service Videos</h3>
                 {service.videos.map((v, i) => (
-                  <video key={i} src={v} controls className="w-full rounded-xl" />
+                  <video key={i} src={v} controls className="w-full rounded-lg" />
                 ))}
               </div>
             )}
 
             {/* Description */}
-            <div className="bg-white rounded-xl p-6 border">
-              <span className="text-xs font-semibold text-artic-teal uppercase tracking-wider bg-artic-teal/10 px-2 py-0.5 rounded-full">
-                {service.category}
-              </span>
-              <h1 className="text-3xl font-bold mt-3 mb-4">{service.title}</h1>
+            <div className="bg-white border rounded-xl p-6">
+              <div className="flex items-center gap-2 mb-4">
+                <span className="text-xs font-bold text-[#18A89A] uppercase tracking-wider bg-[#18A89A]/10 px-3 py-1 rounded-full">
+                  {service.category}
+                </span>
+              </div>
+              <h1 className="text-2xl font-black text-gray-900 mb-4">{service.title}</h1>
               <div className="prose prose-sm max-w-none text-gray-700">
                 <ReactMarkdown>{service.description}</ReactMarkdown>
+              </div>
+            </div>
+
+            {/* Why choose us */}
+            <div className="bg-white border rounded-xl p-5">
+              <h3 className="font-bold text-gray-800 mb-4">Why Choose ARTIC Services?</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { icon: '✅', text: 'Verified Professionals' },
+                  { icon: '🔒', text: 'Insured Services' },
+                  { icon: '⭐', text: 'Top-Rated Providers' },
+                  { icon: '💬', text: '24/7 Support' },
+                  { icon: '📍', text: 'Location-Based Matching' },
+                  { icon: '💰', text: 'Best Price Guarantee' },
+                ].map((f) => (
+                  <div key={f.text} className="flex items-center gap-2 text-sm text-gray-700">
+                    <span>{f.icon}</span> {f.text}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
 
           {/* Sidebar */}
           <div className="space-y-4">
+            {/* Price + booking */}
             <div className="bg-white border rounded-xl p-5 sticky top-24">
-              <p className="text-3xl font-bold text-artic-teal mb-1">{priceDisplay}</p>
-              {service.priceType === 'hourly' && <p className="text-sm text-gray-500 mb-4">Billed per hour</p>}
-              {service.priceType === 'fixed' && <p className="text-sm text-gray-500 mb-4">One-time payment</p>}
-              {service.priceType === 'quote' && <p className="text-sm text-gray-500 mb-4">Custom pricing based on your needs</p>}
-
-              <div className="space-y-3 mb-5">
-                <Button asChild className="w-full bg-artic-teal hover:bg-artic-teal-dark text-white rounded-full font-semibold">
-                  <a href="https://wa.me/250787585826" target="_blank" rel="noopener noreferrer">
-                    <MessageCircle className="h-4 w-4 mr-2" /> Chat on WhatsApp
-                  </a>
-                </Button>
-                <Button asChild variant="outline" className="w-full rounded-full border-artic-teal text-artic-teal hover:bg-artic-teal/5">
-                  <a href="mailto:articltd1@gmail.com">
-                    <Mail className="h-4 w-4 mr-2" /> Email Us
-                  </a>
-                </Button>
+              <div className="mb-4">
+                <p className="text-3xl font-black text-[#18A89A]">{priceDisplay}</p>
+                {service.priceType === 'hourly' && <p className="text-xs text-gray-500">Billed per hour</p>}
+                {service.priceType === 'fixed' && <p className="text-xs text-gray-500">One-time payment</p>}
+                {service.priceType === 'quote' && <p className="text-xs text-gray-500">Custom pricing based on your needs</p>}
               </div>
 
-              <div className="space-y-2 text-sm text-gray-600">
+              {/* Book button */}
+              <Button
+                onClick={() => setShowBooking(true)}
+                className="w-full bg-[#18A89A] hover:bg-[#0F7A70] text-white rounded-full h-12 font-bold text-base mb-3 gap-2"
+              >
+                <Calendar className="h-5 w-5" />
+                Book Now
+              </Button>
+
+              {/* WhatsApp */}
+              <a
+                href="https://wa.me/250787585826"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full flex items-center justify-center gap-2 border-2 border-green-500 text-green-700 hover:bg-green-50 rounded-full h-10 text-sm font-semibold transition-colors mb-3"
+              >
+                <MessageCircle className="h-4 w-4" />
+                Chat on WhatsApp
+              </a>
+
+              {/* Contact info */}
+              <div className="space-y-2 pt-3 border-t">
+                <a href="tel:0787585826" className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#18A89A]">
+                  <Phone className="h-4 w-4 text-[#18A89A]" /> 0787585826
+                </a>
+                <a href="tel:0785424098" className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#18A89A]">
+                  <Phone className="h-4 w-4 text-[#18A89A]" /> 0785424098
+                </a>
+                <a href="mailto:articltd1@gmail.com" className="flex items-center gap-2 text-sm text-gray-600 hover:text-[#18A89A] truncate">
+                  <Mail className="h-4 w-4 text-[#18A89A]" /> articltd1@gmail.com
+                </a>
+              </div>
+
+              {/* Trust badges */}
+              <div className="mt-4 pt-3 border-t space-y-1.5">
                 {[
                   'Verified professional providers',
                   'Satisfaction guaranteed',
-                  'Secure payment',
                   'Free consultation available',
+                  '30-day money back guarantee',
                 ].map((f) => (
-                  <div key={f} className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-artic-teal flex-shrink-0" />
+                  <div key={f} className="flex items-center gap-2 text-xs text-gray-600">
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#18A89A] flex-shrink-0" />
                     {f}
                   </div>
                 ))}
               </div>
             </div>
 
-            <div className="bg-white border rounded-xl p-4 text-sm">
-              <p className="font-semibold mb-2">Contact Support</p>
-              <a href="tel:0787585826" className="flex items-center gap-2 text-artic-teal hover:underline mb-1">
-                <Phone className="h-4 w-4" /> 0787585826
-              </a>
-              <a href="tel:0785424098" className="flex items-center gap-2 text-artic-teal hover:underline">
-                <Phone className="h-4 w-4" /> 0785424098
-              </a>
+            {/* Availability */}
+            <div className="bg-white border rounded-xl p-4">
+              <h3 className="font-semibold text-sm mb-3 flex items-center gap-2">
+                <Clock className="h-4 w-4 text-[#18A89A]" /> Service Hours
+              </h3>
+              <div className="space-y-1.5 text-sm text-gray-600">
+                <div className="flex justify-between"><span>Mon–Fri</span><span className="font-medium">8AM–6PM</span></div>
+                <div className="flex justify-between"><span>Saturday</span><span className="font-medium">9AM–3PM</span></div>
+                <div className="flex justify-between text-gray-400"><span>Sunday</span><span>Closed</span></div>
+              </div>
             </div>
           </div>
         </div>

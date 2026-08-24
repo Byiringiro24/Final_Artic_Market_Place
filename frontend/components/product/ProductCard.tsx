@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import { Heart, ShoppingCart, Star, Zap } from 'lucide-react';
 import { formatPrice, getDiscountPercent } from '@/lib/utils';
+import { useCurrencyStore } from '@/store/currency.store';
 import { useCartStore } from '@/store/cart.store';
 import { cn } from '@/lib/utils';
 import StarRating from './StarRating';

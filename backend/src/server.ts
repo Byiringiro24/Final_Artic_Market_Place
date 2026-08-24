@@ -11,6 +11,7 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 
 import { prisma } from './db/prisma';
+import { connectMongoDB } from './db/mongodb';
 import { logger } from './lib/logger';
 import { errorHandler } from './middleware/error.middleware';
 import { rateLimiter } from './middleware/rateLimiter.middleware';
@@ -41,6 +42,8 @@ import paymentRoutes from './routes/payment.routes';
 import serviceRoutes from './routes/service.routes';
 import sellerRoutes from './routes/seller.routes';
 import contactRoutes from './routes/contact.routes';
+import bookingRoutes from './routes/booking.routes';
+import currencyRoutes from './routes/currency.routes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -64,6 +67,7 @@ app.use(
 app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use('/uploads/images', express.static(path.join(process.cwd(), 'uploads', 'images')));
 app.use('/uploads/videos', express.static(path.join(process.cwd(), 'uploads', 'videos')));
+app.use('/uploads/audio',  express.static(path.join(process.cwd(), 'uploads', 'audio')));
 
 // ─── Stripe Webhooks (raw body required before json parser) ────────────────────
 app.use('/api/v1/webhooks', webhookRoutes);
@@ -110,6 +114,8 @@ app.use(`${API}/payments`, paymentRoutes);
 app.use(`${API}/services`, serviceRoutes);
 app.use(`${API}/sellers`, sellerRoutes);
 app.use(`${API}/contact`, contactRoutes);
+app.use(`${API}/bookings`, bookingRoutes);
+app.use(`${API}/currency`, currencyRoutes);
 
 // ─── Swagger Docs ──────────────────────────────────────────────────────────────
 setupSwagger(app);
@@ -136,6 +142,11 @@ async function startServer() {
   try {
     await prisma.$connect();
     logger.info('✅ PostgreSQL connected via Prisma');
+
+    // MongoDB for media metadata (non-fatal)
+    connectMongoDB().catch((err) =>
+      logger.warn('⚠️  MongoDB unavailable — media metadata will not be persisted:', err?.message),
+    );
 
     // Redis is optional — don't block startup
     logger.info('ℹ️  Redis: optional cache (connecting in background)');

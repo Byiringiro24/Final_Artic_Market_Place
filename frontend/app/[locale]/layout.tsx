@@ -14,12 +14,17 @@ export const metadata: Metadata = {
     default: 'ARTIC Marketplace',
     template: '%s | ARTIC Marketplace',
   },
-  description: 'The Premier Online Marketplace — Shop millions of products',
-  keywords: ['ecommerce', 'marketplace', 'shopping', 'deals'],
+  description: 'Your one-stop marketplace for products and professional services — ARTIC',
+  keywords: ['ecommerce', 'marketplace', 'shopping', 'services', 'Rwanda', 'Africa'],
+  manifest: '/manifest.json',
+  themeColor: '#18A89A',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'default',
+    title: 'ARTIC Marketplace',
+  },
   openGraph: {
     type: 'website',
-    locale: 'en_US',
-    url: process.env.NEXT_PUBLIC_APP_URL,
     siteName: 'ARTIC Marketplace',
   },
 };

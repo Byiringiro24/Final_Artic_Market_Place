@@ -12,6 +12,7 @@ const COLORS = ['#FF9900', '#232F3E', '#37475A', '#007185', '#C7511F', '#5A6E82'
 
 interface DashboardData {
   kpis: { totalRevenue: number; totalOrders: number; totalUsers: number; totalProducts: number };
+  kpiChanges: { revenueChange: string | null; ordersChange: string | null; usersChange: string | null };
   recentOrders: Array<{ id: string; orderNumber: string; totalPrice: number; status: string; createdAt: string; user: { name: string } }>;
   topProducts: Array<{ id: string; name: string; numSales: number; price: number; images: string[] }>;
   lowStockProducts: Array<{ id: string; name: string; countInStock: number; images: string[] }>;
@@ -31,10 +32,10 @@ export default function AdminOverviewPage() {
   const d = data?.data;
 
   const kpiCards = d ? [
-    { label: 'Total Revenue', value: formatPrice(d.kpis.totalRevenue), icon: DollarSign, change: '+12%', color: 'text-green-600' },
-    { label: 'Total Orders', value: d.kpis.totalOrders.toLocaleString(), icon: ShoppingBag, change: '+8%', color: 'text-blue-600' },
-    { label: 'New Users', value: d.kpis.totalUsers.toLocaleString(), icon: Users, change: '+15%', color: 'text-purple-600' },
-    { label: 'Active Products', value: d.kpis.totalProducts.toLocaleString(), icon: Package, change: '', color: 'text-orange-600' },
+    { label: 'Total Revenue',    value: formatPrice(d.kpis.totalRevenue),          icon: DollarSign,  change: d.kpiChanges?.revenueChange ?? null, color: 'text-green-600' },
+    { label: 'Total Orders',     value: d.kpis.totalOrders.toLocaleString(),        icon: ShoppingBag, change: d.kpiChanges?.ordersChange  ?? null, color: 'text-blue-600' },
+    { label: 'New Users',        value: d.kpis.totalUsers.toLocaleString(),         icon: Users,       change: d.kpiChanges?.usersChange   ?? null, color: 'text-purple-600' },
+    { label: 'Active Products',  value: d.kpis.totalProducts.toLocaleString(),      icon: Package,     change: null,                                color: 'text-orange-600' },
   ] : [];
 
   if (isLoading) {
@@ -81,8 +82,9 @@ export default function AdminOverviewPage() {
             </div>
             <p className="text-2xl font-bold">{value}</p>
             {change && (
-              <p className="text-xs text-green-600 flex items-center gap-1">
-                <TrendingUp className="h-3 w-3" /> {change} from last period
+              <p className={`text-xs flex items-center gap-1 ${change.startsWith('+') ? 'text-green-600' : 'text-red-500'}`}>
+                <TrendingUp className={`h-3 w-3 ${change.startsWith('-') ? 'rotate-180' : ''}`} />
+                {change} vs prev period
               </p>
             )}
           </div>

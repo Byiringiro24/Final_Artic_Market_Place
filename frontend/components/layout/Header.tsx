@@ -11,6 +11,7 @@ import MegaNav from './MegaNav';
 import SlidingNavBar from './SlidingNavBar';
 import LanguageSwitcher from './LanguageSwitcher';
 import ThemeSwitcher from './ThemeSwitcher';
+import CurrencySwitcher from './CurrencySwitcher';
 
 export default function Header() {
   const locale = useLocale();
@@ -45,6 +46,9 @@ export default function Header() {
           <div className="flex items-center gap-1 ml-2 flex-shrink-0">
             {/* Language */}
             <LanguageSwitcher />
+
+            {/* Currency */}
+            <CurrencySwitcher />
 
             {/* Theme */}
             <ThemeSwitcher />
