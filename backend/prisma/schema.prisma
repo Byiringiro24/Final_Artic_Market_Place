@@ -212,7 +212,7 @@ model Category {
 
 model Brand {
   id          String   @id @default(uuid())
-  name        String   @unique
+  name        String
   slug        String   @unique
   logo        String?
   description String?
