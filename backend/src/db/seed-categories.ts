@@ -8,6 +8,10 @@ import slugify from 'slugify';
 
 const prisma = new PrismaClient();
 
+function sl(name: string) {
+  return slugify(name, { lower: true, strict: true });
+}
+
 async function upsertCategory(data: {
   name: string; slug: string; icon?: string;
   parentId?: string; sortOrder: number;
