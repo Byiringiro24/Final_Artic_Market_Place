@@ -16,19 +16,23 @@ async function upsertCategory(data: {
   name: string; slug: string; icon?: string;
   parentId?: string; sortOrder: number;
 }) {
-  // Try slug-based upsert first
-  try {
-    return await prisma.category.upsert({
+  // Check if already exists by slug
+  const existing = await prisma.category.findUnique({ where: { slug: data.slug } });
+  if (existing) {
+    // Update parent/sort/icon if needed
+    return prisma.category.update({
       where: { slug: data.slug },
-      create: { ...data, isActive: true },
-      update: { parentId: data.parentId, sortOrder: data.sortOrder, icon: data.icon },
+      data: {
+        parentId:  data.parentId,
+        sortOrder: data.sortOrder,
+        ...(data.icon && { icon: data.icon }),
+      },
     });
-  } catch {
-    // If slug upsert fails due to name unique constraint, find by slug
-    const existing = await prisma.category.findUnique({ where: { slug: data.slug } });
-    if (existing) return existing;
-    throw new Error(`Could not upsert category: ${data.name}`);
   }
+  // Create new
+  return prisma.category.create({
+    data: { ...data, isActive: true },
+  });
 }
 
 const TREE = [
