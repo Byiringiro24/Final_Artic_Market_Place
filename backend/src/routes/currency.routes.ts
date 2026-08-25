@@ -14,6 +14,8 @@
 import { Router, Request, Response } from 'express';
 import { getCache, setCache } from '../lib/redis';
 import { ApiResponse } from '../lib/apiResponse';
+import { authenticate, authorize } from '../middleware/auth.middleware';
+import { prisma } from '../db/prisma';
 import logger from '../lib/logger';
 
 const router = Router();
@@ -117,6 +119,24 @@ async function fetchLiveRates(): Promise<Record<string, number>> {
 
 // ─── GET /currency/rates ───────────────────────────────────────────────────────
 router.get('/rates', async (_req: Request, res: Response) => {
+  // 0. Check for admin-configured custom rate override
+  try {
+    const useCustomSetting = await prisma.setting.findUnique({ where: { key: 'currency_use_custom' } });
+    if (useCustomSetting?.value === true || useCustomSetting?.value === 'true') {
+      const customRatesSetting = await prisma.setting.findUnique({ where: { key: 'currency_custom_rates' } });
+      if (customRatesSetting?.value && typeof customRatesSetting.value === 'object') {
+        return ApiResponse.success(res, {
+          rates: customRatesSetting.value as Record<string, number>,
+          currencies: SUPPORTED,
+          source: 'admin_override',
+          cachedAt: new Date().toISOString(),
+        });
+      }
+    }
+  } catch {
+    // Non-fatal — fall through to live rates
+  }
+
   // 1. Try Redis cache
   const cached = await getCache<Record<string, number>>(REDIS_KEY);
   if (cached) {
@@ -154,13 +174,54 @@ router.get('/rates', async (_req: Request, res: Response) => {
   });
 });
 
-// ─── POST /currency/refresh  (admin only, force-refresh cache) ─────────────────
-router.post('/refresh', async (_req: Request, res: Response) => {
+// ─── POST /currency/refresh  (admin only, force-refresh live cache) ───────────
+router.post('/refresh', authenticate, authorize('ADMIN'), async (_req: Request, res: Response) => {
   memCache = null;
   const rates = await fetchLiveRates();
   await setCache(REDIS_KEY, rates, REDIS_TTL);
   memCache = { rates, ts: Date.now() };
-  return ApiResponse.success(res, { rates, message: 'Rates refreshed' });
+  return ApiResponse.success(res, { rates, message: 'Live rates refreshed' });
+});
+
+// ─── PUT /currency/admin-rates  (admin: save custom rates + toggle) ────────────
+router.put('/admin-rates', authenticate, authorize('ADMIN'), async (req: Request, res: Response) => {
+  const { useCustom, rates } = req.body as { useCustom: boolean; rates: Record<string, number> };
+
+  await Promise.all([
+    prisma.setting.upsert({
+      where: { key: 'currency_use_custom' },
+      create: { key: 'currency_use_custom', value: useCustom, group: 'currency', label: 'Use Custom Rates' },
+      update: { value: useCustom },
+    }),
+    prisma.setting.upsert({
+      where: { key: 'currency_custom_rates' },
+      create: { key: 'currency_custom_rates', value: rates as never, group: 'currency', label: 'Custom Exchange Rates' },
+      update: { value: rates as never },
+    }),
+  ]);
+
+  // Clear live rate cache so new requests pick up the override immediately
+  memCache = null;
+
+  return ApiResponse.success(res, { useCustom, rates }, 'Currency settings saved');
+});
+
+// ─── GET /currency/admin-rates  (admin: read current custom rates) ─────────────
+router.get('/admin-rates', authenticate, authorize('ADMIN'), async (_req: Request, res: Response) => {
+  const [useCustomSetting, ratesSetting] = await Promise.all([
+    prisma.setting.findUnique({ where: { key: 'currency_use_custom' } }),
+    prisma.setting.findUnique({ where: { key: 'currency_custom_rates' } }),
+  ]);
+
+  // Also get current live rates for comparison
+  const liveRates = await fetchLiveRates();
+
+  return ApiResponse.success(res, {
+    useCustom: useCustomSetting?.value === true || useCustomSetting?.value === 'true',
+    customRates: (ratesSetting?.value as Record<string, number>) || {},
+    liveRates,
+    currencies: SUPPORTED,
+  });
 });
 
 export default router;
