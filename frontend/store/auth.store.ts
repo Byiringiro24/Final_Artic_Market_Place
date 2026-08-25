@@ -8,6 +8,8 @@ export interface AuthUser {
   role: 'USER' | 'ADMIN' | 'SELLER';
   image?: string;
   emailVerified: boolean;
+  preferredLanguage?: string | null;
+  preferredCurrency?: string | null;
 }
 
 interface AuthStore {

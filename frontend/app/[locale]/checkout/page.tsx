@@ -12,7 +12,7 @@ import { get, post } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
-import { formatPrice } from '@/lib/utils';
+import { usePrice } from '@/hooks/usePrice';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,6 +46,7 @@ export default function CheckoutPage() {
   const { toast } = useToast();
   const { items, getSubtotal, clearCart } = useCartStore();
   const { isAuthenticated } = useAuthStore();
+  const fmt = usePrice();
 
   const [step, setStep] = useState<Step>('address');
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
@@ -121,7 +122,7 @@ export default function CheckoutPage() {
         discount = shipping;
       }
       setCouponDiscount(discount);
-      toast({ title: `Coupon applied! You saved ${formatPrice(discount)}` });
+      toast({ title: `Coupon applied! You saved ${fmt(discount)}` });
     } catch {
       toast({ title: 'Invalid coupon', variant: 'destructive' });
     } finally {
@@ -309,7 +310,7 @@ export default function CheckoutPage() {
                   </Button>
                 </div>
                 {couponDiscount > 0 && (
-                  <p className="text-green-700 text-sm mt-1">✓ Saving {formatPrice(couponDiscount)}</p>
+                  <p className="text-green-700 text-sm mt-1">✓ Saving {fmt(couponDiscount)}</p>
                 )}
               </div>
 
@@ -356,7 +357,7 @@ export default function CheckoutPage() {
                       <p className="font-medium line-clamp-1">{item.name}</p>
                       <p className="text-gray-500">Qty: {item.quantity}</p>
                     </div>
-                    <p className="font-semibold">{formatPrice(item.price * item.quantity)}</p>
+                    <p className="font-semibold">{fmt(item.price * item.quantity)}</p>
                   </div>
                 ))}
               </div>
@@ -369,7 +370,7 @@ export default function CheckoutPage() {
                 className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black font-bold rounded-full h-12"
               >
                 {placing ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
-                Place Order · {formatPrice(total)}
+                Place Order · {fmt(total)}
               </Button>
             </div>
           )}
@@ -382,27 +383,27 @@ export default function CheckoutPage() {
             <div className="space-y-2 text-sm">
               <div className="flex justify-between">
                 <span>Items ({items.reduce((s, i) => s + i.quantity, 0)}):</span>
-                <span>{formatPrice(subtotal)}</span>
+                <span>{fmt(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping:</span>
-                <span className={shipping === 0 ? 'text-green-700' : ''}>{shipping === 0 ? 'FREE' : formatPrice(shipping)}</span>
+                <span className={shipping === 0 ? 'text-green-700' : ''}>{shipping === 0 ? 'FREE' : fmt(shipping)}</span>
               </div>
               {couponDiscount > 0 && (
                 <div className="flex justify-between text-green-700">
                   <span>Coupon discount:</span>
-                  <span>-{formatPrice(couponDiscount)}</span>
+                  <span>-{fmt(couponDiscount)}</span>
                 </div>
               )}
               <div className="flex justify-between">
                 <span>Estimated tax (18%):</span>
-                <span>{formatPrice(tax)}</span>
+                <span>{fmt(tax)}</span>
               </div>
             </div>
             <Separator />
             <div className="flex justify-between font-bold text-lg">
               <span>Order Total:</span>
-              <span className="text-red-700">{formatPrice(total)}</span>
+              <span className="text-red-700">{fmt(total)}</span>
             </div>
 
             {step === 'review' && (

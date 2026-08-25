@@ -2,19 +2,12 @@ import { Router } from 'express';
 import {
   register, login, logout, refreshToken,
   verifyEmail, forgotPassword, resetPassword,
-  getMe, changePassword,
+  getMe, changePassword, updatePreferences,
 } from '../controllers/auth.controller';
 import { authenticate } from '../middleware/auth.middleware';
 import { authLimiter, strictLimiter } from '../middleware/rateLimiter.middleware';
 
 const router = Router();
-
-/**
- * @swagger
- * tags:
- *   name: Auth
- *   description: Authentication endpoints
- */
 
 router.post('/register', authLimiter, register);
 router.post('/login', authLimiter, login);
@@ -27,5 +20,6 @@ router.post('/reset-password', resetPassword);
 // Protected
 router.get('/me', authenticate, getMe);
 router.put('/change-password', authenticate, changePassword);
+router.patch('/preferences', authenticate, updatePreferences);
 
 export default router;

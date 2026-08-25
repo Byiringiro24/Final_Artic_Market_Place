@@ -93,19 +93,21 @@ enum ShippingRateType {
 // ─── USERS ────────────────────────────────────────────────────────────────────
 
 model User {
-  id              String    @id @default(uuid())
-  email           String    @unique
-  name            String
-  password        String?
-  role            Role      @default(USER)
-  image           String?
-  phoneNumber     String?
-  emailVerified   Boolean   @default(false)
-  isActive        Boolean   @default(true)
-  googleId        String?   @unique
-  lastLoginAt     DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id                  String    @id @default(uuid())
+  email               String    @unique
+  name                String
+  password            String?
+  role                Role      @default(USER)
+  image               String?
+  phoneNumber         String?
+  emailVerified       Boolean   @default(false)
+  isActive            Boolean   @default(true)
+  googleId            String?   @unique
+  lastLoginAt         DateTime?
+  preferredLanguage   String?   // e.g. 'en-US', 'fr', 'rw', 'sw', 'ar'
+  preferredCurrency   String?   // e.g. 'USD', 'RWF', 'EUR'
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 
   // Relations
   addresses          Address[]

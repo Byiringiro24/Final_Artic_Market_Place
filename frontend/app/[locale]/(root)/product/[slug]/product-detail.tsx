@@ -8,7 +8,8 @@ import Link from 'next/link';
 import { ShoppingCart, Heart, Share2, Shield, Truck, RotateCcw, ChevronRight } from 'lucide-react';
 import { get } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
-import { formatPrice, getDiscountPercent } from '@/lib/utils';
+import { getDiscountPercent } from '@/lib/utils';
+import { usePrice } from '@/hooks/usePrice';
 import { useCartStore } from '@/store/cart.store';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
@@ -32,6 +33,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
   const locale = useLocale();
   const { addItem, isInCart } = useCartStore();
   const { toast } = useToast();
+  const fmt = usePrice();
 
   const [activeImage, setActiveImage] = useState(0);
   const [selectedVariants, setSelectedVariants] = useState<Record<string, string>>({});
@@ -151,12 +153,11 @@ export default function ProductDetail({ slug }: { slug: string }) {
             <div>
               <div className="flex items-baseline gap-3 flex-wrap">
                 <span className="text-3xl font-light">
-                  <sup className="text-base font-normal">$</sup>
-                  {Number(product.price).toFixed(2)}
+                  {fmt(Number(product.price))}
                 </span>
                 {Number(product.listPrice) > Number(product.price) && (
                   <div className="text-sm text-gray-500">
-                    List Price: <span className="line-through">{formatPrice(Number(product.listPrice))}</span>
+                    List Price: <span className="line-through">{fmt(Number(product.listPrice))}</span>
                     {' '}<span className="text-red-600">({discount}% off)</span>
                   </div>
                 )}
@@ -222,7 +223,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
 
           {/* Buy box */}
           <div className="border rounded-lg p-4 space-y-4 h-fit sticky top-20">
-            <div className="text-2xl font-light">{formatPrice(Number(product.price))}</div>
+            <div className="text-2xl font-light">{fmt(Number(product.price))}</div>
 
             {Number(product.price) >= 50 ? (
               <p className="text-sm text-green-700">
@@ -231,7 +232,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
             ) : (
               <p className="text-sm text-gray-600">
                 <Truck className="inline h-4 w-4 mr-1" />
-                Delivery: $9.99
+                Delivery: {fmt(9.99)}
               </p>
             )}
 

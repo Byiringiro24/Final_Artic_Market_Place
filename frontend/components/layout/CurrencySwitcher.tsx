@@ -2,6 +2,8 @@
 
 import { CURRENCIES, type CurrencyCode } from '@/lib/currency';
 import { useCurrencyStore } from '@/store/currency.store';
+import { useAuthStore } from '@/store/auth.store';
+import { patch } from '@/lib/api';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,7 +28,21 @@ const GROUPS = [
 
 export default function CurrencySwitcher() {
   const { currency, setCurrency, loading, rates, fetchedAt, refreshRates } = useCurrencyStore();
+  const { isAuthenticated, updateUser } = useAuthStore();
   const current = CURRENCIES.find((c) => c.code === currency) ?? CURRENCIES[0];
+
+  async function handleSelectCurrency(code: CurrencyCode) {
+    setCurrency(code);
+    // Persist preference for logged-in users
+    if (isAuthenticated) {
+      try {
+        await patch('/auth/preferences', { preferredCurrency: code });
+        updateUser({ preferredCurrency: code });
+      } catch {
+        // Non-fatal — local change already applied
+      }
+    }
+  }
 
   // Determine if rates are live or static
   const isLive = rates !== null;
@@ -106,7 +122,7 @@ export default function CurrencySwitcher() {
               return (
                 <DropdownMenuItem
                   key={code}
-                  onClick={() => setCurrency(code as CurrencyCode)}
+                  onClick={() => handleSelectCurrency(code as CurrencyCode)}
                   className={selected ? 'bg-muted font-semibold' : ''}
                 >
                   <span className="w-6 text-base">{meta.flag}</span>

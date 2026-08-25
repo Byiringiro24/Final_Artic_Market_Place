@@ -4,8 +4,9 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import { Heart, ShoppingCart, Star, Zap } from 'lucide-react';
-import { formatPrice, getDiscountPercent } from '@/lib/utils';
+import { getDiscountPercent } from '@/lib/utils';
 import { useCurrencyStore } from '@/store/currency.store';
+import { usePrice } from '@/hooks/usePrice';
 import { useCartStore } from '@/store/cart.store';
 import { cn } from '@/lib/utils';
 import StarRating from './StarRating';
@@ -41,6 +42,7 @@ export default function ProductCard({
 }: ProductCardProps) {
   const locale = useLocale();
   const { addItem, isInCart } = useCartStore();
+  const fmt = usePrice();
   const [wishlisted, setWishlisted] = useState(false);
   const [imgError, setImgError] = useState(false);
   const [added, setAdded] = useState(false);
@@ -151,9 +153,9 @@ export default function ProductCard({
         {/* Price + Add to cart */}
         <div className="mt-auto pt-2 space-y-2">
           <div className="flex items-baseline gap-2">
-            <span className="text-base font-bold text-[#1A2332]">{formatPrice(Number(price))}</span>
+            <span className="text-base font-bold text-[#1A2332]">{fmt(Number(price))}</span>
             {Number(listPrice) > Number(price) && (
-              <span className="text-xs text-gray-400 line-through">{formatPrice(Number(listPrice))}</span>
+              <span className="text-xs text-gray-400 line-through">{fmt(Number(listPrice))}</span>
             )}
           </div>
 

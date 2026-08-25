@@ -123,6 +123,8 @@ export async function login(req: Request, res: Response) {
       role: user.role,
       image: user.image,
       emailVerified: user.emailVerified,
+      preferredLanguage: user.preferredLanguage,
+      preferredCurrency: user.preferredCurrency,
     },
   });
 }
@@ -271,6 +273,8 @@ export async function getMe(req: AuthRequest, res: Response) {
       image: true,
       phoneNumber: true,
       emailVerified: true,
+      preferredLanguage: true,
+      preferredCurrency: true,
       createdAt: true,
       _count: { select: { orders: true, reviews: true, wishlist: true } },
     },
@@ -278,6 +282,40 @@ export async function getMe(req: AuthRequest, res: Response) {
 
   if (!user) throw new AppError('User not found', 404);
   return ApiResponse.success(res, user);
+}
+
+// ─── Update Preferences (language + currency) ────────────────────────────────
+export async function updatePreferences(req: AuthRequest, res: Response) {
+  const { preferredLanguage, preferredCurrency } = req.body;
+
+  const VALID_LOCALES  = ['en-US', 'fr', 'ar', 'rw', 'sw'];
+  const VALID_CURRENCIES = ['USD','EUR','GBP','RWF','KES','UGX','TZS','ZAR','NGN','CAD','AED','JPY','CNY','INR'];
+
+  const data: Record<string, string> = {};
+  if (preferredLanguage !== undefined) {
+    if (!VALID_LOCALES.includes(preferredLanguage)) {
+      throw new AppError(`Invalid language. Allowed: ${VALID_LOCALES.join(', ')}`, 400);
+    }
+    data.preferredLanguage = preferredLanguage;
+  }
+  if (preferredCurrency !== undefined) {
+    if (!VALID_CURRENCIES.includes(preferredCurrency)) {
+      throw new AppError(`Invalid currency. Allowed: ${VALID_CURRENCIES.join(', ')}`, 400);
+    }
+    data.preferredCurrency = preferredCurrency;
+  }
+
+  if (Object.keys(data).length === 0) {
+    throw new AppError('No valid preference fields provided', 400);
+  }
+
+  const updated = await prisma.user.update({
+    where: { id: req.user!.userId },
+    data,
+    select: { id: true, preferredLanguage: true, preferredCurrency: true },
+  });
+
+  return ApiResponse.success(res, updated, 'Preferences updated successfully');
 }
 
 // ─── Change Password ──────────────────────────────────────────────────────────

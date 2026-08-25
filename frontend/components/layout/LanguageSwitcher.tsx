@@ -9,6 +9,8 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { useAuthStore } from '@/store/auth.store';
+import { patch } from '@/lib/api';
 
 const locales = [
   { code: 'en-US', label: 'English',     flag: '🇺🇸', nativeName: 'English'     },
@@ -19,14 +21,26 @@ const locales = [
 ];
 
 export default function LanguageSwitcher() {
-  const locale   = useLocale();
-  const router   = useRouter();
-  const pathname = usePathname();
+  const locale         = useLocale();
+  const router         = useRouter();
+  const pathname       = usePathname();
+  const { isAuthenticated, updateUser } = useAuthStore();
 
-  function switchLocale(newLocale: string) {
+  async function switchLocale(newLocale: string) {
+    // Replace the [locale] segment (first segment after the leading /)
     const segments  = pathname.split('/');
     segments[1]     = newLocale;
     router.push(segments.join('/'));
+
+    // Persist preference for logged-in users
+    if (isAuthenticated) {
+      try {
+        await patch('/auth/preferences', { preferredLanguage: newLocale });
+        updateUser({ preferredLanguage: newLocale });
+      } catch {
+        // Non-fatal — local switch already happened
+      }
+    }
   }
 
   const current = locales.find((l) => l.code === locale) ?? locales[0];
