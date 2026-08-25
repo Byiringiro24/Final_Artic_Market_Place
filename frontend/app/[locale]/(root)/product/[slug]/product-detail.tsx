@@ -23,6 +23,7 @@ interface Variant { id: string; name: string; value: string; stock: number; pric
 interface Product {
   id: string; name: string; slug: string; description: string; shortDesc: string;
   price: number; listPrice: number; countInStock: number; images: string[];
+  videos: string[];
   avgRating: number; numReviews: number; numSales: number; tags: string[];
   category: { name: string; slug: string };
   brand: { name: string; logo?: string } | null;
@@ -298,6 +299,25 @@ export default function ProductDetail({ slug }: { slug: string }) {
             {product.description}
           </div>
         </div>
+
+        {/* Videos */}
+        {product.videos?.length > 0 && (
+          <div className="mt-8 max-w-3xl">
+            <h2 className="text-xl font-bold mb-4 border-b pb-2">Product Videos</h2>
+            <div className="space-y-4">
+              {product.videos.map((v, i) => (
+                <video
+                  key={i}
+                  src={v}
+                  controls
+                  controlsList="nodownload"
+                  className="w-full rounded-lg border max-h-96 bg-black"
+                  aria-label={`Product video ${i + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Reviews section */}
         <div id="reviews" className="mt-10">

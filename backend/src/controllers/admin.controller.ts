@@ -227,3 +227,98 @@ export async function updateUser(req: Request, res: Response) {
 
   return ApiResponse.success(res, user, 'User updated');
 }
+
+// ─── Admin: List All Products ─────────────────────────────────────────────────
+export async function listAdminProducts(req: Request, res: Response) {
+  const {
+    page = '1', limit = '20', search, isPublished, category,
+  } = req.query as Record<string, string>;
+
+  const pageNum  = Math.max(1, parseInt(page));
+  const limitNum = Math.min(100, parseInt(limit) || 20);
+  const skip     = (pageNum - 1) * limitNum;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const where: any = {};
+  if (isPublished !== undefined && isPublished !== '') where.isPublished = isPublished === 'true';
+  if (category) where.category = { slug: category };
+  if (search) {
+    where.OR = [
+      { name:  { contains: search, mode: 'insensitive' } },
+      { sku:   { contains: search, mode: 'insensitive' } },
+    ];
+  }
+
+  const [products, total] = await Promise.all([
+    prisma.product.findMany({
+      where,
+      skip,
+      take: limitNum,
+      orderBy: { createdAt: 'desc' },
+      select: {
+        id: true, name: true, slug: true, price: true, listPrice: true,
+        countInStock: true, isPublished: true, isFeatured: true,
+        numSales: true, createdAt: true, images: true, sku: true,
+        category: { select: { name: true, slug: true } },
+        brand:    { select: { name: true } },
+      },
+    }),
+    prisma.product.count({ where }),
+  ]);
+
+  return ApiResponse.paginated(res, products, {
+    page: pageNum, limit: limitNum, total,
+    totalPages: Math.ceil(total / limitNum),
+    hasNext: pageNum < Math.ceil(total / limitNum),
+    hasPrev: pageNum > 1,
+  });
+}
+
+// ─── Admin: List All Orders ───────────────────────────────────────────────────
+export async function listAdminOrders(req: Request, res: Response) {
+  const {
+    page = '1', limit = '20', search, status, startDate, endDate,
+  } = req.query as Record<string, string>;
+
+  const pageNum  = Math.max(1, parseInt(page));
+  const limitNum = Math.min(100, parseInt(limit) || 20);
+  const skip     = (pageNum - 1) * limitNum;
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const where: any = {};
+  if (status) where.status = status.toUpperCase();
+  if (startDate || endDate) {
+    where.createdAt = {};
+    if (startDate) where.createdAt.gte = new Date(startDate);
+    if (endDate)   where.createdAt.lte = new Date(endDate);
+  }
+  if (search) {
+    where.OR = [
+      { orderNumber: { contains: search, mode: 'insensitive' } },
+      { user: { name:  { contains: search, mode: 'insensitive' } } },
+      { user: { email: { contains: search, mode: 'insensitive' } } },
+    ];
+  }
+
+  const [orders, total] = await Promise.all([
+    prisma.order.findMany({
+      where,
+      skip,
+      take: limitNum,
+      orderBy: { createdAt: 'desc' },
+      include: {
+        user: { select: { name: true, email: true } },
+        items: { select: { name: true, quantity: true, price: true } },
+        shippingAddress: { select: { city: true, country: true } },
+      },
+    }),
+    prisma.order.count({ where }),
+  ]);
+
+  return ApiResponse.paginated(res, orders, {
+    page: pageNum, limit: limitNum, total,
+    totalPages: Math.ceil(total / limitNum),
+    hasNext: pageNum < Math.ceil(total / limitNum),
+    hasPrev: pageNum > 1,
+  });
+}

@@ -29,17 +29,20 @@ router.post('/apply', authenticate, async (req: AuthRequest, res) => {
         data: { userId, businessName, businessType, description, website, phone, address },
       });
 
-  // Notify admins
-  const admins = await prisma.user.findMany({ where: { role: 'ADMIN' }, select: { email: true, name: true } });
-  for (const admin of admins) {
-    await sendEmail({
-      to: admin.email,
-      toName: admin.name,
-      subject: `New Seller Application — ${businessName}`,
-      template: 'seller-application',
-      html: `<h2>New Seller Application</h2><p><b>Business:</b> ${businessName}</p><p><b>Type:</b> ${businessType}</p><p>Review in admin panel.</p>`,
-    });
-  }
+  // Notify admins asynchronously — don't block the HTTP response
+  prisma.user.findMany({ where: { role: 'ADMIN' }, select: { email: true, name: true } })
+    .then((admins) => Promise.allSettled(
+      admins.map((admin) =>
+        sendEmail({
+          to: admin.email,
+          toName: admin.name,
+          subject: `New Seller Application — ${businessName}`,
+          template: 'seller-application',
+          html: `<h2>New Seller Application</h2><p><b>Business:</b> ${businessName}</p><p><b>Type:</b> ${businessType}</p><p>Review in admin panel.</p>`,
+        })
+      )
+    ))
+    .catch(() => { /* non-fatal */ });
 
   return ApiResponse.created(res, application, 'Application submitted! We will review and contact you.');
 });

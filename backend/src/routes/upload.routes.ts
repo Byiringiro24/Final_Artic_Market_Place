@@ -101,7 +101,7 @@ const audioUpload = multer({
 router.post(
   '/image',
   authenticate,
-  authorize('ADMIN'),
+  authorize('ADMIN', 'SELLER'),
   imageUpload.single('file'),
   async (req, res) => {
     if (!req.file) throw new AppError('No file uploaded', 400);
@@ -137,7 +137,7 @@ router.post(
 router.post(
   '/images',
   authenticate,
-  authorize('ADMIN'),
+  authorize('ADMIN', 'SELLER'),
   imageUpload.array('files', 10),
   async (req, res) => {
     const files = req.files as Express.Multer.File[];
@@ -180,7 +180,7 @@ router.post(
 router.post(
   '/video',
   authenticate,
-  authorize('ADMIN'),
+  authorize('ADMIN', 'SELLER'),
   videoUpload.single('file'),
   async (req, res) => {
     if (!req.file) throw new AppError('No video uploaded', 400);
@@ -213,7 +213,7 @@ router.post(
 router.post(
   '/audio',
   authenticate,
-  authorize('ADMIN'),
+  authorize('ADMIN', 'SELLER'),
   audioUpload.single('file'),
   async (req, res) => {
     if (!req.file) throw new AppError('No audio file uploaded', 400);
@@ -246,7 +246,7 @@ router.post(
 router.post(
   '/media',
   authenticate,
-  authorize('ADMIN'),
+  authorize('ADMIN', 'SELLER'),
   multer({
     storage: multer.diskStorage({
       destination: (req, file, cb) => {
@@ -323,7 +323,7 @@ router.post(
 router.get(
   '/media',
   authenticate,
-  authorize('ADMIN'),
+  authorize('ADMIN', 'SELLER'),
   async (req, res) => {
     const col = getMediaCollection();
     if (!col) return ApiResponse.success(res, { files: [], total: 0 });

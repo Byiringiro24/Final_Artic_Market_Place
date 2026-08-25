@@ -93,7 +93,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
               <div className="bg-white border rounded-xl p-4 space-y-3">
                 <h3 className="font-semibold text-gray-800">Service Videos</h3>
                 {service.videos.map((v, i) => (
-                  <video key={i} src={v} controls className="w-full rounded-lg" />
+                  <video key={i} src={v} controls controlsList="nodownload" className="w-full rounded-lg max-h-96" />
                 ))}
               </div>
             )}

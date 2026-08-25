@@ -6,7 +6,8 @@ import Link from 'next/link';
 import { useLocale } from 'next-intl';
 import { Plus, Search, Edit2, Trash2, Eye, EyeOff } from 'lucide-react';
 import { get, del, put } from '@/lib/api';
-import { formatPrice, formatDate } from '@/lib/utils';
+import { usePrice } from '@/hooks/usePrice';
+import { formatDate } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -31,19 +32,22 @@ function resolveImageUrl(url: string): string {
 }
 
 export default function AdminProductsPage() {
-  const locale = useLocale();
+  const locale  = useLocale();
   const { toast } = useToast();
-  const qc = useQueryClient();
+  const qc      = useQueryClient();
+  const fmt     = usePrice();
   const [search, setSearch] = useState('');
   const [page, setPage] = useState(1);
   const [statusFilter, setStatusFilter] = useState('');
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-products', page, search, statusFilter],
-    queryFn: () =>
-      get<ApiData['data']>(
-        `/products/admin/all?limit=20&page=${page}${search ? `&search=${search}` : ''}${statusFilter !== '' ? `&isPublished=${statusFilter}` : ''}`
-      ),
+    queryFn: () => {
+      const params = new URLSearchParams({ limit: '20', page: String(page) });
+      if (search)       params.set('search', search);
+      if (statusFilter) params.set('isPublished', statusFilter);
+      return get<Product[]>(`/admin/products?${params}`);
+    },
   });
 
   const { mutate: deleteProduct } = useMutation({
@@ -61,8 +65,8 @@ export default function AdminProductsPage() {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin-products'] }),
   });
 
-  const products = (data?.data as unknown as Product[]) || [];
-  const pagination = (data as unknown as ApiData)?.pagination;
+  const products   = (data?.data as unknown as ApiData)?.data || (data?.data as unknown as Product[]) || [];
+  const pagination = (data?.data as unknown as ApiData)?.pagination ?? (data as unknown as ApiData)?.pagination;
 
   return (
     <div className="space-y-5">
@@ -155,7 +159,7 @@ export default function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3 text-gray-600">{product.category?.name}</td>
-                    <td className="px-4 py-3 text-right font-medium">{formatPrice(product.price)}</td>
+                    <td className="px-4 py-3 text-right font-medium">{fmt(Number(product.price))}</td>
                     <td className="px-4 py-3 text-right">
                       <span className={
                         product.countInStock === 0 ? 'text-red-600 font-semibold' :

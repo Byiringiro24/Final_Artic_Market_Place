@@ -6,7 +6,8 @@ import { BarChart, Bar, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, R
 import { DollarSign, ShoppingBag, Users, Package, TrendingUp, AlertTriangle } from 'lucide-react';
 import { get } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
-import { formatPrice, formatRelativeTime } from '@/lib/utils';
+import { usePrice } from '@/hooks/usePrice';
+import { formatRelativeTime } from '@/lib/utils';
 
 const COLORS = ['#FF9900', '#232F3E', '#37475A', '#007185', '#C7511F', '#5A6E82'];
 
@@ -23,6 +24,7 @@ interface DashboardData {
 
 export default function AdminOverviewPage() {
   const [days, setDays] = useState(30);
+  const fmt = usePrice();
 
   const { data, isLoading } = useQuery({
     queryKey: queryKeys.admin.dashboard(days),
@@ -32,10 +34,10 @@ export default function AdminOverviewPage() {
   const d = data?.data;
 
   const kpiCards = d ? [
-    { label: 'Total Revenue',    value: formatPrice(d.kpis.totalRevenue),          icon: DollarSign,  change: d.kpiChanges?.revenueChange ?? null, color: 'text-green-600' },
-    { label: 'Total Orders',     value: d.kpis.totalOrders.toLocaleString(),        icon: ShoppingBag, change: d.kpiChanges?.ordersChange  ?? null, color: 'text-blue-600' },
-    { label: 'New Users',        value: d.kpis.totalUsers.toLocaleString(),         icon: Users,       change: d.kpiChanges?.usersChange   ?? null, color: 'text-purple-600' },
-    { label: 'Active Products',  value: d.kpis.totalProducts.toLocaleString(),      icon: Package,     change: null,                                color: 'text-orange-600' },
+    { label: 'Total Revenue',    value: fmt(d.kpis.totalRevenue),               icon: DollarSign,  change: d.kpiChanges?.revenueChange ?? null, color: 'text-green-600' },
+    { label: 'Total Orders',     value: d.kpis.totalOrders.toLocaleString(),     icon: ShoppingBag, change: d.kpiChanges?.ordersChange  ?? null, color: 'text-blue-600' },
+    { label: 'New Users',        value: d.kpis.totalUsers.toLocaleString(),      icon: Users,       change: d.kpiChanges?.usersChange   ?? null, color: 'text-purple-600' },
+    { label: 'Active Products',  value: d.kpis.totalProducts.toLocaleString(),   icon: Package,     change: null,                                color: 'text-orange-600' },
   ] : [];
 
   if (isLoading) {
@@ -107,7 +109,7 @@ export default function AdminOverviewPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
               <XAxis dataKey="date" tick={{ fontSize: 11 }} />
               <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `$${v}`} />
-              <Tooltip formatter={(v) => formatPrice(Number(v))} />
+              <Tooltip formatter={(v) => fmt(Number(v))} />
               <Area type="monotone" dataKey="revenue" stroke="#FF9900" strokeWidth={2} fill="url(#revenueGrad)" />
             </AreaChart>
           </ResponsiveContainer>
@@ -129,7 +131,7 @@ export default function AdminOverviewPage() {
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
               </Pie>
-              <Tooltip formatter={(v) => formatPrice(Number(v))} />
+              <Tooltip formatter={(v) => fmt(Number(v))} />
             </PieChart>
           </ResponsiveContainer>
           <div className="flex flex-wrap gap-2 mt-2">
@@ -156,7 +158,7 @@ export default function AdminOverviewPage() {
                   <p className="text-gray-500 text-xs">{order.user.name} · {formatRelativeTime(order.createdAt)}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium">{formatPrice(order.totalPrice)}</p>
+                  <p className="font-medium">{fmt(Number(order.totalPrice))}</p>
                   <span className={`text-xs px-2 py-0.5 rounded-full ${
                     order.status === 'DELIVERED' ? 'bg-green-100 text-green-700' :
                     order.status === 'SHIPPED' ? 'bg-blue-100 text-blue-700' :

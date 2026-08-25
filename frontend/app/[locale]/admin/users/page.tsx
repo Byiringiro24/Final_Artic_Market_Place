@@ -33,8 +33,8 @@ export default function AdminUsersPage() {
     onError: () => toast({ title: 'Update failed', variant: 'destructive' }),
   });
 
-  const users = (data?.data as unknown as UserItem[]) || [];
-  const pagination = (data as unknown as { pagination: { total: number; totalPages: number; page: number } })?.pagination;
+  const users      = (data?.data as unknown as ApiData)?.data || (data?.data as unknown as UserItem[]) || [];
+  const pagination = (data?.data as unknown as ApiData)?.pagination ?? (data as unknown as { pagination: { total: number; totalPages: number; page: number } })?.pagination;
 
   return (
     <div className="space-y-5">
