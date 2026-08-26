@@ -68,6 +68,7 @@ app.use('/uploads', express.static(path.join(process.cwd(), 'uploads')));
 app.use('/uploads/images', express.static(path.join(process.cwd(), 'uploads', 'images')));
 app.use('/uploads/videos', express.static(path.join(process.cwd(), 'uploads', 'videos')));
 app.use('/uploads/audio',  express.static(path.join(process.cwd(), 'uploads', 'audio')));
+app.use('/uploads/proofs', express.static(path.join(process.cwd(), 'uploads', 'proofs')));
 
 // ─── Stripe Webhooks (raw body required before json parser) ────────────────────
 app.use('/api/v1/webhooks', webhookRoutes);

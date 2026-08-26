@@ -23,6 +23,8 @@ enum Role {
 
 enum OrderStatus {
   PENDING
+  PENDING_PAYMENT_PROOF  // MoMo paid — waiting for proof upload
+  PAYMENT_PROOF_SUBMITTED // Proof uploaded — awaiting admin verification
   CONFIRMED
   PROCESSING
   SHIPPED
@@ -46,6 +48,7 @@ enum PaymentMethod {
   STRIPE
   PAYPAL
   CASH_ON_DELIVERY
+  MTN_MOMO
 }
 
 enum DiscountType {
@@ -68,6 +71,7 @@ enum NotificationType {
   ORDER_SHIPPED
   ORDER_DELIVERED
   ORDER_CANCELLED
+  PAYMENT_PROOF_SUBMITTED
   REVIEW_APPROVED
   REVIEW_REJECTED
   LOW_STOCK
@@ -365,6 +369,7 @@ model Order {
   totalPrice        Decimal       @db.Decimal(10, 2)
   isPaid            Boolean       @default(false)
   paidAt            DateTime?
+  paymentProof      String?       // URL of MoMo payment screenshot
   isDelivered       Boolean       @default(false)
   deliveredAt       DateTime?
   expectedDelivery  DateTime?

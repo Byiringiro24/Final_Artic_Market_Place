@@ -4,8 +4,36 @@ import { ApiResponse, buildPagination } from '../lib/apiResponse';
 import { AppError } from '../middleware/error.middleware';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { sendEmail } from '../lib/email';
-import { createOrderNotification } from '../lib/notifications';
+import { createOrderNotification, createNotification } from '../lib/notifications';
 import { format } from 'date-fns';
+
+// ─── SSE: Admin broadcast ─────────────────────────────────────────────────────
+// Map of connected admin SSE clients: userId → Response
+const adminSseClients = new Map<string, Response>();
+
+export function registerAdminSseClient(userId: string, res: Response) {
+  adminSseClients.set(userId, res);
+}
+
+export function removeAdminSseClient(userId: string) {
+  adminSseClients.delete(userId);
+}
+
+export interface AdminSseEvent {
+  type: 'NEW_ORDER' | 'PAYMENT_PROOF' | 'PING';
+  orderId?: string;
+  orderNumber?: string;
+  userName?: string;
+  message?: string;
+  totalPrice?: number;
+}
+
+export function broadcastAdminEvent(event: AdminSseEvent) {
+  const payload = `data: ${JSON.stringify(event)}\n\n`;
+  adminSseClients.forEach((res) => {
+    try { res.write(payload); } catch { /* client disconnected */ }
+  });
+}
 
 // ─── Generate order number ────────────────────────────────────────────────────
 async function generateOrderNumber(): Promise<string> {
@@ -186,6 +214,27 @@ export async function createOrder(req: AuthRequest, res: Response) {
     });
   }
 
+  // Notify all admins about the new order (SSE + DB notification)
+  const admins = await prisma.user.findMany({ where: { role: 'ADMIN' }, select: { id: true } });
+  await Promise.all(admins.map((admin) =>
+    createNotification({
+      userId: admin.id,
+      type: 'ORDER_PLACED',
+      title: '🛒 New Order Received',
+      message: `${user?.name || 'A customer'} placed order ${orderNumber} — ${paymentMethod === 'MTN_MOMO' ? '📱 MoMo' : paymentMethod.replace(/_/g, ' ')} · $${totalPrice}`,
+      link: `/admin/orders/${order.id}`,
+    })
+  ));
+
+  broadcastAdminEvent({
+    type: 'NEW_ORDER',
+    orderId: order.id,
+    orderNumber,
+    userName: user?.name || 'Customer',
+    message: `New order ${orderNumber} — $${totalPrice}`,
+    totalPrice,
+  });
+
   return ApiResponse.created(res, order, 'Order placed successfully');
 }
 
@@ -349,4 +398,135 @@ export async function updateOrderStatus(req: Request, res: Response) {
   }
 
   return ApiResponse.success(res, updated, 'Order status updated');
+}
+
+// ─── User: Cancel Order ───────────────────────────────────────────────────────
+export async function cancelOrder(req: AuthRequest, res: Response) {
+  const { id } = req.params;
+  const { reason } = req.body;
+
+  const order = await prisma.order.findUnique({ where: { id } });
+  if (!order) throw new AppError('Order not found', 404);
+  if (order.userId !== req.user!.userId) throw new AppError('Access denied', 403);
+
+  if (!['PENDING', 'CONFIRMED', 'PENDING_PAYMENT_PROOF', 'PAYMENT_PROOF_SUBMITTED'].includes(order.status)) {
+    throw new AppError('Only pending or confirmed orders can be cancelled', 400);
+  }
+
+  await prisma.$transaction([
+    prisma.order.update({
+      where: { id },
+      data: { status: 'CANCELLED', cancelReason: reason || 'Cancelled by customer' },
+    }),
+    prisma.orderStatusHistory.create({
+      data: { orderId: id, status: 'CANCELLED', note: reason || 'Cancelled by customer' },
+    }),
+  ]);
+
+  // Restore stock
+  const items = await prisma.orderItem.findMany({ where: { orderId: id } });
+  for (const item of items) {
+    await prisma.product.update({
+      where: { id: item.productId },
+      data: { countInStock: { increment: item.quantity } },
+    });
+  }
+
+  return ApiResponse.success(res, null, 'Order cancelled successfully');
+}
+
+// ─── User: Submit MoMo Payment Proof ─────────────────────────────────────────
+export async function submitPaymentProof(req: AuthRequest, res: Response) {
+  const { id } = req.params;
+  const proofUrl = (req as unknown as { proofUrl: string }).proofUrl;
+
+  const order = await prisma.order.findUnique({ where: { id } });
+  if (!order) throw new AppError('Order not found', 404);
+  if (order.userId !== req.user!.userId) throw new AppError('Access denied', 403);
+  if (order.paymentMethod !== 'MTN_MOMO') {
+    throw new AppError('Payment proof is only for MTN MoMo orders', 400);
+  }
+  if (!['PENDING', 'PENDING_PAYMENT_PROOF'].includes(order.status)) {
+    throw new AppError('Proof can only be submitted for pending MoMo orders', 400);
+  }
+
+  const updated = await prisma.$transaction(async (tx) => {
+    const o = await tx.order.update({
+      where: { id },
+      data: {
+        paymentProof: proofUrl,
+        status: 'PAYMENT_PROOF_SUBMITTED',
+      },
+    });
+    await tx.orderStatusHistory.create({
+      data: { orderId: id, status: 'PAYMENT_PROOF_SUBMITTED', note: 'Customer submitted MoMo payment proof' },
+    });
+    return o;
+  });
+
+  // Notify all admins about the proof submission
+  const admins = await prisma.user.findMany({ where: { role: 'ADMIN' }, select: { id: true } });
+  const user = await prisma.user.findUnique({ where: { id: req.user!.userId }, select: { name: true } });
+
+  await Promise.all(admins.map((admin) =>
+    createNotification({
+      userId: admin.id,
+      type: 'PAYMENT_PROOF_SUBMITTED',
+      title: '📸 MoMo Payment Proof Received',
+      message: `${user?.name} submitted payment proof for order ${order.orderNumber}. Please verify and confirm.`,
+      link: `/admin/orders/${id}`,
+    })
+  ));
+
+  // Broadcast SSE event to all connected admin clients
+  broadcastAdminEvent({
+    type: 'PAYMENT_PROOF',
+    orderId: id,
+    orderNumber: order.orderNumber,
+    userName: user?.name || 'Customer',
+    message: `Payment proof submitted for ${order.orderNumber}`,
+  });
+
+  return ApiResponse.success(res, updated, 'Payment proof submitted. Admin will verify shortly.');
+}
+
+// ─── Admin: Mark Order as Paid ────────────────────────────────────────────────
+export async function adminMarkPaid(req: AuthRequest, res: Response) {
+  const { id } = req.params;
+
+  const order = await prisma.order.findUnique({
+    where: { id },
+    include: { user: { select: { name: true, email: true } } },
+  });
+  if (!order) throw new AppError('Order not found', 404);
+
+  const [updated] = await prisma.$transaction([
+    prisma.order.update({
+      where: { id },
+      data: {
+        isPaid: true,
+        paidAt: new Date(),
+        paymentStatus: 'PAID',
+        status: 'CONFIRMED',
+      },
+    }),
+    prisma.orderStatusHistory.create({
+      data: { orderId: id, status: 'CONFIRMED', note: 'Payment verified by admin' },
+    }),
+  ]);
+
+  // Notify customer
+  await createOrderNotification(order.userId, order.orderNumber, order.id, 'CONFIRMED');
+
+  if (order.user) {
+    sendEmail({
+      to: order.user.email,
+      toName: order.user.name,
+      subject: `Payment Confirmed — ${order.orderNumber}`,
+      template: 'payment-confirmed',
+      html: `<h2>Payment Confirmed!</h2><p>Your MoMo payment for order <strong>${order.orderNumber}</strong> has been verified. Your order is now being processed.</p>`,
+    }).catch(() => {});
+  }
+
+  return ApiResponse.success(res, updated, 'Order marked as paid and confirmed');
 }

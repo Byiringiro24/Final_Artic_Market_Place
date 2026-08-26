@@ -12,7 +12,8 @@ import {
   Truck, Package, User, Clock,
 } from 'lucide-react';
 import { get, put } from '@/lib/api';
-import { formatDate, formatPrice, getOrderStatusColor } from '@/lib/utils';
+import { usePrice } from '@/hooks/usePrice';
+import { formatDate, getOrderStatusColor } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -28,7 +29,8 @@ const statusSchema = z.object({
 type StatusForm = z.infer<typeof statusSchema>;
 
 const ORDER_STATUSES = [
-  'PENDING', 'CONFIRMED', 'PROCESSING', 'SHIPPED',
+  'PENDING', 'PENDING_PAYMENT_PROOF', 'PAYMENT_PROOF_SUBMITTED',
+  'CONFIRMED', 'PROCESSING', 'SHIPPED',
   'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED', 'REFUNDED',
   'RETURN_REQUESTED', 'RETURNED',
 ];
@@ -44,6 +46,7 @@ interface Order {
   shippingPrice: number; taxPrice: number; couponDiscount: number;
   isPaid: boolean; paidAt?: string; trackingNumber?: string; carrier?: string;
   adminNotes?: string; createdAt: string;
+  paymentProof?: string;
   user: { id: string; name: string; email: string };
   shippingAddress: {
     fullName: string; street: string; city: string;
@@ -55,9 +58,10 @@ interface Order {
 
 export default function AdminOrderDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
-  const locale = useLocale();
+  const locale  = useLocale();
   const { toast } = useToast();
   const qc = useQueryClient();
+  const fmt = usePrice();
 
   const { data, isLoading } = useQuery({
     queryKey: ['admin-order', id],
@@ -79,6 +83,16 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
       qc.invalidateQueries({ queryKey: ['admin-orders'] });
     },
     onError: () => toast({ title: 'Update failed', variant: 'destructive' }),
+  });
+
+  const { mutate: markPaid, isPending: markingPaid } = useMutation({
+    mutationFn: () => put(`/orders/${id}/mark-paid`, {}),
+    onSuccess: () => {
+      toast({ title: '✅ Payment verified! Order confirmed.' });
+      qc.invalidateQueries({ queryKey: ['admin-order', id] });
+      qc.invalidateQueries({ queryKey: ['admin-orders'] });
+    },
+    onError: () => toast({ title: 'Failed to mark as paid', variant: 'destructive' }),
   });
 
   if (isLoading) {
@@ -218,8 +232,8 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
                     <p className="text-xs text-gray-500 mt-0.5">Qty: {item.quantity}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-sm">{formatPrice(item.price * item.quantity)}</p>
-                    <p className="text-xs text-gray-400">{formatPrice(item.price)} each</p>
+                    <p className="font-semibold text-sm">{fmt(Number(item.price) * item.quantity)}</p>
+                    <p className="text-xs text-gray-400">{fmt(Number(item.price))} each</p>
                   </div>
                 </li>
               ))}
@@ -289,7 +303,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
           </div>
 
           {/* Payment */}
-          <div className="bg-white border rounded-lg p-4 space-y-2">
+          <div className="bg-white border rounded-lg p-4 space-y-3">
             <h2 className="font-semibold flex items-center gap-2">
               <CreditCard className="h-4 w-4 text-gray-500" /> Payment
             </h2>
@@ -297,6 +311,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
               {order.paymentMethod === 'STRIPE' && '💳 Stripe'}
               {order.paymentMethod === 'PAYPAL' && '🅿️ PayPal'}
               {order.paymentMethod === 'CASH_ON_DELIVERY' && '💵 Cash on Delivery'}
+              {order.paymentMethod === 'MTN_MOMO' && '📱 MTN MoMo'}
             </p>
             <div className="flex items-center gap-2">
               <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${order.isPaid ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}`}>
@@ -304,6 +319,46 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
               </span>
               {order.paidAt && <span className="text-xs text-gray-400">{formatDate(order.paidAt)}</span>}
             </div>
+
+            {/* MTN MoMo payment proof */}
+            {order.paymentMethod === 'MTN_MOMO' && (
+              <div className="space-y-3 pt-1">
+                {order.status === 'PAYMENT_PROOF_SUBMITTED' && !order.isPaid && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 text-sm text-yellow-800 font-medium">
+                    📸 Customer submitted payment proof — please verify and confirm payment below.
+                  </div>
+                )}
+
+                {order.paymentProof ? (
+                  <div className="space-y-2">
+                    <p className="text-xs font-medium text-gray-600">Payment Screenshot:</p>
+                    <a href={order.paymentProof} target="_blank" rel="noopener noreferrer">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={order.paymentProof}
+                        alt="MoMo payment proof"
+                        className="w-full rounded-lg border cursor-zoom-in hover:opacity-90 transition-opacity max-h-64 object-contain bg-gray-50"
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      />
+                    </a>
+                    <p className="text-[10px] text-gray-400">Click image to view full size</p>
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-400 italic">No payment proof uploaded yet.</p>
+                )}
+
+                {!order.isPaid && (
+                  <Button
+                    onClick={() => markPaid()}
+                    disabled={markingPaid}
+                    className="w-full bg-green-600 hover:bg-green-700 text-white rounded-lg gap-2"
+                  >
+                    {markingPaid ? <Loader2 className="h-4 w-4 animate-spin" /> : '✓'}
+                    Verify & Mark as Paid
+                  </Button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Order summary */}
@@ -312,27 +367,27 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
             <div className="space-y-1.5 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-500">Items:</span>
-                <span>{formatPrice(order.itemsPrice)}</span>
+                <span>{fmt(Number(order.itemsPrice))}</span>
               </div>
               {order.couponDiscount > 0 && (
                 <div className="flex justify-between text-green-700">
                   <span>Discount:</span>
-                  <span>-{formatPrice(order.couponDiscount)}</span>
+                  <span>-{fmt(Number(order.couponDiscount))}</span>
                 </div>
               )}
               <div className="flex justify-between">
                 <span className="text-gray-500">Shipping:</span>
-                <span>{order.shippingPrice === 0 ? <span className="text-green-700">FREE</span> : formatPrice(order.shippingPrice)}</span>
+                <span>{order.shippingPrice === 0 ? <span className="text-green-700">FREE</span> : fmt(Number(order.shippingPrice))}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-gray-500">Tax:</span>
-                <span>{formatPrice(order.taxPrice)}</span>
+                <span>{fmt(Number(order.taxPrice))}</span>
               </div>
             </div>
             <Separator />
             <div className="flex justify-between font-bold">
               <span>Total:</span>
-              <span className="text-lg">{formatPrice(order.totalPrice)}</span>
+              <span className="text-lg">{fmt(Number(order.totalPrice))}</span>
             </div>
           </div>
 
