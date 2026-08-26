@@ -126,7 +126,7 @@ export async function createProduct(req: Request, res: Response) {
   const {
     name, categoryId, brandId, description, shortDesc,
     price, listPrice, countInStock, sku, weight,
-    images, tags, colors, sizes, isPublished, isFeatured,
+    images, videos, tags, colors, sizes, isPublished, isFeatured,
     metaTitle, metaDesc,
   } = req.body;
 
@@ -148,10 +148,11 @@ export async function createProduct(req: Request, res: Response) {
       countInStock,
       sku,
       weight,
-      images: images || [],
-      tags: tags || [],
+      images:      images || [],
+      videos:      videos || [],
+      tags:        tags   || [],
       isPublished: isPublished || false,
-      isFeatured: isFeatured || false,
+      isFeatured:  isFeatured  || false,
       metaTitle,
       metaDesc,
     },
@@ -184,12 +185,37 @@ export async function updateProduct(req: Request, res: Response) {
   const existing = await prisma.product.findUnique({ where: { id } });
   if (!existing) throw new AppError('Product not found', 404);
 
-  const { name, ...rest } = req.body;
+  const {
+    name, categoryId, brandId, description, shortDesc,
+    price, listPrice, countInStock, sku, weight,
+    images, videos, tags, isPublished, isFeatured,
+    metaTitle, metaDesc,
+  } = req.body;
+
   const slug = name ? slugify(name, { lower: true, strict: true }) : undefined;
 
   const product = await prisma.product.update({
     where: { id },
-    data: { ...(name && { name, slug }), ...rest },
+    data: {
+      ...(name        !== undefined && { name }),
+      ...(slug        !== undefined && { slug }),
+      ...(categoryId  !== undefined && { categoryId }),
+      ...(brandId     !== undefined && { brandId }),
+      ...(description !== undefined && { description }),
+      ...(shortDesc   !== undefined && { shortDesc }),
+      ...(price       !== undefined && { price }),
+      ...(listPrice   !== undefined && { listPrice }),
+      ...(countInStock !== undefined && { countInStock }),
+      ...(sku         !== undefined && { sku }),
+      ...(weight      !== undefined && { weight }),
+      ...(images      !== undefined && { images }),
+      ...(videos      !== undefined && { videos }),
+      ...(tags        !== undefined && { tags }),
+      ...(isPublished !== undefined && { isPublished }),
+      ...(isFeatured  !== undefined && { isFeatured }),
+      ...(metaTitle   !== undefined && { metaTitle }),
+      ...(metaDesc    !== undefined && { metaDesc }),
+    },
     include: { category: true, brand: true },
   });
 

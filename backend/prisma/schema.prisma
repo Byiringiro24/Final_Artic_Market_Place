@@ -241,6 +241,7 @@ model Product {
   sku             String?  @unique
   weight          Decimal? @db.Decimal(8, 3) // kg, for shipping calc
   images          String[] @default([])
+  videos          String[] @default([])
   tags            String[] @default([])
   avgRating       Decimal  @default(0) @db.Decimal(3, 2)
   numReviews      Int      @default(0)

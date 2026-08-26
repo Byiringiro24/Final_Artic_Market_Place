@@ -33,7 +33,7 @@ import { cn } from '@/lib/utils';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1').replace('/api/v1', '');
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/v1').replace('/api/v1', '');
 
 const ACCEPT_ALL = [
   'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif',
@@ -211,15 +211,28 @@ export default function ProductForm({ initialData, productId }: Props) {
   // ── Data fetches ─────────────────────────────────────────────────────────────
   const { data: categoriesData } = useQuery({
     queryKey: ['all-categories'],
-    queryFn: () => get<Array<{ id: string; name: string }>>('/categories'),
+    queryFn: () => get<Array<{ id: string; name: string; parentId: string | null }>>('/categories'),
   });
   const { data: brandsData } = useQuery({
     queryKey: ['all-brands'],
     queryFn: () => get<Array<{ id: string; name: string }>>('/brands'),
   });
 
-  const categories = (categoriesData?.data as unknown as Array<{ id: string; name: string }>) || [];
-  const brands     = (brandsData?.data     as unknown as Array<{ id: string; name: string }>) || [];
+  const allCats = (categoriesData?.data as unknown as Array<{ id: string; name: string; parentId: string | null }>) || [];
+  // Build hierarchical list: top-level first, then their children, grandchildren
+  function buildCategoryOptions(cats: Array<{ id: string; name: string; parentId: string | null }>) {
+    const options: Array<{ id: string; label: string }> = [];
+    function addLevel(parentId: string | null, depth: number) {
+      cats.filter((c) => c.parentId === parentId).forEach((c) => {
+        options.push({ id: c.id, label: `${'  '.repeat(depth)}${depth > 0 ? '↳ ' : ''}${c.name}` });
+        addLevel(c.id, depth + 1);
+      });
+    }
+    addLevel(null, 0);
+    return options;
+  }
+  const categories = buildCategoryOptions(allCats);
+  const brands     = (brandsData?.data as unknown as Array<{ id: string; name: string }>) || [];
 
   // ── React Hook Form ───────────────────────────────────────────────────────────
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm<FormData>({

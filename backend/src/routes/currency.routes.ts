@@ -161,8 +161,8 @@ router.get('/rates', async (_req: Request, res: Response) => {
   // 3. Fetch live
   const rates = await fetchLiveRates();
 
-  // Store in Redis
-  await setCache(REDIS_KEY, rates, REDIS_TTL);
+  // Store in Redis (non-fatal)
+  try { await setCache(REDIS_KEY, rates, REDIS_TTL); } catch { /* ignore */ }
   // Store in memory
   memCache = { rates, ts: Date.now() };
 
