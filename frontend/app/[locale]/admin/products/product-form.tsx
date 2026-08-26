@@ -85,7 +85,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 interface Props {
-  initialData?: Partial<FormData & { id: string; tags: string[]; videos?: string[] }>;
+  initialData?: Partial<FormData & { id: string; tags: string | string[]; videos?: string[] }>;
   productId?: string;
 }
 
@@ -248,7 +248,7 @@ export default function ProductForm({ initialData, productId }: Props) {
       countInStock: Number(initialData?.countInStock) || 0,
       sku:          initialData?.sku          || '',
       images:       initialData?.images       || [],
-      tags:         Array.isArray(initialData?.tags) ? initialData.tags.join(', ') : (initialData?.tags as string) || '',
+      tags:         Array.isArray(initialData?.tags) ? initialData.tags.join(', ') : ((initialData?.tags as string | undefined) ?? ''),
       isPublished:  initialData?.isPublished  ?? false,
       isFeatured:   initialData?.isFeatured   ?? false,
       metaTitle:    initialData?.metaTitle    || '',
