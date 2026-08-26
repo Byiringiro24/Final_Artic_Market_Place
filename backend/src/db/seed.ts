@@ -108,7 +108,7 @@ async function main() {
   const hashedUser = await bcrypt.hash('User@123', 12);
 
   const admin = await prisma.user.create({
-    data: { name: 'Admin User', email: 'admin@articmarketplace.com', password: hashed, role: Role.ADMIN, emailVerified: true },
+    data: { name: 'Admin User', email: 'byiringirofabrice6@gmail.com', password: hashed, role: Role.ADMIN, emailVerified: true },
   });
   const user1 = await prisma.user.create({
     data: { name: 'John Doe', email: 'john@example.com', password: hashedUser, role: Role.USER, emailVerified: true },
@@ -458,7 +458,7 @@ async function main() {
   console.log('\n🎉 Database seeded successfully!\n');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('Demo credentials:');
-  console.log('  Admin: admin@articmarketplace.com / Admin@123');
+  console.log('  Admin: byiringirofabrice6@gmail.com / Admin@123');
   console.log('  User:  john@example.com / User@123');
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 }

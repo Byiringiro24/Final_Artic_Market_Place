@@ -127,7 +127,7 @@ export function OrderConfirmationEmail({
           <Hr style={{ borderColor: '#eee' }} />
           <Section style={{ padding: '20px 40px', textAlign: 'center' }}>
             <Text style={{ color: '#999', fontSize: 12 }}>
-              Questions? Contact us at support@articmarketplace.com<br />
+              Questions? Contact us at byiringirofabrice6@gmail.com<br />
               © {new Date().getFullYear()} ARTIC Marketplace. All rights reserved.
             </Text>
           </Section>

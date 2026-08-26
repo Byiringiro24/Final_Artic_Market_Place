@@ -11,12 +11,12 @@ const options: swaggerJsdoc.Options = {
       description: 'Full e-commerce REST API — Amazon-grade marketplace',
       contact: {
         name: 'ARTIC Marketplace',
-        email: 'api@articmarketplace.com',
+        email: 'byiringirofabrice6@gmail.com',
       },
     },
     servers: [
-      { url: 'http://localhost:5000/api/v1', description: 'Development' },
-      { url: 'https://api.articmarketplace.com/api/v1', description: 'Production' },
+      { url: 'http://localhost:5010/api/v1', description: 'Development' },
+      { url: 'http://102.37.128.81:5010/api/v1', description: 'Production' },
     ],
     components: {
       securitySchemes: {
