@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
@@ -17,7 +17,6 @@ export const metadata: Metadata = {
   description: 'Your one-stop marketplace for products and professional services — ARTIC',
   keywords: ['ecommerce', 'marketplace', 'shopping', 'services', 'Rwanda', 'Africa'],
   manifest: '/manifest.json',
-  themeColor: '#18A89A',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
@@ -27,6 +26,10 @@ export const metadata: Metadata = {
     type: 'website',
     siteName: 'ARTIC Marketplace',
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#18A89A',
 };
 
 export function generateStaticParams() {

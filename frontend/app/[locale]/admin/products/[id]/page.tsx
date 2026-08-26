@@ -74,7 +74,7 @@ export default function EditProductPage({ params }: { params: Promise<{ id: stri
           countInStock: product.countInStock,
           sku: product.sku,
           images: product.images || [],
-          tags: product.tags || [],
+          tags: (product.tags || []).join(', '),
           isPublished: product.isPublished,
           isFeatured: product.isFeatured,
           metaTitle: product.metaTitle,

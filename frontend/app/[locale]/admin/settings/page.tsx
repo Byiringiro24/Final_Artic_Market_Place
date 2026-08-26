@@ -42,12 +42,9 @@ function CurrencySettings() {
   const { data, isLoading } = useQuery({
     queryKey: ['admin-currency-rates'],
     queryFn: () => get<CurrencyAdminData>('/currency/admin-rates'),
-    onSuccess: (res) => {
-      const d = res.data as unknown as CurrencyAdminData;
-      if (useCustom === null) setUseCustom(d.useCustom);
-    },
   });
 
+  // Sync useCustom from server data once loaded
   const d = data?.data as unknown as CurrencyAdminData | undefined;
   const effectiveUseCustom = useCustom ?? d?.useCustom ?? false;
 

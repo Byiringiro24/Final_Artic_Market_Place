@@ -385,5 +385,5 @@ export async function getBrowsingHistory(req: AuthRequest, res: Response) {
     },
   });
 
-  return ApiResponse.success(res, history.map((h: { product: unknown }) => h.product));
+  return ApiResponse.success(res, history.map((h) => h.product));
 }

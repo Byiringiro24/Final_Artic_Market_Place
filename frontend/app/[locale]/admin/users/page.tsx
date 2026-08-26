@@ -15,6 +15,11 @@ interface UserItem {
   _count: { orders: number };
 }
 
+interface ApiData {
+  data: UserItem[];
+  pagination: { total: number; totalPages: number; page: number };
+}
+
 export default function AdminUsersPage() {
   const { toast } = useToast();
   const qc = useQueryClient();
@@ -67,7 +72,7 @@ export default function AdminUsersPage() {
               ) : users.length === 0 ? (
                 <tr><td colSpan={7} className="text-center py-12 text-gray-500">No users found</td></tr>
               ) : (
-                users.map((user) => (
+                users.map((user: UserItem) => (
                   <tr key={user.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">

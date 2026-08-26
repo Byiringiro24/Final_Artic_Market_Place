@@ -408,7 +408,7 @@ export default function ProductForm({ initialData, productId }: Props) {
                 aria-label="Category"
               >
                 <option value="">Select category…</option>
-                {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
+                {categories.map((c) => <option key={c.id} value={c.id}>{c.label}</option>)}
               </select>
               {errors.categoryId && <p className="text-destructive text-xs mt-1">{errors.categoryId.message}</p>}
             </div>

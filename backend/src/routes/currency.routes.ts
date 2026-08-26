@@ -16,7 +16,7 @@ import { getCache, setCache } from '../lib/redis';
 import { ApiResponse } from '../lib/apiResponse';
 import { authenticate, authorize } from '../middleware/auth.middleware';
 import { prisma } from '../db/prisma';
-import logger from '../lib/logger';
+import { logger } from '../lib/logger';
 
 const router = Router();
 

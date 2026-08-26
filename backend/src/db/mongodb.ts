@@ -1,5 +1,5 @@
 import { MongoClient, Db, Collection, ObjectId } from 'mongodb';
-import logger from '../lib/logger';
+import { logger } from '../lib/logger';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
