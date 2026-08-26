@@ -35,10 +35,17 @@ export function errorHandler(
   // Prisma errors
   if (err instanceof Prisma.PrismaClientKnownRequestError) {
     if (err.code === 'P2002') {
+      const field = Array.isArray(err.meta?.target)
+        ? (err.meta.target as string[]).join(', ')
+        : String(err.meta?.target ?? 'value');
+      const fieldLabel = field.includes('slug') ? 'product name (slug)'
+        : field.includes('sku') ? 'SKU'
+        : field.includes('email') ? 'email'
+        : field;
       return res.status(409).json({
         success: false,
-        message: 'A record with this value already exists.',
-        field: err.meta?.target,
+        message: `A record with this ${fieldLabel} already exists. Please use a different value.`,
+        field,
       });
     }
     if (err.code === 'P2025') {

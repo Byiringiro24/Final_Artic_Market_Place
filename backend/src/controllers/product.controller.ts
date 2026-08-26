@@ -130,10 +130,13 @@ export async function createProduct(req: Request, res: Response) {
     metaTitle, metaDesc,
   } = req.body;
 
-  const slug = slugify(name, { lower: true, strict: true });
-
+  // Generate a unique slug — append a short timestamp suffix if base slug is taken
+  const baseSlug = slugify(name, { lower: true, strict: true });
+  let slug = baseSlug;
   const existing = await prisma.product.findUnique({ where: { slug } });
-  if (existing) throw new AppError('A product with this name already exists', 409);
+  if (existing) {
+    slug = `${baseSlug}-${Date.now().toString(36)}`;
+  }
 
   const product = await prisma.product.create({
     data: {
@@ -146,7 +149,8 @@ export async function createProduct(req: Request, res: Response) {
       price,
       listPrice,
       countInStock,
-      sku,
+      // Leave sku undefined if empty/blank to avoid unique constraint on empty string
+      sku: sku && sku.trim() ? sku.trim() : undefined,
       weight,
       images:      images || [],
       videos:      videos || [],
