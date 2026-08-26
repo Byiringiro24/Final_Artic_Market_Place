@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-interface WebPage { id: string; title: string; slug: string; isPublished: boolean; updatedAt: string }
+interface WebPage { id: string; title: string; slug: string; content: string; isPublished: boolean; updatedAt: string }
 
 export default function AdminWebPagesPage() {
   const locale = useLocale();
@@ -50,7 +50,11 @@ export default function AdminWebPagesPage() {
   });
 
   function openEdit(page: WebPage) {
-    setEditing(page); setTitle(page.title); setShowForm(true);
+    setEditing(page);
+    setTitle(page.title);
+    setContent(page.content ?? '');
+    setIsPublished(page.isPublished);
+    setShowForm(true);
   }
 
   return (

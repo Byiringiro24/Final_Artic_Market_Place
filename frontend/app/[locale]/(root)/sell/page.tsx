@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -50,6 +50,7 @@ export default function SellPage() {
   const locale = useLocale();
   const { isAuthenticated, user } = useAuthStore();
   const { toast } = useToast();
+  const qc = useQueryClient();
   const [submitted, setSubmitted] = useState(false);
 
   const { data: appData } = useQuery({
@@ -153,7 +154,13 @@ export default function SellPage() {
                 {existingApp.status === 'REJECTED' && (
                   <>
                     <p className="text-gray-500 text-sm mb-4">You can reapply with updated information.</p>
-                    <Button className="bg-artic-teal text-white rounded-full" onClick={() => setSubmitted(false)}>
+                    <Button
+                      className="bg-artic-teal text-white rounded-full"
+                      onClick={() => {
+                        qc.removeQueries({ queryKey: ['my-seller-application'] });
+                        setSubmitted(false);
+                      }}
+                    >
                       Reapply
                     </Button>
                   </>

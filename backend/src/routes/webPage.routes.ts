@@ -16,15 +16,7 @@ router.get('/', async (_req, res) => {
   return ApiResponse.success(res, pages);
 });
 
-router.get('/:slug', async (req, res) => {
-  const page = await prisma.webPage.findUnique({
-    where: { slug: req.params.slug, isPublished: true },
-  });
-  if (!page) throw new AppError('Page not found', 404);
-  return ApiResponse.success(res, page);
-});
-
-// Admin CRUD
+// Admin routes MUST come before /:slug to avoid slug capture
 router.get('/admin/all', authenticate, authorize('ADMIN'), async (_req, res) => {
   const pages = await prisma.webPage.findMany({ orderBy: { sortOrder: 'asc' } });
   return ApiResponse.success(res, pages);
@@ -54,6 +46,15 @@ router.put('/:id', authenticate, authorize('ADMIN'), async (req, res) => {
 router.delete('/:id', authenticate, authorize('ADMIN'), async (req, res) => {
   await prisma.webPage.delete({ where: { id: req.params.id } });
   return ApiResponse.success(res, null, 'Page deleted');
+});
+
+// Public: get single page by slug (must be last — catches all /:slug)
+router.get('/:slug', async (req, res) => {
+  const page = await prisma.webPage.findUnique({
+    where: { slug: req.params.slug, isPublished: true },
+  });
+  if (!page) throw new AppError('Page not found', 404);
+  return ApiResponse.success(res, page);
 });
 
 export default router;

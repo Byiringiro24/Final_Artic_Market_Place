@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Plus, Trash2, Tag } from 'lucide-react';
 import { get, del, post } from '@/lib/api';
-import { formatDate, formatPrice } from '@/lib/utils';
+import { formatPrice } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
