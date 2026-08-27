@@ -6,6 +6,7 @@ export const registerSchema = z.object({
   body: z.object({
     name: z.string().min(2, 'Name must be at least 2 characters').max(100),
     email: z.string().email('Invalid email address'),
+    phoneNumber: z.string().trim().min(7, 'Phone number must be at least 7 characters').max(20, 'Phone number is too long'),
     password: z
       .string()
       .min(8, 'Password must be at least 8 characters')
@@ -93,7 +94,7 @@ export const productQuerySchema = z.object({
 export const createOrderSchema = z.object({
   body: z.object({
     shippingAddressId: z.string().uuid(),
-    paymentMethod: z.enum(['STRIPE', 'PAYPAL', 'CASH_ON_DELIVERY']),
+    paymentMethod: z.enum(['STRIPE', 'PAYPAL', 'CASH_ON_DELIVERY', 'MTN_MOMO']),
     couponCode: z.string().optional(),
     items: z.array(
       z.object({

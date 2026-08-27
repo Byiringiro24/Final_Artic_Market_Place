@@ -1,4 +1,5 @@
 ﻿import Link from 'next/link';
+import Image from 'next/image';
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
 import BackToTop from './BackToTop';
 import FooterLinks from './FooterLinks';
@@ -33,10 +34,13 @@ export default function Footer() {
         {/* Logo + social */}
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-2">
-            <div className="bg-artic-teal rounded px-2 py-1 text-black font-black text-lg">
-              ARTIC
-            </div>
-            <span className="text-white text-sm">marketplace</span>
+            <Image
+              src="/logo.jpg"
+              alt="ARTIC Group Ltd"
+              width={140}
+              height={56}
+              className="h-12 w-auto object-contain brightness-110"
+            />
           </div>
 
           <div className="flex items-center gap-4">

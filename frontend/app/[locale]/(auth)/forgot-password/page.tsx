@@ -18,7 +18,10 @@ export default function ForgotPasswordPage() {
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<F>({ resolver: zodResolver(schema) });
 
   async function onSubmit(data: F) {
-    await post('/auth/forgot-password', data);
+    await post('/auth/forgot-password', {
+      ...data,
+      email: data.email.trim().toLowerCase(),
+    });
     setSent(true);
   }
 

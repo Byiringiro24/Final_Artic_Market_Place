@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { ShoppingCart, Heart, Bell, Globe } from 'lucide-react';
 import { useCartStore } from '@/store/cart.store';
@@ -25,16 +26,16 @@ export default function Header() {
       <div className="bg-[#1A2332]">
         <div className="max-w-[1600px] mx-auto px-3 h-[60px] flex items-center gap-3">
 
-          {/* Logo — unique ARTIC brand, NOT Amazon style */}
-          <Link href={`/${locale}`} className="flex items-center gap-2 flex-shrink-0 mr-2 group">
-            <div className="relative w-9 h-9 rounded-lg bg-gradient-to-br from-[#18A89A] to-[#0F7A70] flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
-              <span className="text-white font-black text-lg leading-none">A</span>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-[#FFB800] rounded-full border-2 border-[#1A2332]" />
-            </div>
-            <div className="flex flex-col leading-none">
-              <span className="text-white font-black text-xl tracking-tight">ARTIC</span>
-              <span className="text-[#18A89A] text-[9px] font-semibold tracking-[0.15em] uppercase">Marketplace</span>
-            </div>
+          {/* Logo */}
+          <Link href={`/${locale}`} className="flex items-center flex-shrink-0 mr-2 group" aria-label="ARTIC Group Ltd — Home">
+            <Image
+              src="/logo.jpg"
+              alt="ARTIC Group Ltd"
+              width={120}
+              height={48}
+              className="h-10 w-auto object-contain group-hover:brightness-110 transition-all duration-200"
+              priority
+            />
           </Link>
 
           {/* Search — takes most space */}

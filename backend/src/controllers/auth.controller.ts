@@ -26,9 +26,19 @@ const COOKIE_OPTS = {
 
 // ─── Register ─────────────────────────────────────────────────────────────────
 export async function register(req: Request, res: Response) {
-  const { name, email, password } = req.body;
+  const { name, email, password, phoneNumber } = req.body;
+  const normalizedEmail = String(email ?? '').trim().toLowerCase();
+  const normalizedPhone = String(phoneNumber ?? '').trim();
 
-  const existing = await prisma.user.findUnique({ where: { email } });
+  if (!normalizedEmail) {
+    throw new AppError('Email is required', 400);
+  }
+
+  if (!normalizedPhone || normalizedPhone.length < 7) {
+    throw new AppError('Phone number is required', 400);
+  }
+
+  const existing = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   if (existing) {
     throw new AppError('Email is already registered', 409);
   }
@@ -37,8 +47,13 @@ export async function register(req: Request, res: Response) {
   const hashedPassword = await bcrypt.hash(password, saltRounds);
 
   const user = await prisma.user.create({
-    data: { name, email, password: hashedPassword },
-    select: { id: true, name: true, email: true, role: true, image: true },
+    data: {
+      name: String(name ?? '').trim(),
+      email: normalizedEmail,
+      phoneNumber: normalizedPhone,
+      password: hashedPassword,
+    },
+    select: { id: true, name: true, email: true, role: true, image: true, phoneNumber: true },
   });
 
   // Send verification email
@@ -76,8 +91,9 @@ export async function register(req: Request, res: Response) {
 // ─── Login ────────────────────────────────────────────────────────────────────
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
+  const normalizedEmail = String(email ?? '').trim().toLowerCase();
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   if (!user || !user.password) {
     throw new AppError('Invalid email or password', 401);
   }
@@ -113,6 +129,82 @@ export async function login(req: Request, res: Response) {
   res.cookie('refreshToken', refreshToken, COOKIE_OPTS);
 
   logger.info(`User logged in: ${email}`);
+
+  return ApiResponse.success(res, {
+    accessToken,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: user.role,
+      image: user.image,
+      emailVerified: user.emailVerified,
+      preferredLanguage: user.preferredLanguage,
+      preferredCurrency: user.preferredCurrency,
+    },
+  });
+}
+
+// ─── Google Login ─────────────────────────────────────────────────────────────
+export async function googleLogin(req: Request, res: Response) {
+  const { email, name, image, googleId } = req.body ?? {};
+  const normalizedEmail = String(email ?? '').trim().toLowerCase();
+
+  if (!normalizedEmail || !googleId) {
+    throw new AppError('Google account information is missing', 400);
+  }
+
+  let user = await prisma.user.findFirst({
+    where: {
+      OR: [{ email: normalizedEmail }, { googleId }],
+    },
+  });
+
+  if (!user) {
+    user = await prisma.user.create({
+      data: {
+        name: String(name ?? 'Google User').trim() || 'Google User',
+        email: normalizedEmail,
+        image: image || null,
+        googleId,
+        emailVerified: true,
+        password: null,
+      },
+    });
+  } else {
+    user = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        name: String(name ?? user.name).trim() || user.name,
+        image: image || user.image,
+        googleId: user.googleId || googleId,
+        emailVerified: user.emailVerified || true,
+      },
+    });
+  }
+
+  if (!user.isActive) {
+    throw new AppError('Your account has been deactivated. Contact support.', 403);
+  }
+
+  const payload = { userId: user.id, email: user.email, role: user.role };
+  const accessToken = signAccessToken(payload);
+  const refreshToken = signRefreshToken(payload);
+
+  await prisma.refreshToken.create({
+    data: {
+      userId: user.id,
+      token: refreshToken,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+    },
+  });
+
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { lastLoginAt: new Date(), googleId: user.googleId || googleId },
+  });
+
+  res.cookie('refreshToken', refreshToken, COOKIE_OPTS);
 
   return ApiResponse.success(res, {
     accessToken,
@@ -191,8 +283,9 @@ export async function verifyEmail(req: Request, res: Response) {
 // ─── Forgot Password ──────────────────────────────────────────────────────────
 export async function forgotPassword(req: Request, res: Response) {
   const { email } = req.body;
+  const normalizedEmail = String(email ?? '').trim().toLowerCase();
 
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
   // Always return 200 to prevent email enumeration
   if (!user) {
     return ApiResponse.success(res, null, 'If this email exists, a reset link has been sent.');

@@ -40,7 +40,10 @@ export default function SignInForm() {
     try {
       const res = await post<{ accessToken: string; user: Parameters<typeof setUser>[0] }>(
         '/auth/login',
-        data
+        {
+          ...data,
+          email: data.email.trim().toLowerCase(),
+        }
       );
       setUser(res.data.user, res.data.accessToken);
       toast({ title: `Welcome back, ${res.data.user.name.split(' ')[0]}!` });

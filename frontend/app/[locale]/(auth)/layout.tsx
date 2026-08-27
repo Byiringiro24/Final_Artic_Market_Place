@@ -1,13 +1,20 @@
 ﻿import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-artic-light-bg flex flex-col">
       {/* Minimal header */}
-      <header className="bg-white border-b py-4 px-6 flex justify-center">
-        <Link href="/" className="flex items-center gap-2">
-          <div className="bg-artic-teal rounded px-2 py-1 text-black font-black text-xl">ARTIC</div>
-          <span className="text-gray-600 text-sm">marketplace</span>
+      <header className="bg-white border-b py-3 px-6 flex justify-center">
+        <Link href="/" className="flex items-center" aria-label="ARTIC Group Ltd — Home">
+          <Image
+            src="/logo.jpg"
+            alt="ARTIC Group Ltd"
+            width={130}
+            height={52}
+            className="h-11 w-auto object-contain"
+            priority
+          />
         </Link>
       </header>
 

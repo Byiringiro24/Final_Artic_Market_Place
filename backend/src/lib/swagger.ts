@@ -11,7 +11,7 @@ const options: swaggerJsdoc.Options = {
       description: 'Full e-commerce REST API — Amazon-grade marketplace',
       contact: {
         name: 'ARTIC Marketplace',
-        email: 'byiringirofabrice6@gmail.com',
+        email: 'articltd1@gmail.com',
       },
     },
     servers: [

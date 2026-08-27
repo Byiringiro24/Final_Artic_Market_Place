@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { PaymentMethod, OrderStatus, NotificationType } from '@prisma/client';
 import { prisma } from '../db/prisma';
 import { ApiResponse, buildPagination } from '../lib/apiResponse';
 import { AppError } from '../middleware/error.middleware';
@@ -443,7 +444,7 @@ export async function submitPaymentProof(req: AuthRequest, res: Response) {
   const order = await prisma.order.findUnique({ where: { id } });
   if (!order) throw new AppError('Order not found', 404);
   if (order.userId !== req.user!.userId) throw new AppError('Access denied', 403);
-  if (order.paymentMethod !== 'MTN_MOMO') {
+  if (order.paymentMethod !== PaymentMethod.MTN_MOMO) {
     throw new AppError('Payment proof is only for MTN MoMo orders', 400);
   }
   if (!['PENDING', 'PENDING_PAYMENT_PROOF'].includes(order.status)) {
@@ -455,11 +456,11 @@ export async function submitPaymentProof(req: AuthRequest, res: Response) {
       where: { id },
       data: {
         paymentProof: proofUrl,
-        status: 'PAYMENT_PROOF_SUBMITTED',
+        status: OrderStatus.PAYMENT_PROOF_SUBMITTED,
       },
     });
     await tx.orderStatusHistory.create({
-      data: { orderId: id, status: 'PAYMENT_PROOF_SUBMITTED', note: 'Customer submitted MoMo payment proof' },
+      data: { orderId: id, status: OrderStatus.PAYMENT_PROOF_SUBMITTED, note: 'Customer submitted MoMo payment proof' },
     });
     return o;
   });
@@ -471,7 +472,7 @@ export async function submitPaymentProof(req: AuthRequest, res: Response) {
   await Promise.all(admins.map((admin) =>
     createNotification({
       userId: admin.id,
-      type: 'PAYMENT_PROOF_SUBMITTED',
+      type: NotificationType.PAYMENT_PROOF_SUBMITTED,
       title: '📸 MoMo Payment Proof Received',
       message: `${user?.name} submitted payment proof for order ${order.orderNumber}. Please verify and confirm.`,
       link: `/admin/orders/${id}`,

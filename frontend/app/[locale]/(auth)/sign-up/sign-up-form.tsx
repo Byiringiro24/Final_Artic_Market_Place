@@ -17,6 +17,10 @@ const schema = z
   .object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Enter a valid email address'),
+    phoneNumber: z
+      .string()
+      .trim()
+      .min(7, 'Phone number must be at least 7 characters'),
     password: z
       .string()
       .min(8, 'At least 8 characters')
@@ -70,7 +74,8 @@ export default function SignUpForm() {
     try {
       await post('/auth/register', {
         name: data.name,
-        email: data.email,
+        email: data.email.trim().toLowerCase(),
+        phoneNumber: data.phoneNumber.trim(),
         password: data.password,
       });
       setDone(true);
@@ -112,6 +117,21 @@ export default function SignUpForm() {
         <Label htmlFor="email">Email address</Label>
         <Input id="email" type="email" autoComplete="email" className="mt-1" {...register('email')} />
         {errors.email && <p className="text-sm text-destructive mt-1">{errors.email.message}</p>}
+      </div>
+
+      <div>
+        <Label htmlFor="phoneNumber">Phone number</Label>
+        <Input
+          id="phoneNumber"
+          type="tel"
+          autoComplete="tel"
+          inputMode="tel"
+          className="mt-1"
+          {...register('phoneNumber')}
+        />
+        {errors.phoneNumber && (
+          <p className="text-sm text-destructive mt-1">{errors.phoneNumber.message}</p>
+        )}
       </div>
 
       <div>

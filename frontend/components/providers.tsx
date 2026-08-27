@@ -5,10 +5,44 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { useState, useEffect, useRef } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { SessionProvider, useSession } from 'next-auth/react';
 import { Toaster } from '@/components/ui/toaster';
 import { initCurrencyRates, useCurrencyStore } from '@/store/currency.store';
 import { useAuthStore } from '@/store/auth.store';
 import type { CurrencyCode } from '@/lib/currency';
+
+function SessionSync({ children }: { children: React.ReactNode }) {
+  const { data: session, status } = useSession();
+  const { user, isAuthenticated, setUser } = useAuthStore();
+
+  useEffect(() => {
+    if (status !== 'authenticated' || !session?.accessToken || !session.user?.email) {
+      return;
+    }
+
+    const nextUser = {
+      id: session.user.id || session.user.email,
+      name: session.user.name || 'Google User',
+      email: session.user.email,
+      role: (session.user.role || 'USER') as 'USER' | 'ADMIN' | 'SELLER',
+      image: session.user.image || null,
+      phoneNumber: null,
+      emailVerified: true,
+      preferredLanguage: null,
+      preferredCurrency: null,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    if (isAuthenticated && user?.email === session.user.email) {
+      return;
+    }
+
+    setUser(nextUser, session.accessToken);
+  }, [status, session, isAuthenticated, user, setUser]);
+
+  return <>{children}</>;
+}
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -69,19 +103,21 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   }, [isAuthenticated]);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        enableSystem
-        disableTransitionOnChange
-      >
-        {children}
-        <Toaster />
-      </ThemeProvider>
-      {process.env.NODE_ENV === 'development' && (
-        <ReactQueryDevtools initialIsOpen={false} />
-      )}
-    </QueryClientProvider>
+    <SessionProvider>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <SessionSync>{children}</SessionSync>
+          <Toaster />
+        </ThemeProvider>
+        {process.env.NODE_ENV === 'development' && (
+          <ReactQueryDevtools initialIsOpen={false} />
+        )}
+      </QueryClientProvider>
+    </SessionProvider>
   );
 }
