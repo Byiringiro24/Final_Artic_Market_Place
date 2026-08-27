@@ -3,7 +3,7 @@
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
-import { CheckCircle2, ArrowRight, Star, MessageCircle } from 'lucide-react';
+import { ArrowRight, Star } from 'lucide-react';
 import { get } from '@/lib/api';
 import { Button } from '@/components/ui/button';
 
@@ -20,6 +20,8 @@ interface Service {
   isFeatured: boolean;
 }
 
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/v1').replace(/\/api\/v1$/, '');
+
 const CATEGORY_ICONS: Record<string, string> = {
   Photography: '📸',
   Logistics: '🚚',
@@ -31,6 +33,13 @@ const CATEGORY_ICONS: Record<string, string> = {
   Legal: '⚖️',
   Other: '🛠',
 };
+
+function resolveMediaUrl(url?: string) {
+  if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&q=80';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  const normalized = url.startsWith('/') ? url : `/${url}`;
+  return `${API_BASE}${normalized}`;
+}
 
 export default function ServicesClient() {
   const locale = useLocale();
@@ -173,7 +182,12 @@ function ServiceCard({ service, locale }: { service: Service; locale: string }) 
       <div className="h-36 bg-gradient-to-br from-artic-teal/10 to-artic-teal/5 rounded-lg mb-4 flex items-center justify-center overflow-hidden">
         {service.images?.[0] ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={service.images[0]} alt={service.title} className="w-full h-full object-cover rounded-lg" />
+          <img
+            src={resolveMediaUrl(service.images[0])}
+            alt={service.title}
+            className="w-full h-full object-cover rounded-lg"
+            loading="lazy"
+          />
         ) : (
           <span className="text-4xl">{CATEGORY_ICONS[service.category] || '🛠'}</span>
         )}

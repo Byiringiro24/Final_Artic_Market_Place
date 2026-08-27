@@ -1,11 +1,10 @@
 ﻿'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocale } from 'next-intl';
-import Image from 'next/image';
 import Link from 'next/link';
-import { ShoppingCart, Heart, Share2, Shield, Truck, RotateCcw, ChevronRight } from 'lucide-react';
+import { ShoppingCart, Heart, Shield, Truck, RotateCcw, ChevronRight } from 'lucide-react';
 import { get } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import { getDiscountPercent } from '@/lib/utils';
@@ -28,6 +27,15 @@ interface Product {
   category: { name: string; slug: string };
   brand: { name: string; logo?: string } | null;
   variants: Variant[];
+}
+
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/v1').replace(/\/api\/v1$/, '');
+
+function resolveMediaUrl(url?: string) {
+  if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&q=80';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  const normalized = url.startsWith('/') ? url : `/${url}`;
+  return `${API_BASE}${normalized}`;
 }
 
 export default function ProductDetail({ slug }: { slug: string }) {
@@ -54,6 +62,15 @@ export default function ProductDetail({ slug }: { slug: string }) {
   );
 
   const product = data.data;
+
+  useEffect(() => {
+    if (!product?.images || product.images.length <= 1) return;
+    const timer = window.setInterval(() => {
+      setActiveImage((current) => (current + 1) % product.images.length);
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [product?.images]);
+
   const discount = getDiscountPercent(Number(product.price), Number(product.listPrice));
 
   // Group variants by name
@@ -108,21 +125,38 @@ export default function ProductDetail({ slug }: { slug: string }) {
                     }`}
                     aria-label={`View image ${i + 1}`}
                   >
-                    <Image src={img} alt={`${product.name} view ${i + 1}`} width={56} height={56} className="object-contain w-full h-full p-1" />
+                    <img src={resolveMediaUrl(img)} alt={`${product.name} view ${i + 1}`} className="object-contain w-full h-full p-1" />
                   </button>
                 ))}
               </div>
             )}
             {/* Main image */}
             <div className="relative w-full max-w-md aspect-square border rounded-lg overflow-hidden bg-gray-50">
-              <Image
-                src={product.images[activeImage] || '/images/placeholder.jpg'}
+              <img
+                src={resolveMediaUrl(product.images[activeImage])}
                 alt={product.name}
-                fill
-                sizes="(max-width: 768px) 100vw, 400px"
-                className="object-contain p-6"
-                priority
+                className="h-full w-full object-contain p-6"
               />
+              {product.images.length > 1 && (
+                <>
+                  <button
+                    type="button"
+                    onClick={() => setActiveImage((current) => (current - 1 + product.images.length) % product.images.length)}
+                    className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/35 p-2 text-white backdrop-blur-sm hover:bg-black/50"
+                    aria-label="Previous product image"
+                  >
+                    ←
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveImage((current) => (current + 1) % product.images.length)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/35 p-2 text-white backdrop-blur-sm hover:bg-black/50"
+                    aria-label="Next product image"
+                  >
+                    →
+                  </button>
+                </>
+              )}
               {discount > 0 && (
                 <Badge className="absolute top-3 left-3 bg-red-500 text-white">-{discount}%</Badge>
               )}
@@ -308,7 +342,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
               {product.videos.map((v, i) => (
                 <video
                   key={i}
-                  src={v}
+                  src={resolveMediaUrl(v)}
                   controls
                   controlsList="nodownload"
                   className="w-full rounded-lg border max-h-96 bg-black"
