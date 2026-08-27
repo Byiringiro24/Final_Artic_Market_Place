@@ -12,7 +12,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             alt="ARTIC Group Ltd"
             width={130}
             height={52}
-            className="h-11 w-auto object-contain"
+            className="h-11 w-auto max-w-[130px] object-contain logo-mark"
             priority
           />
         </Link>

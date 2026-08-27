@@ -18,6 +18,11 @@ export function GoogleSignInButton({
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || `/${locale}`;
   const [isLoading, setIsLoading] = useState(false);
+  const isGoogleEnabled = process.env.NEXT_PUBLIC_GOOGLE_AUTH_ENABLED === 'true';
+
+  if (!isGoogleEnabled) {
+    return null;
+  }
 
   async function handleGoogleLogin() {
     setIsLoading(true);

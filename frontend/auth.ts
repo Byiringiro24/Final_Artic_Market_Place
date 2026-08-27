@@ -2,6 +2,7 @@
 import Google from 'next-auth/providers/google';
 
 const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+const hasGoogleCredentials = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   trustHost: true,
@@ -9,19 +10,21 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
   },
-  providers: [
-    Google({
-      clientId: process.env.AUTH_GOOGLE_ID || '',
-      clientSecret: process.env.AUTH_GOOGLE_SECRET || '',
-      authorization: {
-        params: {
-          prompt: 'consent',
-          access_type: 'offline',
-          scope: 'openid email profile',
-        },
-      },
-    }),
-  ],
+  providers: hasGoogleCredentials
+    ? [
+        Google({
+          clientId: process.env.AUTH_GOOGLE_ID || '',
+          clientSecret: process.env.AUTH_GOOGLE_SECRET || '',
+          authorization: {
+            params: {
+              prompt: 'consent',
+              access_type: 'offline',
+              scope: 'openid email profile',
+            },
+          },
+        }),
+      ]
+    : [],
   pages: {
     signIn: '/sign-in',
   },

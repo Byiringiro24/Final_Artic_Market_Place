@@ -66,6 +66,36 @@
   --artic-text: #1A2332;          /* Main text */
 }
 
+/* ─── Media fit & responsive layout ─────────────────────────────────────── */
+img, video, audio, canvas, iframe, svg, picture, source {
+  display: block;
+  max-width: 100%;
+}
+
+img, video, canvas, picture {
+  height: auto;
+  object-fit: contain;
+}
+
+img[alt="ARTIC Group Ltd"],
+.brand-logo,
+.logo-mark {
+  width: auto;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+.media-fit,
+.media-responsive,
+.product-media,
+.gallery-media {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0.75rem;
+  background: #f7fafc;
+}
+
 /* ─── Custom scrollbar ───────────────────────────────────────────────────── */
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { @apply bg-muted; }

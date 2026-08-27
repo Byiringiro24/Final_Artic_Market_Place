@@ -16,29 +16,27 @@ function SessionSync({ children }: { children: React.ReactNode }) {
   const { user, isAuthenticated, setUser } = useAuthStore();
 
   useEffect(() => {
-    if (status !== 'authenticated' || !session?.accessToken || !session.user?.email) {
+    if (status !== 'authenticated' || !session?.user?.email) {
       return;
     }
 
+    const accessToken = (session as typeof session & { accessToken?: string }).accessToken || '';
     const nextUser = {
-      id: session.user.id || session.user.email,
+      id: (session.user as typeof session.user & { id?: string }).id || session.user.email,
       name: session.user.name || 'Google User',
       email: session.user.email,
-      role: (session.user.role || 'USER') as 'USER' | 'ADMIN' | 'SELLER',
-      image: session.user.image || null,
-      phoneNumber: null,
+      role: ((session.user as typeof session.user & { role?: 'USER' | 'ADMIN' | 'SELLER' }).role || 'USER') as 'USER' | 'ADMIN' | 'SELLER',
+      image: session.user.image || undefined,
       emailVerified: true,
       preferredLanguage: null,
       preferredCurrency: null,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
     };
 
     if (isAuthenticated && user?.email === session.user.email) {
       return;
     }
 
-    setUser(nextUser, session.accessToken);
+    setUser(nextUser, accessToken);
   }, [status, session, isAuthenticated, user, setUser]);
 
   return <>{children}</>;

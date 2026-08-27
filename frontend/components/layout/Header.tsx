@@ -33,7 +33,7 @@ export default function Header() {
               alt="ARTIC Group Ltd"
               width={120}
               height={48}
-              className="h-10 w-auto object-contain group-hover:brightness-110 transition-all duration-200"
+              className="h-10 w-auto max-w-[120px] object-contain group-hover:brightness-110 transition-all duration-200 logo-mark"
               priority
             />
           </Link>
