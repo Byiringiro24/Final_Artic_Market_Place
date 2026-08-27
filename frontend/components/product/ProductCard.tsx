@@ -15,8 +15,9 @@ const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/
 
 function resolveImageUrl(url: string): string {
   if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80';
-  if (url.startsWith('http')) return url;
-  return `${API_BASE}${url}`;
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  const normalized = url.startsWith('/') ? url : `/${url}`;
+  return `${API_BASE}${normalized}`;
 }
 
 export interface ProductCardProps {

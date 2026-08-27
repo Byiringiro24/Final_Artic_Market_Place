@@ -4,7 +4,6 @@ import { useEffect, useState, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
-import Image from 'next/image';
 import {
   LayoutDashboard, Package, ShoppingBag, Users, Tag,
   FileText, Settings, Star, Megaphone, Image as ImageIcon, Truck,
