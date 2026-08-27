@@ -1,12 +1,12 @@
 {
   "name": "artic-marketplace-backend",
   "version": "1.0.0",
-  "description": "ARTIC Marketplace REST API — Node.js + Express + PostgreSQL + Prisma",
+  "description": "ARTIC Marketplace REST API \u2014 Node.js + Express + PostgreSQL + Prisma",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "echo 'Using tsx runtime — no compile step needed'",
-    "start": "node dist/server.js",
+    "dev": "node api.js && tsx watch src/server.ts",
+    "build": "node api.js && echo 'Using tsx runtime \u2014 no compile step needed'",
+    "start": "node api.js && node dist/server.js",
     "start:prod": "tsx src/server.ts",
     "seed": "tsx src/db/seed.ts",
     "prisma:generate": "prisma generate",

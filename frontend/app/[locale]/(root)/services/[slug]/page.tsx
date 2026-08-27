@@ -1,6 +1,6 @@
 'use client';
 
-import { use, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import { useLocale } from 'next-intl';
@@ -16,10 +16,20 @@ interface Service {
   category: string; images: string[]; videos: string[];
 }
 
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/v1').replace(/\/api\/v1$/, '');
+
+function resolveMediaUrl(url?: string) {
+  if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&q=80';
+  if (url.startsWith('http://') || url.startsWith('https://')) return url;
+  const normalized = url.startsWith('/') ? url : `/${url}`;
+  return `${API_BASE}${normalized}`;
+}
+
 export default function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = use(params);
   const locale = useLocale();
   const [showBooking, setShowBooking] = useState(false);
+  const [activeImage, setActiveImage] = useState(0);
 
   const { data, isLoading } = useQuery({
     queryKey: ['service', slug],
@@ -42,6 +52,15 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
   }
 
   const service = data?.data as unknown as Service;
+
+  useEffect(() => {
+    if (!service?.images || service.images.length <= 1) return;
+    const timer = window.setInterval(() => {
+      setActiveImage((current) => (current + 1) % service.images.length);
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [service?.images]);
+
   if (!service) {
     return (
       <div className="container mx-auto px-4 py-12 text-center">
@@ -79,12 +98,55 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
           <div className="space-y-5">
             {/* Image gallery */}
             {service.images.length > 0 && (
-              <div className={`grid gap-3 ${service.images.length > 1 ? 'grid-cols-2' : ''}`}>
-                {service.images.slice(0, 4).map((img, i) => (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img key={i} src={img} alt={`${service.title} ${i + 1}`}
-                    className={`rounded-xl object-cover w-full ${i === 0 && service.images.length > 1 ? 'col-span-2 h-64' : 'h-48'}`} />
-                ))}
+              <div className="bg-white border rounded-xl p-3">
+                <div className="relative overflow-hidden rounded-xl bg-gray-50">
+                  <div className="aspect-[16/10] w-full">
+                    <img
+                      src={resolveMediaUrl(service.images[activeImage])}
+                      alt={`${service.title} ${activeImage + 1}`}
+                      className="h-full w-full object-contain p-3"
+                    />
+                  </div>
+                  {service.images.length > 1 && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setActiveImage((current) => (current - 1 + service.images.length) % service.images.length)}
+                        className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/35 p-2 text-white backdrop-blur-sm hover:bg-black/50"
+                        aria-label="Previous image"
+                      >
+                        ←
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveImage((current) => (current + 1) % service.images.length)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/35 p-2 text-white backdrop-blur-sm hover:bg-black/50"
+                        aria-label="Next image"
+                      >
+                        →
+                      </button>
+                    </>
+                  )}
+                </div>
+                {service.images.length > 1 && (
+                  <div className="mt-3 grid grid-cols-4 gap-2">
+                    {service.images.map((img, i) => (
+                      <button
+                        key={i}
+                        type="button"
+                        onClick={() => setActiveImage(i)}
+                        className={`overflow-hidden rounded-lg border-2 bg-gray-50 ${i === activeImage ? 'border-[#18A89A]' : 'border-transparent'}`}
+                        aria-label={`Show image ${i + 1}`}
+                      >
+                        <img
+                          src={resolveMediaUrl(img)}
+                          alt={`${service.title} ${i + 1}`}
+                          className="h-16 w-full object-cover"
+                        />
+                      </button>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 
@@ -93,7 +155,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
               <div className="bg-white border rounded-xl p-4 space-y-3">
                 <h3 className="font-semibold text-gray-800">Service Videos</h3>
                 {service.videos.map((v, i) => (
-                  <video key={i} src={v} controls controlsList="nodownload" className="w-full rounded-lg max-h-96" />
+                  <video key={i} src={resolveMediaUrl(v)} controls controlsList="nodownload" className="w-full rounded-lg max-h-96" />
                 ))}
               </div>
             )}
