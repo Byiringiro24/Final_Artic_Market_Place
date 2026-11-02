@@ -109,6 +109,7 @@ Use a distinct Docker Compose project name and distinct persistent volumes for H
 - [ ] Back up any existing databases and deployment configuration before changes.
 - [ ] Clone/pull the reviewed ARTIC HUB release into a distinct directory, separate from `/home/articadmin/artic-vms`.
 - [ ] Create private environment files on the VPS with production secrets; set restrictive file permissions and do not print their contents in command output.
+- [ ] Run [`deploy/vps/configure-env.sh`](../deploy/vps/configure-env.sh) to generate missing secrets and configure SMTP/payment values; see [`ARTIC_HUB_Server_Environment_Setup.md`](./ARTIC_HUB_Server_Environment_Setup.md). Use a fresh SMTP app password because the previously shared password is exposed in chat.
 - [ ] Validate the HUB Compose configuration before starting it.
 - [ ] Start only the HUB Compose project; do not use `down --remove-orphans` on a shared host.
 - [ ] Confirm HUB frontend and API respond on loopback and that VMS remains healthy.

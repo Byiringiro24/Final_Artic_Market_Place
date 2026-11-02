@@ -15,6 +15,10 @@ COPY .env.production .env.local
 
 ENV NEXT_TELEMETRY_DISABLED=1
 
+# Public Stripe configuration is supplied by the VPS Compose build args.
+ARG NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=
+ENV NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=$NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+
 # Build Next.js
 RUN npm run build
 
