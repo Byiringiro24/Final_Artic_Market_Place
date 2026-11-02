@@ -83,4 +83,4 @@ router.delete('/:id', async (req: AuthRequest, res) => {
   return ApiResponse.success(res, null);
 });
 
-export default router;
+export const notificationRoutes = router;

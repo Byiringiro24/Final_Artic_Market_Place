@@ -22,7 +22,7 @@ export async function getCart(req: AuthRequest, res: Response) {
   });
 
   const subtotal = cart.reduce(
-    (sum, item) => sum + Number(item.product.price) * item.quantity,
+    (sum, item) => sum + (Number(item.product.price) + Number(item.variant?.priceAdjust || 0)) * item.quantity,
     0
   );
 
@@ -38,24 +38,23 @@ export async function addToCart(req: AuthRequest, res: Response) {
     select: { countInStock: true, name: true },
   });
   if (!product) throw new AppError('Product not found', 404);
-  if (product.countInStock < quantity) {
-    throw new AppError(`Only ${product.countInStock} units available`, 400);
+  const variant = variantId
+    ? await prisma.productVariant.findFirst({ where: { id: variantId, productId }, select: { id: true, stock: true } })
+    : null;
+  if (variantId && !variant) throw new AppError('Product option not found', 404);
+  const available = Math.min(product.countInStock, variant?.stock ?? product.countInStock);
+  if (available < quantity) {
+    throw new AppError(`Only ${available} units available`, 400);
   }
 
-  const existing = await prisma.cartItem.findUnique({
-    where: {
-      userId_productId_variantId: {
-        userId: req.user!.userId,
-        productId,
-        variantId: variantId || null,
-      },
-    },
+  const existing = await prisma.cartItem.findFirst({
+    where: { userId: req.user!.userId, productId, variantId: variantId || null },
   });
 
   if (existing) {
     const newQty = existing.quantity + quantity;
-    if (newQty > product.countInStock) {
-      throw new AppError(`Only ${product.countInStock} units available`, 400);
+    if (newQty > available) {
+      throw new AppError(`Only ${available} units available`, 400);
     }
     const updated = await prisma.cartItem.update({
       where: { id: existing.id },
@@ -87,11 +86,16 @@ export async function updateCartItem(req: AuthRequest, res: Response) {
 
   const item = await prisma.cartItem.findFirst({
     where: { id, userId: req.user!.userId },
-    include: { product: { select: { countInStock: true } } },
+    include: {
+      product: { select: { countInStock: true, isPublished: true } },
+      variant: { select: { stock: true } },
+    },
   });
   if (!item) throw new AppError('Cart item not found', 404);
-  if (quantity > item.product.countInStock) {
-    throw new AppError(`Only ${item.product.countInStock} units available`, 400);
+  if (!item.product.isPublished) throw new AppError('This product is no longer available', 400);
+  const available = Math.min(item.product.countInStock, item.variant?.stock ?? item.product.countInStock);
+  if (quantity > available) {
+    throw new AppError(`Only ${available} units available`, 400);
   }
 
   const updated = await prisma.cartItem.update({

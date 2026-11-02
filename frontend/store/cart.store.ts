@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 
 export interface CartItem {
   id: string;
+  variantKey?: string;
   productId: string;
   variantId?: string;
   name: string;
@@ -15,14 +16,20 @@ export interface CartItem {
   variantInfo?: { color?: string; size?: string };
 }
 
+export function getCartItemVariantKey(item: Pick<CartItem, 'variantId' | 'variantInfo'>) {
+  if (item.variantId) return item.variantId;
+  if (!item.variantInfo) return 'default';
+  return JSON.stringify(Object.fromEntries(Object.entries(item.variantInfo).filter(([, value]) => value).sort(([a], [b]) => a.localeCompare(b))));
+}
+
 interface CartStore {
   items: CartItem[];
   isOpen: boolean;
 
   // Actions
   addItem: (item: Omit<CartItem, 'id'>) => void;
-  removeItem: (productId: string, variantId?: string) => void;
-  updateQuantity: (productId: string, quantity: number, variantId?: string) => void;
+  removeItem: (productId: string, variantKey?: string) => void;
+  updateQuantity: (productId: string, quantity: number, variantKey?: string) => void;
   clearCart: () => void;
   toggleSidebar: () => void;
   openSidebar: () => void;
@@ -31,7 +38,7 @@ interface CartStore {
   // Computed
   getTotalItems: () => number;
   getSubtotal: () => number;
-  isInCart: (productId: string, variantId?: string) => boolean;
+  isInCart: (productId: string, variantKey?: string) => boolean;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -42,15 +49,16 @@ export const useCartStore = create<CartStore>()(
 
       addItem: (item) => {
         set((state) => {
+          const variantKey = getCartItemVariantKey(item);
           const existing = state.items.find(
-            (i) => i.productId === item.productId && i.variantId === item.variantId
+            (i) => i.productId === item.productId && getCartItemVariantKey(i) === variantKey
           );
 
           if (existing) {
             const newQty = Math.min(existing.quantity + item.quantity, item.countInStock);
             return {
               items: state.items.map((i) =>
-                i.productId === item.productId && i.variantId === item.variantId
+                i.productId === item.productId && getCartItemVariantKey(i) === variantKey
                   ? { ...i, quantity: newQty }
                   : i
               ),
@@ -61,29 +69,29 @@ export const useCartStore = create<CartStore>()(
           return {
             items: [
               ...state.items,
-              { ...item, id: `${item.productId}-${item.variantId || 'default'}` },
+              { ...item, variantKey, id: `${item.productId}-${encodeURIComponent(variantKey)}` },
             ],
             isOpen: true,
           };
         });
       },
 
-      removeItem: (productId, variantId) => {
+      removeItem: (productId, variantKey) => {
         set((state) => ({
           items: state.items.filter(
-            (i) => !(i.productId === productId && i.variantId === variantId)
+            (i) => !(i.productId === productId && (variantKey === undefined || getCartItemVariantKey(i) === variantKey))
           ),
         }));
       },
 
-      updateQuantity: (productId, quantity, variantId) => {
+      updateQuantity: (productId, quantity, variantKey) => {
         if (quantity <= 0) {
-          get().removeItem(productId, variantId);
+          get().removeItem(productId, variantKey);
           return;
         }
         set((state) => ({
           items: state.items.map((i) =>
-            i.productId === productId && i.variantId === variantId
+            i.productId === productId && (variantKey === undefined || getCartItemVariantKey(i) === variantKey)
               ? { ...i, quantity: Math.min(quantity, i.countInStock) }
               : i
           ),
@@ -101,9 +109,9 @@ export const useCartStore = create<CartStore>()(
       getSubtotal: () =>
         get().items.reduce((sum, i) => sum + i.price * i.quantity, 0),
 
-      isInCart: (productId, variantId) =>
+      isInCart: (productId, variantKey) =>
         get().items.some(
-          (i) => i.productId === productId && i.variantId === variantId
+          (i) => i.productId === productId && (variantKey === undefined || getCartItemVariantKey(i) === variantKey)
         ),
     }),
     {

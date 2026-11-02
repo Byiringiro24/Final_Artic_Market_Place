@@ -1,6 +1,6 @@
 ﻿'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import { useQuery, useMutation } from '@tanstack/react-query';
@@ -15,7 +15,7 @@ import { get, post, api } from '@/lib/api';
 import { queryKeys } from '@/lib/queryKeys';
 import { useCartStore } from '@/store/cart.store';
 import { useAuthStore } from '@/store/auth.store';
-import { usePrice } from '@/hooks/usePrice';
+import { formatCurrency } from '@/lib/currency';
 import { useToast } from '@/hooks/use-toast';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -46,7 +46,6 @@ const MOMO_NUMBERS = [
 const PAYMENT_METHODS = [
   { id: 'MTN_MOMO',          label: 'MTN MoMo',            icon: '📱', description: 'Pay via MTN Mobile Money' },
   { id: 'STRIPE',            label: 'Credit / Debit Card',  icon: '💳', description: null },
-  { id: 'PAYPAL',            label: 'PayPal',               icon: '🅿️', description: null },
   { id: 'CASH_ON_DELIVERY',  label: 'Cash on Delivery',     icon: '💵', description: 'Pay when your order arrives' },
 ];
 
@@ -56,14 +55,20 @@ export default function CheckoutPage() {
   const { toast } = useToast();
   const { items, getSubtotal, clearCart } = useCartStore();
   const { isAuthenticated } = useAuthStore();
-  const fmt = usePrice();
+  // Checkout totals and card charges are currently denominated in USD.
+  const fmt = (amount: number) => formatCurrency(amount, 'USD');
   const proofInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (!isAuthenticated) router.replace(`/${locale}/sign-in?redirect=/${locale}/checkout`);
+  }, [isAuthenticated, locale, router]);
 
   const [step, setStep] = useState<Step>('address');
   const [selectedAddressId, setSelectedAddressId] = useState<string>('');
   const [paymentMethod, setPaymentMethod] = useState('MTN_MOMO');
   const [couponCode, setCouponCode] = useState('');
   const [couponDiscount, setCouponDiscount] = useState(0);
+  const [freeShippingCoupon, setFreeShippingCoupon] = useState(false);
   const [couponLoading, setCouponLoading] = useState(false);
   const [addingAddress, setAddingAddress] = useState(false);
   const [placedOrderId, setPlacedOrderId] = useState<string>('');
@@ -75,7 +80,7 @@ export default function CheckoutPage() {
   const [copied, setCopied] = useState<string>('');
 
   const subtotal = getSubtotal();
-  const shipping = subtotal >= 50 ? 0 : 9.99;
+  const shipping = subtotal >= 50 || freeShippingCoupon ? 0 : 9.99;
   const tax = (subtotal - couponDiscount) * 0.18;
   const total = subtotal - couponDiscount + shipping + tax;
 
@@ -119,6 +124,8 @@ export default function CheckoutPage() {
         setPlacedOrderId(order.id);
         setPlacedOrderNumber(order.orderNumber);
         setStep('momo-proof');
+      } else if (paymentMethod === 'STRIPE') {
+        router.push(`/${locale}/checkout/stripe-payment?orderId=${encodeURIComponent(order.id)}`);
       } else {
         router.push(`/${locale}/account/orders/${order.id}`);
       }
@@ -138,17 +145,19 @@ export default function CheckoutPage() {
       );
       const { value, type, maxDiscountAmount } = res.data as unknown as { value: number; type: string; maxDiscountAmount?: number };
       let discount = 0;
+      const grantsFreeShipping = type === 'FREE_SHIPPING';
       if (type === 'PERCENTAGE') {
         discount = (subtotal * Number(value)) / 100;
         if (maxDiscountAmount) discount = Math.min(discount, Number(maxDiscountAmount));
       } else if (type === 'FIXED_AMOUNT') {
         discount = Math.min(Number(value), subtotal);
-      } else if (type === 'FREE_SHIPPING') {
-        discount = shipping;
       }
       setCouponDiscount(discount);
+      setFreeShippingCoupon(grantsFreeShipping);
       toast({ title: `Coupon applied! You saved ${fmt(discount)}` });
     } catch {
+      setCouponDiscount(0);
+      setFreeShippingCoupon(false);
       toast({ title: 'Invalid coupon', variant: 'destructive' });
     } finally {
       setCouponLoading(false);
@@ -191,7 +200,7 @@ export default function CheckoutPage() {
   }
 
   if (!isAuthenticated) {
-    router.push(`/${locale}/sign-in?redirect=/${locale}/checkout`);
+    // Redirect from an effect so the checkout render stays side-effect free.
     return null;
   }
 
@@ -466,12 +475,13 @@ export default function CheckoutPage() {
               <div>
                 <Label>Promo / Coupon code</Label>
                 <div className="flex gap-2 mt-1">
-                  <Input value={couponCode} onChange={(e) => setCouponCode(e.target.value.toUpperCase())} placeholder="Enter code" className="uppercase" />
+                  <Input value={couponCode} onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponDiscount(0); setFreeShippingCoupon(false); }} placeholder="Enter code" className="uppercase" />
                   <Button onClick={applyCoupon} disabled={couponLoading} variant="outline" className="rounded-full shrink-0">
                     {couponLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Apply'}
                   </Button>
                 </div>
                 {couponDiscount > 0 && <p className="text-green-700 text-sm mt-1">✓ Saving {fmt(couponDiscount)}</p>}
+                {freeShippingCoupon && <p className="text-green-700 text-sm mt-1">✓ Free shipping applied</p>}
               </div>
 
               <div className="flex gap-3 pt-2">
@@ -506,7 +516,7 @@ export default function CheckoutPage() {
 
               <div className="space-y-3">
                 {items.map((item) => (
-                  <div key={item.productId} className="flex gap-3 text-sm">
+                  <div key={item.id} className="flex gap-3 text-sm">
                     <div className="w-16 h-16 bg-gray-50 rounded border flex-shrink-0">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={item.image || '/images/placeholder.jpg'} alt={item.name} className="w-full h-full object-contain p-1" />

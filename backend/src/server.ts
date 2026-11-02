@@ -34,7 +34,7 @@ import webPageRoutes from './routes/webPage.routes';
 import shippingRoutes from './routes/shipping.routes';
 import taxRoutes from './routes/tax.routes';
 import settingRoutes from './routes/setting.routes';
-import notificationRoutes from './routes/notification.routes';
+import { notificationRoutes } from './routes/notification.routes';
 import uploadRoutes from './routes/upload.routes';
 import adminRoutes from './routes/admin.routes';
 import webhookRoutes from './routes/webhook.routes';
@@ -44,6 +44,7 @@ import sellerRoutes from './routes/seller.routes';
 import contactRoutes from './routes/contact.routes';
 import bookingRoutes from './routes/booking.routes';
 import currencyRoutes from './routes/currency.routes';
+import academyRoutes from './routes/academy.routes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -117,6 +118,7 @@ app.use(`${API}/sellers`, sellerRoutes);
 app.use(`${API}/contact`, contactRoutes);
 app.use(`${API}/bookings`, bookingRoutes);
 app.use(`${API}/currency`, currencyRoutes);
+app.use(`${API}/academy`, academyRoutes);
 
 // ─── Swagger Docs ──────────────────────────────────────────────────────────────
 setupSwagger(app);

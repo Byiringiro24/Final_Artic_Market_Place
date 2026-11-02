@@ -53,23 +53,24 @@ export default function ProductDetail({ slug }: { slug: string }) {
     queryFn: () => get<Product>(`/products/${slug}`),
   });
 
+  const fetchedProduct = data?.data;
+
+  useEffect(() => {
+    if (!fetchedProduct?.images || fetchedProduct.images.length <= 1) return;
+    const timer = window.setInterval(() => {
+      setActiveImage((current) => (current + 1) % fetchedProduct.images.length);
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [fetchedProduct?.images]);
+
   if (isLoading) return <ProductDetailSkeleton />;
-  if (isError || !data?.data) return (
+  if (isError || !fetchedProduct) return (
     <div className="container mx-auto px-4 py-16 text-center">
       <h1 className="text-2xl font-bold mb-4">Product not found</h1>
       <Link href={`/${locale}`} className="text-artic-link hover:underline">Back to home</Link>
     </div>
   );
-
-  const product = data.data;
-
-  useEffect(() => {
-    if (!product?.images || product.images.length <= 1) return;
-    const timer = window.setInterval(() => {
-      setActiveImage((current) => (current + 1) % product.images.length);
-    }, 3000);
-    return () => window.clearInterval(timer);
-  }, [product?.images]);
+  const product = fetchedProduct;
 
   const discount = getDiscountPercent(Number(product.price), Number(product.listPrice));
 
@@ -80,12 +81,28 @@ export default function ProductDetail({ slug }: { slug: string }) {
     return acc;
   }, {});
 
+  const requiredVariantGroups = Object.keys(variantGroups);
+  const variantsComplete = requiredVariantGroups.every((group) => Boolean(selectedVariants[group]));
+  const selectedVariantRecords = requiredVariantGroups
+    .map((group) => variantGroups[group].find((variant) => variant.value === selectedVariants[group]))
+    .filter((variant): variant is Variant => Boolean(variant));
+  const selectedPrice = Number(product.price) + selectedVariantRecords.reduce((sum, variant) => sum + Number(variant.priceAdjust), 0);
+  const selectedStock = Math.min(product.countInStock, ...selectedVariantRecords.map((variant) => variant.stock));
+
   function handleAddToCart() {
+    if (!variantsComplete) {
+      toast({ title: 'Choose your options', description: 'Select each available product option before adding it to your cart.', variant: 'destructive' });
+      return;
+    }
+    if (selectedStock <= 0 || qty > selectedStock) {
+      toast({ title: 'Quantity unavailable', description: `Only ${Math.max(0, selectedStock)} units are available.`, variant: 'destructive' });
+      return;
+    }
     addItem({
       productId: product.id, name: product.name, slug: product.slug,
-      image: product.images[0] || '', price: Number(product.price),
+      image: product.images[0] || '', price: selectedPrice,
       listPrice: Number(product.listPrice), quantity: qty,
-      countInStock: product.countInStock,
+      countInStock: selectedStock,
       variantInfo: Object.keys(selectedVariants).length > 0 ? selectedVariants : undefined,
     });
     toast({ title: `Added to cart`, description: product.name });
@@ -188,7 +205,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
             <div>
               <div className="flex items-baseline gap-3 flex-wrap">
                 <span className="text-3xl font-light">
-                  {fmt(Number(product.price))}
+                  {fmt(selectedPrice)}
                 </span>
                 {Number(product.listPrice) > Number(product.price) && (
                   <div className="text-sm text-gray-500">
@@ -229,6 +246,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
                       aria-pressed={selectedVariants[groupName] === v.value}
                     >
                       {v.value}
+                      {Number(v.priceAdjust) > 0 ? ` (+${fmt(Number(v.priceAdjust))})` : ''}
                     </button>
                   ))}
                 </div>
@@ -258,7 +276,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
 
           {/* Buy box */}
           <div className="border rounded-lg p-4 space-y-4 h-fit sticky top-20">
-            <div className="text-2xl font-light">{fmt(Number(product.price))}</div>
+            <div className="text-2xl font-light">{fmt(selectedPrice)}</div>
 
             {Number(product.price) >= 50 ? (
               <p className="text-sm text-green-700">
@@ -271,9 +289,9 @@ export default function ProductDetail({ slug }: { slug: string }) {
               </p>
             )}
 
-            {product.countInStock > 0 ? (
+            {selectedStock > 0 ? (
               <p className="text-green-700 font-medium">
-                {product.countInStock <= 5 ? `Only ${product.countInStock} left in stock` : 'In Stock'}
+                {selectedStock <= 5 ? `Only ${selectedStock} left in stock` : 'In Stock'}
               </p>
             ) : (
               <p className="text-red-600 font-medium">Currently unavailable</p>
@@ -288,7 +306,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
                 onChange={(e) => setQty(Number(e.target.value))}
                 className="border rounded px-2 py-1 text-sm bg-gray-50"
               >
-                {Array.from({ length: Math.min(product.countInStock, 10) }, (_, i) => (
+                {Array.from({ length: Math.min(Math.max(selectedStock, 0), 10) }, (_, i) => (
                   <option key={i + 1} value={i + 1}>{i + 1}</option>
                 ))}
               </select>
@@ -296,7 +314,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
 
             <Button
               onClick={handleAddToCart}
-              disabled={product.countInStock === 0}
+              disabled={selectedStock === 0 || !variantsComplete}
               className="w-full bg-artic-teal hover:bg-artic-teal-dark text-black font-medium rounded-full"
             >
               <ShoppingCart className="h-4 w-4 mr-2" />
@@ -305,7 +323,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
 
             <Button
               onClick={handleBuyNow}
-              disabled={product.countInStock === 0}
+              disabled={selectedStock === 0 || !variantsComplete}
               variant="outline"
               className="w-full border-artic-teal text-artic-teal-dark hover:bg-orange-50 rounded-full"
             >

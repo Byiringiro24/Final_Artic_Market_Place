@@ -14,6 +14,7 @@ const STATIC_LINKS = [
   { label: 'New Arrivals', href: '/search?sort=newest', emoji: '✨' },
   { label: 'Prime Deals', href: '/search?featured=true', emoji: '⚡' },
   { label: 'Services', href: '/services', emoji: '🛠' },
+  { label: 'Academy', href: '/academy', emoji: '🎓' },
   { label: 'Sell on ARTIC', href: '/sell', emoji: '💼' },
   { label: 'Customer Service', href: '/customer-service', emoji: '💬' },
 ];

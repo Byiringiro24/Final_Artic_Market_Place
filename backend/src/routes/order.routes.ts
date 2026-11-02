@@ -2,7 +2,7 @@ import { Router } from 'express';
 import {
   createOrder, getMyOrders, getOrder,
   adminListOrders, updateOrderStatus,
-  cancelOrder, submitPaymentProof, adminMarkPaid,
+  cancelOrder, submitPaymentProof, adminMarkPaid, requestOrderReturn,
 } from '../controllers/order.controller';
 import { authenticate, authorize } from '../middleware/auth.middleware';
 import multer from 'multer';
@@ -11,6 +11,8 @@ import { v4 as uuidv4 } from 'uuid';
 import sharp from 'sharp';
 import fs from 'fs';
 import { AppError } from '../middleware/error.middleware';
+import { validate } from '../middleware/validate.middleware';
+import { createOrderSchema, updateOrderStatusSchema, requestOrderReturnSchema } from '../lib/validators';
 
 const router = Router();
 
@@ -31,12 +33,13 @@ const proofUpload = multer({
 });
 
 // ─── User routes ─────────────────────────────────────────────────────────────
-router.post('/', authenticate, createOrder);
+router.post('/', authenticate, validate(createOrderSchema), createOrder);
 router.get('/my-orders', authenticate, getMyOrders);
 router.get('/:id', authenticate, getOrder);
 
 // Cancel own order (PENDING or CONFIRMED only)
 router.post('/:id/cancel', authenticate, cancelOrder);
+router.post('/:id/return', authenticate, validate(requestOrderReturnSchema), requestOrderReturn);
 
 // Submit MoMo payment proof — USER uploads screenshot
 router.post(
@@ -69,7 +72,7 @@ router.post(
 
 // ─── Admin routes ─────────────────────────────────────────────────────────────
 router.get('/', authenticate, authorize('ADMIN'), adminListOrders);
-router.put('/:id/status', authenticate, authorize('ADMIN'), updateOrderStatus);
+router.put('/:id/status', authenticate, authorize('ADMIN'), validate(updateOrderStatusSchema), updateOrderStatus);
 router.put('/:id/mark-paid', authenticate, authorize('ADMIN'), adminMarkPaid);
 
 export default router;

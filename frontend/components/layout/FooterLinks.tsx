@@ -9,6 +9,7 @@ const COLUMNS = [
     links: [
       { label: 'About Us', href: '/page/about-us' },
       { label: 'Services', href: '/services' },
+      { label: 'ARTIC Academy', href: '/academy' },
       { label: 'Blog', href: '/blog' },
       { label: 'Careers', href: '/page/careers' },
     ],

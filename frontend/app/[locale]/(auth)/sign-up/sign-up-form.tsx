@@ -191,7 +191,7 @@ export default function SignUpForm() {
         disabled={isSubmitting}
         className="w-full bg-artic-teal hover:bg-artic-teal-dark text-white font-medium rounded-full"
       >
-        {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create your ARTIC account'}
+        {isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Create my ARTIC account →'}
       </Button>
     </form>
   );

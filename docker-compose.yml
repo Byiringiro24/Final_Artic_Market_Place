@@ -1,6 +1,24 @@
 name: artic-marketplace
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: artic_marketplace_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-artic_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-artic_dev_password_change_me}
+      POSTGRES_DB: ${POSTGRES_DB:-artic_marketplace}
+    ports:
+      - '5432:5432'
+    volumes:
+      - artic_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-artic_user} -d ${POSTGRES_DB:-artic_marketplace}']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
   redis:
     image: redis:7-alpine
     container_name: artic_marketplace_redis
@@ -21,15 +39,25 @@ services:
       dockerfile: Dockerfile
     container_name: artic_marketplace_backend
     restart: unless-stopped
-    network_mode: host
     depends_on:
+      postgres:
+        condition: service_healthy
       redis:
         condition: service_healthy
     env_file:
       - ./backend/.env
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 5000
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:3010}
+      APP_URL: ${APP_URL:-http://localhost:5000}
+      DATABASE_URL: ${DATABASE_URL:-postgresql://artic_user:artic_dev_password_change_me@postgres:5432/artic_marketplace?schema=public}
+      REDIS_URL: redis://redis:6379
     volumes:
       - artic_uploads:/app/uploads
       - artic_logs:/app/logs
+    ports:
+      - '5000:5000'
 
   frontend:
     build:
@@ -43,8 +71,14 @@ services:
       - backend
     env_file:
       - ./frontend/.env.production
+    environment:
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL:-http://localhost:5000/api/v1}
+      NEXT_PUBLIC_APP_URL: ${NEXT_PUBLIC_APP_URL:-http://localhost:3010}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3010}
+      AUTH_URL: ${AUTH_URL:-http://localhost:3010}
 
 volumes:
+  artic_postgres_data:
   artic_redis_data:
   artic_uploads:
   artic_logs:

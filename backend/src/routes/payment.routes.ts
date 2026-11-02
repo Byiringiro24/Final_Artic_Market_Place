@@ -1,16 +1,12 @@
 import { Router } from 'express';
-import Stripe from 'stripe';
 import { prisma } from '../db/prisma';
 import { ApiResponse } from '../lib/apiResponse';
 import { AppError } from '../middleware/error.middleware';
 import { authenticate } from '../middleware/auth.middleware';
 import { AuthRequest } from '../middleware/auth.middleware';
+import { stripe } from '../lib/stripe';
 
 const router = Router();
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-02-24.acacia',
-});
 
 /**
  * POST /api/v1/payments/create-intent
@@ -28,6 +24,8 @@ router.post('/create-intent', authenticate, async (req: AuthRequest, res) => {
       userId: true,
       orderNumber: true,
       paymentMethod: true,
+      stripePaymentIntentId: true,
+      updatedAt: true,
     },
   });
 
@@ -41,6 +39,18 @@ router.post('/create-intent', authenticate, async (req: AuthRequest, res) => {
   }
 
   const amountInCents = Math.round(Number(order.totalPrice) * 100);
+  if (amountInCents < 50) throw new AppError('Stripe requires a payment of at least $0.50', 400);
+
+  if (order.stripePaymentIntentId) {
+    const existingIntent = await stripe.paymentIntents.retrieve(order.stripePaymentIntentId);
+    if (existingIntent.status !== 'canceled') {
+      return ApiResponse.success(res, {
+        clientSecret: existingIntent.client_secret,
+        paymentIntentId: existingIntent.id,
+        amount: amountInCents,
+      });
+    }
+  }
 
   const paymentIntent = await stripe.paymentIntents.create({
     amount: amountInCents,
@@ -48,10 +58,16 @@ router.post('/create-intent', authenticate, async (req: AuthRequest, res) => {
     metadata: {
       orderId: order.id,
       orderNumber: order.orderNumber,
-      userId: req.user!.userId,
+      userId: order.userId,
     },
     automatic_payment_methods: { enabled: true },
+  }, {
+    idempotencyKey: order.stripePaymentIntentId
+      ? `order-${order.id}-retry-${order.updatedAt.getTime()}`
+      : `order-${order.id}`,
   });
+
+  await prisma.order.update({ where: { id: order.id }, data: { stripePaymentIntentId: paymentIntent.id } });
 
   return ApiResponse.success(res, {
     clientSecret: paymentIntent.client_secret,

@@ -94,6 +94,19 @@ enum ShippingRateType {
   ORDER_VALUE_BASED
 }
 
+enum CourseStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum LessonType {
+  VIDEO
+  TEXT
+  FILE
+  LIVE
+}
+
 // ─── USERS ────────────────────────────────────────────────────────────────────
 
 model User {
@@ -125,6 +138,7 @@ model User {
   emailVerifyToken   EmailVerifyToken?
   sellerApplication  SellerApplication?
   browsingHistory    BrowsingHistory[]
+  enrollments        Enrollment[]
 
   @@map("users")
 }
@@ -361,6 +375,7 @@ model Order {
   paymentMethod     PaymentMethod
   paymentStatus     PaymentStatus @default(UNPAID)
   paymentResult     Json?         // Stripe/PayPal response snapshot
+  stripePaymentIntentId String?   @unique
   couponCode        String?
   couponDiscount    Decimal       @default(0) @db.Decimal(10, 2)
   itemsPrice        Decimal       @db.Decimal(10, 2)
@@ -650,4 +665,105 @@ model BrowsingHistory {
 
   @@unique([userId, productId])
   @@map("browsing_history")
+}
+
+// ─── ARTIC ACADEMY ───────────────────────────────────────────────────────────
+
+model Course {
+  id             String       @id @default(uuid())
+  slug           String       @unique
+  title          String
+  summary        String
+  description    String       @db.Text
+  category       String
+  level          String       @default("BEGINNER")
+  language       String       @default("en")
+  durationHours  Int          @default(0)
+  price          Decimal      @default(0) @db.Decimal(10, 2)
+  currency       String       @default("RWF")
+  thumbnailUrl   String?
+  instructorName String?
+  status         CourseStatus @default(DRAFT)
+  isFeatured     Boolean      @default(false)
+  publishedAt    DateTime?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  modules       CourseModule[]
+  enrollments   Enrollment[]
+  registrations TrainingRegistration[]
+
+  @@index([status, isFeatured, createdAt])
+  @@map("academy_courses")
+}
+
+model CourseModule {
+  id        String   @id @default(uuid())
+  courseId  String
+  title     String
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  @@index([courseId, sortOrder])
+  @@map("academy_course_modules")
+}
+
+model Lesson {
+  id              String     @id @default(uuid())
+  moduleId        String
+  title           String
+  type            LessonType @default(VIDEO)
+  content         String?    @db.Text
+  videoUrl        String?
+  resourceUrl     String?
+  durationSeconds Int        @default(0)
+  isPreview       Boolean    @default(false)
+  sortOrder       Int        @default(0)
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  module CourseModule @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@index([moduleId, sortOrder])
+  @@map("academy_lessons")
+}
+
+model Enrollment {
+  id              String    @id @default(uuid())
+  userId          String
+  courseId        String
+  progressPercent Int       @default(0)
+  enrolledAt      DateTime  @default(now())
+  completedAt     DateTime?
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, courseId])
+  @@index([userId, enrolledAt])
+  @@map("academy_enrollments")
+}
+
+model TrainingRegistration {
+  id            String   @id @default(uuid())
+  courseId      String?
+  courseTitle   String
+  fullName      String
+  email         String
+  phone         String
+  organization  String?
+  message       String?  @db.Text
+  whatsappOptIn Boolean  @default(false)
+  consentedAt   DateTime @default(now())
+  status        String   @default("PENDING")
+  createdAt     DateTime @default(now())
+
+  course Course? @relation(fields: [courseId], references: [id], onDelete: SetNull)
+
+  @@index([email, createdAt])
+  @@index([status, createdAt])
+  @@map("academy_training_registrations")
 }

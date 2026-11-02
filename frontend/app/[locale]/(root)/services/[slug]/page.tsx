@@ -36,6 +36,18 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
     queryFn: () => get<Service>(`/services/${slug}`),
   });
 
+  const service = data?.data as unknown as Service | undefined;
+  const serviceImages = Array.isArray(service?.images) ? service.images.filter(Boolean) : [];
+  const serviceVideos = Array.isArray(service?.videos) ? service.videos.filter(Boolean) : [];
+
+  useEffect(() => {
+    if (serviceImages.length <= 1) return;
+    const timer = window.setInterval(() => {
+      setActiveImage((current) => (current + 1) % serviceImages.length);
+    }, 3000);
+    return () => window.clearInterval(timer);
+  }, [serviceImages.length]);
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-12 max-w-5xl">
@@ -50,16 +62,6 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
       </div>
     );
   }
-
-  const service = data?.data as unknown as Service;
-
-  useEffect(() => {
-    if (!service?.images || service.images.length <= 1) return;
-    const timer = window.setInterval(() => {
-      setActiveImage((current) => (current + 1) % service.images.length);
-    }, 3000);
-    return () => window.clearInterval(timer);
-  }, [service?.images]);
 
   if (!service) {
     return (
@@ -97,21 +99,21 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
           {/* Main content */}
           <div className="space-y-5">
             {/* Image gallery */}
-            {service.images.length > 0 && (
+            {serviceImages.length > 0 && (
               <div className="bg-white border rounded-xl p-3">
                 <div className="relative overflow-hidden rounded-xl bg-gray-50">
                   <div className="aspect-[16/10] w-full">
                     <img
-                      src={resolveMediaUrl(service.images[activeImage])}
+                      src={resolveMediaUrl(serviceImages[activeImage])}
                       alt={`${service.title} ${activeImage + 1}`}
                       className="h-full w-full object-contain p-3"
                     />
                   </div>
-                  {service.images.length > 1 && (
+                  {serviceImages.length > 1 && (
                     <>
                       <button
                         type="button"
-                        onClick={() => setActiveImage((current) => (current - 1 + service.images.length) % service.images.length)}
+                        onClick={() => setActiveImage((current) => (current - 1 + serviceImages.length) % serviceImages.length)}
                         className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full bg-black/35 p-2 text-white backdrop-blur-sm hover:bg-black/50"
                         aria-label="Previous image"
                       >
@@ -119,7 +121,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
                       </button>
                       <button
                         type="button"
-                        onClick={() => setActiveImage((current) => (current + 1) % service.images.length)}
+                        onClick={() => setActiveImage((current) => (current + 1) % serviceImages.length)}
                         className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full bg-black/35 p-2 text-white backdrop-blur-sm hover:bg-black/50"
                         aria-label="Next image"
                       >
@@ -128,9 +130,9 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
                     </>
                   )}
                 </div>
-                {service.images.length > 1 && (
+                {serviceImages.length > 1 && (
                   <div className="mt-3 grid grid-cols-4 gap-2">
-                    {service.images.map((img, i) => (
+                    {serviceImages.map((img, i) => (
                       <button
                         key={i}
                         type="button"
@@ -151,10 +153,10 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
             )}
 
             {/* Videos */}
-            {service.videos?.length > 0 && (
+            {serviceVideos.length > 0 && (
               <div className="bg-white border rounded-xl p-4 space-y-3">
                 <h3 className="font-semibold text-gray-800">Service Videos</h3>
-                {service.videos.map((v, i) => (
+                {serviceVideos.map((v, i) => (
                   <video key={i} src={resolveMediaUrl(v)} controls controlsList="nodownload" className="w-full rounded-lg max-h-96" />
                 ))}
               </div>

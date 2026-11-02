@@ -30,9 +30,8 @@ Thumbs.db
 # Uploads
 backend/uploads/
 
-# Prisma
+# Prisma local database only; migration history belongs in version control.
 backend/prisma/dev.db
-backend/prisma/migrations/
 
 # Editor
 .vscode/

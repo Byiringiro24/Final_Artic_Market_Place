@@ -22,9 +22,11 @@ const stripePromise = loadStripe(
 function StripeCheckoutForm({
   orderId,
   amount,
+  clientSecret,
 }: {
   orderId: string;
   amount: number;
+  clientSecret: string;
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -47,16 +49,10 @@ function StripeCheckoutForm({
       return;
     }
 
-    // Create payment intent on backend
     try {
-      const res = await post<{ clientSecret: string }>('/payments/create-intent', {
-        orderId,
-        amount,
-      });
-
       const { error: confirmError } = await stripe.confirmPayment({
         elements,
-        clientSecret: res.data.clientSecret,
+        clientSecret,
         confirmParams: {
           return_url: `${window.location.origin}/${locale}/account/orders/${orderId}?payment=success`,
         },
@@ -110,21 +106,26 @@ function StripeCheckoutForm({
 export default function StripePaymentPage() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('orderId') || '';
-  const amountStr = searchParams.get('amount') || '0';
-  const amount = parseInt(amountStr);
+  const [amount, setAmount] = useState(0);
   const [clientSecret, setClientSecret] = useState('');
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState('');
 
   useEffect(() => {
-    if (!orderId) return;
-    post<{ clientSecret: string }>('/payments/create-intent', {
+    if (!orderId) {
+      setLoading(false);
+      return;
+    }
+    post<{ clientSecret: string; amount: number }>('/payments/create-intent', {
       orderId,
-      amount,
     })
-      .then((res) => setClientSecret(res.data.clientSecret))
-      .catch(console.error)
+      .then((res) => {
+        setClientSecret(res.data.clientSecret);
+        setAmount(res.data.amount);
+      })
+      .catch(() => setLoadError('We could not start your payment. Please return to your order or try again.'))
       .finally(() => setLoading(false));
-  }, [orderId, amount]);
+  }, [orderId]);
 
   if (!orderId) {
     return (
@@ -134,12 +135,16 @@ export default function StripePaymentPage() {
     );
   }
 
-  if (loading || !clientSecret) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin text-artic-teal" />
       </div>
     );
+  }
+
+  if (loadError || !clientSecret) {
+    return <div role="alert" className="mx-auto max-w-md px-4 py-16 text-center text-red-700">{loadError || 'Payment is unavailable for this order.'}</div>;
   }
 
   return (
@@ -164,7 +169,7 @@ export default function StripePaymentPage() {
             },
           }}
         >
-          <StripeCheckoutForm orderId={orderId} amount={amount} />
+          <StripeCheckoutForm orderId={orderId} amount={amount} clientSecret={clientSecret} />
         </Elements>
       </div>
     </div>

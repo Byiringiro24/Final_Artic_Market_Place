@@ -5,9 +5,9 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "echo 'Using tsx runtime — no compile step needed'",
+    "build": "prisma generate && tsc",
     "start": "node dist/server.js",
-    "start:prod": "tsx src/server.ts",
+    "start:prod": "node dist/server.js",
     "seed": "tsx src/db/seed.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",

@@ -60,6 +60,15 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
     onError: () => toast({ title: 'Failed to cancel order', variant: 'destructive' }),
   });
 
+  const { mutate: requestReturn, isPending: requestingReturn } = useMutation({
+    mutationFn: (reason: string) => post(`/orders/${id}/return`, { reason }),
+    onSuccess: () => {
+      toast({ title: 'Return request submitted' });
+      qc.invalidateQueries({ queryKey: ['order', id] });
+    },
+    onError: () => toast({ title: 'Could not submit return request', variant: 'destructive' }),
+  });
+
   if (isLoading) {
     return (
       <div className="container mx-auto px-4 py-8 max-w-4xl space-y-4">
@@ -80,6 +89,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
   }
 
   const order = data.data;
+  const returnWindowOpen = Boolean(order.deliveredAt) && Date.now() - new Date(order.deliveredAt!).getTime() <= 30 * 24 * 60 * 60 * 1000;
 
   const currentStepIndex = STATUS_STEPS.findIndex((s) =>
     ['DELIVERED', 'SHIPPED', 'CONFIRMED', 'PENDING'].slice(
@@ -114,7 +124,7 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
           >
             <Printer className="h-4 w-4" /> Print
           </button>
-          {['PENDING', 'CONFIRMED'].includes(order.status) && (
+          {!order.isPaid && ['PENDING', 'PENDING_PAYMENT_PROOF', 'PAYMENT_PROOF_SUBMITTED', 'CONFIRMED', 'PROCESSING'].includes(order.status) && (
             <Button
               variant="outline"
               size="sm"
@@ -125,6 +135,20 @@ export default function OrderDetailPage({ params }: { params: Promise<{ id: stri
               className="text-red-600 border-red-200 hover:bg-red-50"
             >
               Cancel Order
+            </Button>
+          )}
+          {order.status === 'DELIVERED' && returnWindowOpen && (
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={requestingReturn}
+              onClick={() => {
+                const reason = window.prompt('Why would you like to return this order?');
+                if (reason?.trim()) requestReturn(reason.trim());
+              }}
+              className="gap-2"
+            >
+              <RotateCcw className="h-4 w-4" /> {requestingReturn ? 'Submitting…' : 'Request Return'}
             </Button>
           )}
         </div>

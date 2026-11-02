@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocale } from 'next-intl';
 import Link from 'next/link';
@@ -62,6 +62,17 @@ export default function AdminServicesPage() {
   const [form,      setForm]      = useState(emptyForm());
   const [imageUrls, setImageUrls] = useState<string[]>([]);
   const [videoUrls, setVideoUrls] = useState<string[]>([]);
+
+  const { data: categoriesData } = useQuery({
+    queryKey: ['admin-service-categories'],
+    queryFn: () => get<Array<{ id: string; name: string; slug: string }>>('/categories'),
+    select: (r) => r.data ?? [],
+  });
+
+  const categoryOptions = useMemo(() => {
+    const names = (categoriesData ?? []).map((category) => category.name).filter(Boolean);
+    return [...new Set([...names, ...CATEGORIES])];
+  }, [categoriesData]);
 
   // ── Query ──────────────────────────────────────────────────────────────────
   const { data, isLoading } = useQuery({
@@ -196,11 +207,11 @@ export default function AdminServicesPage() {
               <Label>Category</Label>
               <select
                 className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal bg-white"
-                value={form.category}
+                value={form.category || 'Other'}
                 onChange={(e) => setForm({ ...form, category: e.target.value })}
                 aria-label="Category"
               >
-                {CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+                {categoryOptions.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
 

@@ -28,12 +28,17 @@ const statusSchema = z.object({
 });
 type StatusForm = z.infer<typeof statusSchema>;
 
-const ORDER_STATUSES = [
-  'PENDING', 'PENDING_PAYMENT_PROOF', 'PAYMENT_PROOF_SUBMITTED',
-  'CONFIRMED', 'PROCESSING', 'SHIPPED',
-  'OUT_FOR_DELIVERY', 'DELIVERED', 'CANCELLED', 'REFUNDED',
-  'RETURN_REQUESTED', 'RETURNED',
-];
+const ORDER_STATUS_TRANSITIONS: Record<string, string[]> = {
+  PENDING: ['CONFIRMED', 'PROCESSING', 'CANCELLED'],
+  PENDING_PAYMENT_PROOF: ['PAYMENT_PROOF_SUBMITTED', 'CANCELLED'],
+  PAYMENT_PROOF_SUBMITTED: ['CANCELLED'],
+  CONFIRMED: ['PROCESSING', 'SHIPPED', 'CANCELLED'],
+  PROCESSING: ['SHIPPED', 'CANCELLED'],
+  SHIPPED: ['OUT_FOR_DELIVERY', 'DELIVERED'],
+  OUT_FOR_DELIVERY: ['DELIVERED'],
+  DELIVERED: ['RETURN_REQUESTED'],
+  RETURN_REQUESTED: ['RETURNED'],
+};
 
 interface OrderItem {
   id: string; name: string; image: string; price: number; quantity: number;
@@ -115,6 +120,14 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
     );
   }
 
+  const paymentAllowsFulfillment = order.paymentMethod === 'CASH_ON_DELIVERY' || order.isPaid;
+  const availableStatuses = [
+    order.status,
+    ...(ORDER_STATUS_TRANSITIONS[order.status] || []).filter((status) =>
+      paymentAllowsFulfillment || !['CONFIRMED', 'PROCESSING', 'SHIPPED', 'OUT_FOR_DELIVERY', 'DELIVERED'].includes(status)
+    ),
+  ];
+
   return (
     <div className="space-y-5">
       {/* Breadcrumb */}
@@ -150,7 +163,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
                     defaultValue={order.status}
                     className="w-full mt-1 border rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-artic-teal"
                   >
-                    {ORDER_STATUSES.map((s) => (
+                    {availableStatuses.map((s) => (
                       <option key={s} value={s}>{s.replace(/_/g, ' ')}</option>
                     ))}
                   </select>
@@ -347,7 +360,7 @@ export default function AdminOrderDetailPage({ params }: { params: Promise<{ id:
                   <p className="text-xs text-gray-400 italic">No payment proof uploaded yet.</p>
                 )}
 
-                {!order.isPaid && (
+                {order.paymentMethod === 'MTN_MOMO' && order.status === 'PAYMENT_PROOF_SUBMITTED' && !order.isPaid && (
                   <Button
                     onClick={() => markPaid()}
                     disabled={markingPaid}

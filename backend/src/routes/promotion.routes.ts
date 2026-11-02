@@ -3,18 +3,27 @@ import { prisma } from '../db/prisma';
 import { ApiResponse } from '../lib/apiResponse';
 import { AppError } from '../middleware/error.middleware';
 import { authenticate, authorize } from '../middleware/auth.middleware';
+import { AuthRequest } from '../middleware/auth.middleware';
 
 const router = Router();
 
 // Validate coupon (public — needed at checkout)
-router.post('/validate', authenticate, async (req, res) => {
+router.post('/validate', authenticate, async (req: AuthRequest, res) => {
   const { code, orderAmount } = req.body;
+  const normalizedCode = String(code || '').trim().toUpperCase();
+  const amount = Number(orderAmount);
+  if (!normalizedCode || !Number.isFinite(amount) || amount < 0) {
+    throw new AppError('A valid coupon code and order amount are required', 400);
+  }
 
   const coupon = await prisma.promotion.findFirst({
     where: {
-      code: code.toUpperCase(),
+      code: normalizedCode,
       isActive: true,
-      OR: [{ endDate: null }, { endDate: { gte: new Date() } }],
+      AND: [
+        { OR: [{ startDate: null }, { startDate: { lte: new Date() } }] },
+        { OR: [{ endDate: null }, { endDate: { gte: new Date() } }] },
+      ],
     },
   });
 
@@ -22,11 +31,17 @@ router.post('/validate', authenticate, async (req, res) => {
   if (coupon.maxUses && coupon.usedCount >= coupon.maxUses) {
     throw new AppError('This coupon has reached its usage limit', 400);
   }
-  if (coupon.minOrderAmount && orderAmount < Number(coupon.minOrderAmount)) {
+  if (amount < Number(coupon.minOrderAmount)) {
     throw new AppError(
       `Minimum order amount of $${coupon.minOrderAmount} required`,
       400
     );
+  }
+  const userUses = await prisma.order.count({
+    where: { userId: req.user!.userId, couponCode: coupon.code },
+  });
+  if (coupon.perUserLimit > 0 && userUses >= coupon.perUserLimit) {
+    throw new AppError('You have reached the use limit for this coupon', 400);
   }
 
   return ApiResponse.success(res, {

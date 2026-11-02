@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { X, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
-import { useCartStore } from '@/store/cart.store';
+import { getCartItemVariantKey, useCartStore } from '@/store/cart.store';
 import { formatPrice } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
@@ -54,7 +54,7 @@ export default function CartSidebar() {
             <ScrollArea className="flex-1 px-4">
               <ul className="divide-y py-2" role="list" aria-label="Cart items">
                 {items.map((item) => (
-                  <li key={`${item.productId}-${item.variantId}`} className="py-4 flex gap-3">
+                  <li key={item.id || `${item.productId}-${getCartItemVariantKey(item)}`} className="py-4 flex gap-3">
                     {/* Image */}
                     <div className="relative w-20 h-20 flex-shrink-0 bg-gray-50 rounded-md overflow-hidden">
                       <Image
@@ -85,7 +85,7 @@ export default function CartSidebar() {
                       <div className="flex items-center gap-2 mt-2">
                         <div className="flex items-center border rounded-full overflow-hidden">
                           <button
-                            onClick={() => updateQuantity(item.productId, item.quantity - 1, item.variantId)}
+                            onClick={() => updateQuantity(item.productId, item.quantity - 1, getCartItemVariantKey(item))}
                             className="px-2 py-1 hover:bg-muted transition-colors"
                             aria-label="Decrease quantity"
                           >
@@ -95,7 +95,7 @@ export default function CartSidebar() {
                             {item.quantity}
                           </span>
                           <button
-                            onClick={() => updateQuantity(item.productId, item.quantity + 1, item.variantId)}
+                            onClick={() => updateQuantity(item.productId, item.quantity + 1, getCartItemVariantKey(item))}
                             disabled={item.quantity >= item.countInStock}
                             className="px-2 py-1 hover:bg-muted transition-colors disabled:opacity-40"
                             aria-label="Increase quantity"
@@ -104,7 +104,7 @@ export default function CartSidebar() {
                           </button>
                         </div>
                         <button
-                          onClick={() => removeItem(item.productId, item.variantId)}
+                          onClick={() => removeItem(item.productId, getCartItemVariantKey(item))}
                           className="text-red-400 hover:text-red-600 transition-colors p-1"
                           aria-label={`Remove ${item.name} from cart`}
                         >

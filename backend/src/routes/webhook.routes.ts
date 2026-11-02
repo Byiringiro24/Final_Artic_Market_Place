@@ -1,23 +1,16 @@
-import { Router, Request, Response } from 'express';
+import express, { Router, Request, Response } from 'express';
 import Stripe from 'stripe';
 import { prisma } from '../db/prisma';
 import { sendEmail } from '../lib/email';
 import { logger } from '../lib/logger';
+import { stripe } from '../lib/stripe';
 
 const router = Router();
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2025-02-24.acacia',
-});
-
 router.post(
   '/stripe',
-  // Raw body required for Stripe signature verification
-  (req: Request, res: Response, next) => {
-    // express.raw middleware must be applied before this route in server.ts
-    // body-parser skip for this route
-    next();
-  },
+  // Stripe verifies the exact request bytes; parse JSON only after this route.
+  express.raw({ type: 'application/json' }),
   async (req: Request, res: Response) => {
     const sig = req.headers['stripe-signature'];
     if (!sig) {
@@ -42,31 +35,43 @@ router.post(
         const orderId = intent.metadata?.orderId;
 
         if (orderId) {
-          const order = await prisma.order.update({
+          const order = await prisma.order.findUnique({
             where: { id: orderId },
-            data: {
-              isPaid: true,
-              paidAt: new Date(),
-              paymentStatus: 'PAID',
-              status: 'CONFIRMED',
-              paymentResult: {
-                id: intent.id,
-                status: intent.status,
-                amount: intent.amount,
-              },
-            },
             include: { user: { select: { name: true, email: true } } },
           });
+          if (!order || order.paymentMethod !== 'STRIPE' || order.stripePaymentIntentId !== intent.id) {
+            logger.error(`Stripe payment intent ${intent.id} did not match a Stripe order`);
+            return res.status(400).json({ message: 'Order/payment mismatch' });
+          }
+          if (intent.currency !== 'usd' || intent.amount !== Math.round(Number(order.totalPrice) * 100)) {
+            logger.error(`Stripe amount validation failed for order ${order.orderNumber}`);
+            return res.status(400).json({ message: 'Payment amount mismatch' });
+          }
+          if (order.isPaid) break;
+          if (['CANCELLED', 'REFUNDED'].includes(order.status)) {
+            logger.warn(`Received a successful payment for closed order ${order.orderNumber}`);
+            break;
+          }
 
-          await prisma.orderStatusHistory.create({
-            data: {
-              orderId: order.id,
-              status: 'CONFIRMED',
-              note: 'Payment confirmed via Stripe',
-            },
+          const confirmed = await prisma.$transaction(async (tx) => {
+            const result = await tx.order.updateMany({
+              where: { id: order.id, paymentMethod: 'STRIPE', stripePaymentIntentId: intent.id, isPaid: false, status: { notIn: ['CANCELLED', 'REFUNDED'] } },
+              data: {
+                isPaid: true,
+                paidAt: new Date(),
+                paymentStatus: 'PAID',
+                status: 'CONFIRMED',
+                paymentResult: { id: intent.id, status: intent.status, amount: intent.amount },
+              },
+            });
+            if (result.count !== 1) return false;
+            await tx.orderStatusHistory.create({
+              data: { orderId: order.id, status: 'CONFIRMED', note: 'Payment confirmed via Stripe' },
+            });
+            return true;
           });
 
-          if (order.user) {
+          if (confirmed && order.user) {
             await sendEmail({
               to: order.user.email,
               toName: order.user.name,
@@ -83,8 +88,8 @@ router.post(
         const intent = event.data.object as Stripe.PaymentIntent;
         const orderId = intent.metadata?.orderId;
         if (orderId) {
-          await prisma.order.update({
-            where: { id: orderId },
+          await prisma.order.updateMany({
+            where: { id: orderId, paymentMethod: 'STRIPE', stripePaymentIntentId: intent.id, isPaid: false },
             data: { paymentStatus: 'FAILED' },
           });
         }
@@ -93,12 +98,25 @@ router.post(
 
       case 'charge.refunded': {
         const charge = event.data.object as Stripe.Charge;
-        const orderId = charge.metadata?.orderId;
+        const paymentIntentId = typeof charge.payment_intent === 'string'
+          ? charge.payment_intent
+          : charge.payment_intent?.id;
+        const intent = paymentIntentId ? await stripe.paymentIntents.retrieve(paymentIntentId) : null;
+        const orderId = intent?.metadata?.orderId;
         if (orderId) {
-          await prisma.order.update({
-            where: { id: orderId },
-            data: { paymentStatus: 'REFUNDED', status: 'REFUNDED' },
+          const fullyRefunded = charge.refunded;
+          const updated = await prisma.order.updateMany({
+            where: { id: orderId, paymentMethod: 'STRIPE', paymentStatus: { not: 'REFUNDED' } },
+            data: {
+              paymentStatus: fullyRefunded ? 'REFUNDED' : 'PARTIALLY_REFUNDED',
+              ...(fullyRefunded ? { status: 'REFUNDED' } : {}),
+            },
           });
+          if (updated.count && fullyRefunded) {
+            await prisma.orderStatusHistory.create({
+              data: { orderId, status: 'REFUNDED', note: 'Stripe refund completed' },
+            });
+          }
         }
         break;
       }

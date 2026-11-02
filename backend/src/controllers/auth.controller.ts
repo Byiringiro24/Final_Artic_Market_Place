@@ -147,12 +147,31 @@ export async function login(req: Request, res: Response) {
 
 // ─── Google Login ─────────────────────────────────────────────────────────────
 export async function googleLogin(req: Request, res: Response) {
-  const { email, name, image, googleId } = req.body ?? {};
-  const normalizedEmail = String(email ?? '').trim().toLowerCase();
+  const { name, image, assertion } = req.body ?? {};
+  const bridgeSecret = process.env.GOOGLE_AUTH_BRIDGE_SECRET || process.env.AUTH_SECRET;
+  if (!bridgeSecret) throw new AppError('Google sign-in is not configured', 503);
+  if (typeof assertion !== 'string') throw new AppError('Verified Google sign-in assertion is required', 401);
 
-  if (!normalizedEmail || !googleId) {
-    throw new AppError('Google account information is missing', 400);
+  const [claimsPart, signaturePart, extraPart] = assertion.split('.');
+  if (!claimsPart || !signaturePart || extraPart) throw new AppError('Invalid Google sign-in assertion', 401);
+  const expectedSignature = crypto.createHmac('sha256', bridgeSecret).update(claimsPart).digest();
+  let claims: { sub?: string; email?: string; iat?: number; exp?: number };
+  try {
+    const providedSignature = Buffer.from(signaturePart, 'base64url');
+    if (providedSignature.length !== expectedSignature.length || !crypto.timingSafeEqual(providedSignature, expectedSignature)) {
+      throw new Error('Invalid signature');
+    }
+    claims = JSON.parse(Buffer.from(claimsPart, 'base64url').toString('utf8'));
+  } catch {
+    throw new AppError('Invalid Google sign-in assertion', 401);
   }
+
+  const now = Math.floor(Date.now() / 1000);
+  if (!claims.sub || !claims.email || !claims.iat || !claims.exp || claims.exp < now || claims.iat > now + 15 || now - claims.iat > 90) {
+    throw new AppError('Google sign-in assertion has expired or is incomplete', 401);
+  }
+  const normalizedEmail = claims.email.trim().toLowerCase();
+  const googleId = claims.sub;
 
   let user = await prisma.user.findFirst({
     where: {
@@ -178,7 +197,7 @@ export async function googleLogin(req: Request, res: Response) {
         name: String(name ?? user.name).trim() || user.name,
         image: image || user.image,
         googleId: user.googleId || googleId,
-        emailVerified: user.emailVerified || true,
+        emailVerified: true,
       },
     });
   }

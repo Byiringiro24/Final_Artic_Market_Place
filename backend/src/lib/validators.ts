@@ -94,7 +94,7 @@ export const productQuerySchema = z.object({
 export const createOrderSchema = z.object({
   body: z.object({
     shippingAddressId: z.string().uuid(),
-    paymentMethod: z.enum(['STRIPE', 'PAYPAL', 'CASH_ON_DELIVERY', 'MTN_MOMO']),
+    paymentMethod: z.enum(['STRIPE', 'CASH_ON_DELIVERY', 'MTN_MOMO']),
     couponCode: z.string().optional(),
     items: z.array(
       z.object({
@@ -109,8 +109,9 @@ export const createOrderSchema = z.object({
 export const updateOrderStatusSchema = z.object({
   body: z.object({
     status: z.enum([
-      'PENDING','CONFIRMED','PROCESSING','SHIPPED',
-      'OUT_FOR_DELIVERY','DELIVERED','CANCELLED','REFUNDED',
+      'PENDING','PENDING_PAYMENT_PROOF','PAYMENT_PROOF_SUBMITTED',
+      'CONFIRMED','PROCESSING','SHIPPED',
+      'OUT_FOR_DELIVERY','DELIVERED','CANCELLED',
       'RETURN_REQUESTED','RETURNED',
     ]),
     trackingNumber: z.string().optional(),
@@ -173,6 +174,14 @@ export const addToCartSchema = z.object({
     variantId: z.string().uuid().optional(),
     quantity: z.number().int().min(1).max(100).optional(),
   }),
+});
+
+export const updateCartQuantitySchema = z.object({
+  body: z.object({ quantity: z.number().int().min(1).max(100) }),
+});
+
+export const requestOrderReturnSchema = z.object({
+  reason: z.string().trim().min(5).max(500),
 });
 
 // ─── Settings ────────────────────────────────────────────────────────────────

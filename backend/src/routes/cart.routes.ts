@@ -4,14 +4,16 @@ import {
   removeCartItem, clearCart,
 } from '../controllers/cart.controller';
 import { authenticate } from '../middleware/auth.middleware';
+import { validate } from '../middleware/validate.middleware';
+import { addToCartSchema, updateCartQuantitySchema } from '../lib/validators';
 
 const router = Router();
 
 router.use(authenticate);
 
 router.get('/', getCart);
-router.post('/', addToCart);
-router.put('/:id', updateCartItem);
+router.post('/', validate(addToCartSchema), addToCart);
+router.put('/:id', validate(updateCartQuantitySchema), updateCartItem);
 router.delete('/:id', removeCartItem);
 router.delete('/', clearCart);
 
