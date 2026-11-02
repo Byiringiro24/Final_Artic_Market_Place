@@ -1,47 +1,28 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import type { ReactNode } from 'react';
+import { motion, useReducedMotion } from 'motion/react';
 
 export default function HubReveal({
   children,
   className = '',
   delay = 0,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   delay?: number;
 }) {
-  const elementRef = useRef<HTMLDivElement>(null);
-  const [visible, setVisible] = useState(false);
-
-  useEffect(() => {
-    const element = elementRef.current;
-    if (!element || !('IntersectionObserver' in window)) {
-      setVisible(true);
-      return;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.disconnect();
-        }
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -40px 0px' },
-    );
-
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
+  const reduceMotion = useReducedMotion();
 
   return (
-    <div
-      ref={elementRef}
-      className={`transition-[opacity,transform] duration-700 ease-out motion-reduce:transform-none motion-reduce:transition-none ${visible ? 'translate-y-0 opacity-100' : 'translate-y-7 opacity-0'} ${className}`}
-      style={{ transitionDelay: `${delay}ms` }}
+    <motion.div
+      className={className}
+      initial={reduceMotion ? false : { opacity: 0, y: 24 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.14 }}
+      transition={reduceMotion ? { duration: 0 } : { duration: 0.65, delay: delay / 1000, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
-    </div>
+    </motion.div>
   );
 }
