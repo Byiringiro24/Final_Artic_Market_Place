@@ -45,12 +45,12 @@ export default function HeroCarousel() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#1A2332]/90 via-[#1A2332]/60 to-transparent" />
         <div className="absolute inset-0 flex items-center px-8 md:px-20">
           <div className="text-white max-w-xl">
-            <p className="text-[#18A89A] text-sm font-bold uppercase tracking-widest mb-3">🔥 Welcome to ARTIC</p>
+            <p className="text-[#18A89A] text-sm font-bold uppercase tracking-widest mb-3">ARTIC Group Ltd · ARTIC HUB</p>
             <h2 className="text-4xl md:text-6xl font-black mb-4 leading-tight">
-              Shop Smart.<br />
-              <span className="text-[#18A89A]">Live Better.</span>
+              Shop, learn,<br />
+              <span className="text-[#18A89A]">and connect.</span>
             </h2>
-            <p className="text-gray-300 text-lg mb-8">Products, services & more — all in one place</p>
+            <p className="text-gray-300 text-lg mb-8">Explore the ARTIC HUB marketplace and services.</p>
             <Link href={`/${locale}/search`}
               className="inline-flex items-center gap-2 bg-[#18A89A] hover:bg-[#0F7A70] text-white font-bold px-8 py-3.5 rounded-full transition-all hover:scale-105 shadow-xl">
               Shop Now <ArrowRight className="h-4 w-4" />
