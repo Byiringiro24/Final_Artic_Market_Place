@@ -1,127 +1,281 @@
-import { Suspense } from 'react';
+import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
+import { Suspense } from 'react';
 import { getLocale } from 'next-intl/server';
-import HeroCarousel from '@/components/home/HeroCarousel';
-import HubServiceDirectory from '@/components/home/HubServiceDirectory';
+import {
+  ArrowDown, ArrowRight, ArrowUpRight, BookOpen, Boxes, Building2,
+  CalendarDays, Check, Cpu, GraduationCap, Headphones, Lightbulb,
+  Mail, MapPin, Phone, Radio, ShoppingBag, Sparkles, Wrench,
+} from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import CategoryGrid from '@/components/home/CategoryGrid';
 import FeaturedProducts from '@/components/home/FeaturedProducts';
 import DealsSection from '@/components/home/DealsSection';
 import TrendingSection from '@/components/home/TrendingSection';
 import ServicesStrip from '@/components/home/ServicesStrip';
 import BrowsingHistorySection from '@/components/home/BrowsingHistorySection';
-import { HeroCarouselSkeleton } from '@/components/skeletons/HeroCarouselSkeleton';
+import HubReveal from '@/components/home/HubReveal';
+import IdeaSubmissionForm from '@/components/home/IdeaSubmissionForm';
 import { ProductGridSkeleton } from '@/components/skeletons/ProductGridSkeleton';
+
+export const metadata: Metadata = {
+  description: 'Explore ARTIC HUB: marketplace, practical learning, engineering services, and connected technology from ARTIC Group Ltd.',
+};
+
+const offerings: {
+  title: string;
+  category: string;
+  description: string;
+  image: string;
+  imageAlt: string;
+  icon: LucideIcon;
+  href?: (locale: string) => string;
+  external?: string;
+  status: 'Available' | 'Coming next';
+}[] = [
+  {
+    title: 'Marketplace', category: 'Shop & discover',
+    description: 'Find useful products, explore offers, and connect with sellers in one convenient place.',
+    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1000&q=85',
+    imageAlt: 'Customer completing a purchase at a modern checkout', icon: ShoppingBag,
+    href: (locale) => `/${locale}/search`, status: 'Available',
+  },
+  {
+    title: 'ARTIC Academy', category: 'Learn & grow',
+    description: 'Build practical skills with courses and training registration for individuals and teams.',
+    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1000&q=85',
+    imageAlt: 'Learners collaborating around a laptop', icon: GraduationCap,
+    href: (locale) => `/${locale}/academy`, status: 'Available',
+  },
+  {
+    title: 'Professional services', category: 'Plan & deliver',
+    description: 'Explore ARTIC services, view project details, and request a booking or consultation.',
+    image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1000&q=85',
+    imageAlt: 'Engineers collaborating on a technical project', icon: Wrench,
+    href: (locale) => `/${locale}/services`, status: 'Available',
+  },
+  {
+    title: 'ARTIC VMS', category: 'Connected operations',
+    description: 'Open ARTIC’s vehicle monitoring system for fleet visibility and operational tracking.',
+    image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1000&q=85',
+    imageAlt: 'Modern vehicle on an open road', icon: Radio,
+    external: 'https://articvms.ddnsgeek.com', status: 'Available',
+  },
+  {
+    title: 'Business directory', category: 'Find local expertise',
+    description: 'Discover trusted businesses and professionals by location, service, and expertise.',
+    image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1000&q=85',
+    imageAlt: 'Small team discussing a project together', icon: Building2, status: 'Coming next',
+  },
+  {
+    title: 'Digital products', category: 'Resources & tools',
+    description: 'Access digital guides, templates, software, and resources from the ARTIC community.',
+    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1000&q=85',
+    imageAlt: 'Laptop and workspace for digital work', icon: Boxes, status: 'Coming next',
+  },
+];
+
+function SectionHeading({ kicker, title, text, light = false }: { kicker: string; title: string; text?: string; light?: boolean }) {
+  return (
+    <div className="max-w-3xl">
+      <p className={`text-xs font-bold uppercase tracking-[0.22em] ${light ? 'text-teal-300' : 'text-teal-800'}`}>{kicker}</p>
+      <h2 className={`mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl ${light ? 'text-white' : 'text-slate-950'}`}>{title}</h2>
+      {text && <p className={`mt-4 max-w-2xl text-base leading-7 ${light ? 'text-slate-300' : 'text-slate-600'}`}>{text}</p>}
+    </div>
+  );
+}
+
+function OfferingCard({ item, locale, index }: { item: (typeof offerings)[number]; locale: string; index: number }) {
+  const Icon = item.icon;
+  const image = (
+    <>
+      <div className="relative h-64 overflow-hidden sm:h-72">
+        <Image src={item.image} alt={item.imageAlt} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" unoptimized className="object-cover transition duration-700 group-hover:scale-105" />
+        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/5 to-transparent" />
+        <div className="absolute left-5 right-5 top-5 flex items-center justify-between">
+          <span className="rounded-full border border-white/30 bg-slate-950/35 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white backdrop-blur">{item.status}</span>
+          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-900 transition duration-300 group-hover:-translate-y-1 group-hover:rotate-6"><Icon className="h-5 w-5" aria-hidden="true" /></span>
+        </div>
+        <div className="absolute bottom-5 left-5 right-5 text-white">
+          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-teal-200">{item.category}</p>
+          <h3 className="mt-2 text-2xl font-black">{item.title}</h3>
+        </div>
+      </div>
+      <div className="flex min-h-[148px] flex-col p-5">
+        <p className="text-sm leading-6 text-slate-600">{item.description}</p>
+        {item.status === 'Available' && <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-bold text-teal-900">Explore service <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></span>}
+        {item.status === 'Coming next' && <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-bold text-slate-500"><Sparkles className="h-4 w-4" /> In development</span>}
+      </div>
+    </>
+  );
+
+  const className = `group block overflow-hidden rounded-[1.65rem] border bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl ${item.status === 'Available' ? 'border-slate-200 hover:border-teal-200' : 'border-dashed border-slate-300'}`;
+  return (
+    <HubReveal className="h-full" delay={index * 70}>
+      {item.external ? (
+        <a href={item.external} target="_blank" rel="noopener noreferrer" className={className}>{image}</a>
+      ) : item.href ? (
+        <Link href={item.href(locale)} className={className}>{image}</Link>
+      ) : (
+        <article className={className}>{image}</article>
+      )}
+    </HubReveal>
+  );
+}
 
 export default async function HomePage() {
   const locale = await getLocale();
 
   return (
-    <main className="min-h-screen bg-[#F0F4F8]">
-      <section className="relative isolate overflow-hidden bg-[#111C2B] px-4 py-16 text-white md:py-24">
-        <div aria-hidden="true" className="absolute -right-28 -top-40 h-[28rem] w-[28rem] rounded-full bg-teal-500/15 blur-3xl" />
-        <div aria-hidden="true" className="absolute -bottom-52 left-1/4 h-[26rem] w-[26rem] rounded-full bg-blue-500/10 blur-3xl" />
-        <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.2fr_0.8fr]">
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-teal-300">ARTIC Group Ltd</p>
-            <p className="mt-2 text-sm font-medium tracking-wide text-slate-300">Engineering <span className="text-teal-400">•</span> Technology <span className="text-teal-400">•</span> Innovation</p>
-            <h1 className="mt-8 text-5xl font-black tracking-tight sm:text-6xl lg:text-7xl">ARTIC <span className="text-teal-300">HUB</span></h1>
-            <p className="mt-4 text-lg font-semibold text-slate-200 md:text-xl">Enterprise Management Platform</p>
-            <p className="mt-5 max-w-2xl text-base leading-7 text-slate-300">One place to shop, learn, find professional services, and connect with ARTIC Group’s digital platforms.</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#hub-services" className="inline-flex min-h-12 items-center justify-center rounded-xl bg-teal-400 px-6 font-bold text-slate-950 transition hover:bg-teal-300">Explore services <span className="ml-2" aria-hidden="true">↓</span></a>
-              <Link href={`/${locale}/search`} className="inline-flex min-h-12 items-center justify-center rounded-xl border border-white/25 px-6 font-bold text-white transition hover:bg-white/10">Browse marketplace</Link>
-              <a href="https://articvms.ddnsgeek.com" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center rounded-xl px-3 font-semibold text-slate-200 underline decoration-white/30 underline-offset-4 transition hover:text-white">Open ARTIC VMS ↗</a>
+    <main className="overflow-hidden bg-white text-slate-900">
+      <section className="relative isolate min-h-[690px] overflow-hidden bg-[#0d1a27] text-white sm:min-h-[740px]">
+        <Image
+          src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=2200&q=90"
+            alt="Engineers collaborate on a practical technology project in a workshop"
+          fill priority sizes="100vw" unoptimized className="-z-20 object-cover object-center"
+        />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-[#08131f]/95 via-[#0b1a29]/80 to-[#0b1a29]/25" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-t from-[#0b1724]/90 via-transparent to-[#0b1724]/20" />
+        <div aria-hidden="true" className="hub-glow absolute -right-20 top-20 -z-10 h-80 w-80 rounded-full bg-teal-400/20 blur-[100px]" />
+
+        <div className="mx-auto flex min-h-[690px] max-w-7xl flex-col justify-center px-5 pb-16 pt-20 sm:min-h-[740px] sm:px-8 lg:px-10">
+          <div className="max-w-4xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-teal-100 backdrop-blur-md">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-teal-300" /> ARTIC Group Ltd · Engineering · Technology · Innovation
+            </div>
+            <h1 className="mt-7 max-w-4xl text-5xl font-black leading-[0.98] tracking-[-0.045em] sm:text-7xl lg:text-[5.6rem]">
+              Turn bold ideas into <span className="text-teal-300">real-world impact.</span>
+            </h1>
+            <p className="mt-7 max-w-2xl text-base leading-7 text-slate-200 sm:text-lg sm:leading-8">
+              Meet ARTIC HUB: the place to learn, discover products, book professional support, and shape the next generation of useful technology.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <a href="#hub-services" className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-xl bg-teal-400 px-6 py-3.5 font-bold text-slate-950 shadow-lg shadow-teal-950/20 transition hover:-translate-y-0.5 hover:bg-teal-300">Explore ARTIC HUB <ArrowDown className="h-4 w-4" /></a>
+              <Link href={`/${locale}/services`} className="inline-flex min-h-[3.25rem] items-center justify-center gap-2 rounded-xl border border-white/35 bg-white/5 px-6 py-3.5 font-bold text-white backdrop-blur transition hover:bg-white/15"><CalendarDays className="h-4 w-4" /> Book a service</Link>
+            </div>
+            <div className="mt-10 flex flex-wrap items-center gap-x-6 gap-y-3 text-xs font-medium text-slate-200 sm:text-sm">
+              <span className="inline-flex items-center gap-2"><Check className="h-4 w-4 text-teal-300" /> Marketplace</span>
+              <span className="inline-flex items-center gap-2"><Check className="h-4 w-4 text-teal-300" /> Academy & training</span>
+              <span className="inline-flex items-center gap-2"><Check className="h-4 w-4 text-teal-300" /> Engineering & digital services</span>
             </div>
           </div>
-          <div className="rounded-3xl border border-white/10 bg-white/[0.06] p-6 shadow-2xl backdrop-blur-sm md:p-8">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-300">Your starting point</p>
-            <h2 className="mt-3 text-2xl font-extrabold">What would you like to do?</h2>
-            <p className="mt-2 text-sm leading-6 text-slate-300">Choose a destination and continue directly to that service.</p>
-            <div className="mt-6 grid grid-cols-2 gap-3">
-              {[
-                { title: 'Shop products', href: `/${locale}/search`, icon: '🛍️' },
-                { title: 'Learn a skill', href: `/${locale}/academy`, icon: '🎓' },
-                { title: 'Find a service', href: `/${locale}/services`, icon: '🧰' },
-                { title: 'Get support', href: `/${locale}/customer-service`, icon: '💬' },
-              ].map((item) => (
-                <Link key={item.title} href={item.href} className="rounded-2xl border border-white/10 bg-slate-950/30 p-4 transition hover:border-teal-300/50 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300">
-                  <span className="text-2xl" aria-hidden="true">{item.icon}</span>
-                  <span className="mt-3 block text-sm font-bold">{item.title}</span>
-                  <span className="mt-1 block text-xs text-slate-400">Go to service →</span>
-                </Link>
-              ))}
+
+          <div className="hub-float absolute bottom-8 right-8 hidden w-64 rounded-2xl border border-white/20 bg-slate-950/45 p-4 shadow-2xl backdrop-blur-xl lg:block">
+            <div className="flex items-center justify-between text-xs font-bold uppercase tracking-wider text-white"><span>Ideas in motion</span><Sparkles className="h-4 w-4 text-teal-300" /></div>
+            <div className="mt-4 flex items-center gap-2"><span className="h-2 flex-1 rounded-full bg-teal-300" /><span className="h-2 flex-1 rounded-full bg-teal-300/70" /><span className="h-2 flex-1 rounded-full bg-white/25" /></div>
+            <p className="mt-3 text-xs text-slate-300">Imagine <span className="text-teal-300">·</span> Build <span className="text-teal-300">·</span> Improve</p>
+          </div>
+        </div>
+        <a href="#hub-services" aria-label="Scroll to ARTIC HUB services" className="absolute bottom-5 left-1/2 hidden -translate-x-1/2 animate-bounce rounded-full border border-white/25 p-2 text-white/80 md:block"><ArrowDown className="h-4 w-4" /></a>
+      </section>
+
+      <div className="overflow-hidden border-b border-slate-200 bg-[#f7fafb] py-4" aria-label="ARTIC Group services">
+        <div className="hub-marquee-track gap-9 whitespace-nowrap text-xs font-bold uppercase tracking-[0.16em] text-slate-500 sm:text-sm">
+          {[0, 1].map((copy) => <div key={copy} aria-hidden={copy === 1} className="flex shrink-0 items-center gap-9">
+            {['Engineering & IoT', 'Learning & training', 'Marketplace', 'AI integration', 'Professional services', 'Fleet technology'].map((label) => <span key={label} className="inline-flex items-center gap-9">{label}<span className="text-teal-600">✳</span></span>)}
+          </div>)}
+        </div>
+      </div>
+
+      <section id="hub-services" className="scroll-mt-24 px-5 py-20 sm:px-8 sm:py-24 lg:px-10">
+        <div className="mx-auto max-w-7xl">
+          <HubReveal>
+            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+              <SectionHeading kicker="One hub · Many ways forward" title="A connected place to get things moving." text="ARTIC brings useful services together—from everyday needs to practical skills and technical projects." />
+              <Link href={`/${locale}/customer-service`} className="inline-flex shrink-0 items-center gap-2 pb-1 text-sm font-bold text-teal-900 hover:text-teal-700">Talk with our team <ArrowRight className="h-4 w-4" /></Link>
             </div>
+          </HubReveal>
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+            {offerings.map((item, index) => <OfferingCard key={item.title} item={item} locale={locale} index={index} />)}
+          </div>
+          <div className="mt-7 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
+            <span className="mr-1 self-center">In development:</span>
+            {['Business directory', 'Jobs & opportunities', 'Events & webinars', 'Digital health', 'Agriculture & IoT', 'AI tools'].map((service) => <span key={service} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5">{service}</span>)}
           </div>
         </div>
       </section>
 
-      <HubServiceDirectory locale={locale} />
-
-      <div className="container mx-auto space-y-12 px-4 py-12">
-        <section aria-labelledby="marketplace-heading" className="rounded-2xl border border-slate-200 bg-white p-5 md:p-7">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-800">Shop on ARTIC HUB</p>
-          <div className="mt-2 flex flex-col justify-between gap-3 sm:flex-row sm:items-end">
-            <div>
-              <h2 id="marketplace-heading" className="text-2xl font-black text-slate-950 md:text-3xl">Marketplace highlights</h2>
-              <p className="mt-1 text-sm text-slate-600">Browse products, categories, and current offers.</p>
+      <section className="bg-[#f3f7f7] px-5 py-20 sm:px-8 sm:py-24 lg:px-10">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+          <HubReveal className="relative">
+            <div className="relative min-h-[420px] overflow-hidden rounded-[2rem] shadow-xl sm:min-h-[540px]">
+              <Image src="https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=1400&q=85" alt="Engineering team testing technology in a workshop" fill sizes="(max-width: 1024px) 100vw, 50vw" unoptimized className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/65 via-transparent to-transparent" />
+              <div className="absolute bottom-7 left-7 right-7 text-white sm:bottom-9 sm:left-9"><p className="text-xs font-bold uppercase tracking-[0.2em] text-teal-200">Ideas deserve a path forward</p><p className="mt-2 max-w-md text-2xl font-black sm:text-3xl">From a first conversation to a working solution.</p></div>
             </div>
-            <Link href={`/${locale}/search`} className="font-semibold text-teal-800 hover:underline">View marketplace →</Link>
-          </div>
-        </section>
-
-        <Suspense fallback={<HeroCarouselSkeleton />}>
-          <HeroCarousel />
-        </Suspense>
-
-        {/* Categories */}
-        <Suspense fallback={<div className="h-32 skeleton rounded-xl" />}>
-          <CategoryGrid />
-        </Suspense>
-
-        {/* Featured products */}
-        <Suspense fallback={<ProductGridSkeleton count={8} />}>
-          <FeaturedProducts />
-        </Suspense>
-
-        {/* Services strip */}
-        <Suspense fallback={null}>
-          <ServicesStrip />
-        </Suspense>
-
-        {/* Today's deals */}
-        <Suspense fallback={<ProductGridSkeleton count={6} />}>
-          <DealsSection />
-        </Suspense>
-
-        {/* Trending */}
-        <Suspense fallback={<ProductGridSkeleton count={6} />}>
-          <TrendingSection />
-        </Suspense>
-
-        {/* Sell CTA banner */}
-        <div className="bg-gradient-to-r from-[#1A2332] to-[#243044] rounded-2xl overflow-hidden">
-          <div className="p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="text-white text-center md:text-left">
-              <p className="text-[#18A89A] text-sm font-bold uppercase tracking-widest mb-2">💼 For businesses</p>
-              <h2 className="text-2xl md:text-3xl font-black mb-2">Bring your business to ARTIC HUB</h2>
-              <p className="text-gray-400">Apply to sell products or explore professional services on the platform.</p>
+            <div className="hub-float absolute -bottom-5 -right-3 hidden rounded-2xl border border-slate-200 bg-white p-4 shadow-xl sm:block sm:-right-5"><div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-teal-50 text-teal-800"><Cpu className="h-5 w-5" /></span><span><span className="block text-xs text-slate-500">Make it practical</span><span className="block font-bold text-slate-900">Design · Build · Support</span></span></div></div>
+          </HubReveal>
+          <HubReveal delay={120}>
+            <SectionHeading kicker="Ideas into impact" title="Have a challenge? Let’s work on it together." text="ARTIC Group combines technical skills and practical delivery to explore solutions in engineering, electronics, networking, embedded systems, AI integration, and connected services." />
+            <div className="mt-8 space-y-4">
+              {[
+                ['01', 'Tell us what you’re trying to solve', 'Share your goal, challenge, or early-stage idea.'],
+                ['02', 'Shape the best next step', 'We’ll discuss scope, options, and the right people or services.'],
+                ['03', 'Build, learn, or improve', 'Move forward with a service booking, training, or a project plan.'],
+              ].map(([number, title, description]) => <div key={number} className="group flex gap-4 rounded-2xl border border-slate-200 bg-white p-4 transition hover:border-teal-300 hover:shadow-md"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#102638] text-sm font-black text-teal-300 transition group-hover:rotate-6">{number}</span><span><span className="block font-bold text-slate-950">{title}</span><span className="mt-1 block text-sm leading-6 text-slate-600">{description}</span></span></div>)}
             </div>
-            <div className="flex gap-3 flex-shrink-0">
-              <Link href={`/${locale}/sell`} className="inline-flex items-center gap-2 bg-[#18A89A] hover:bg-[#0F7A70] text-white font-bold px-6 py-3 rounded-full transition-all hover:scale-105 whitespace-nowrap">
-                Become a Seller →
-              </Link>
-              <Link href={`/${locale}/services`} className="inline-flex items-center gap-2 border border-white/20 text-white hover:bg-white/10 px-6 py-3 rounded-full transition-all whitespace-nowrap">
-                Our Services
-              </Link>
+            <div className="mt-7 flex flex-wrap gap-3"><Link href={`/${locale}/services`} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-[#102638] px-5 font-bold text-white transition hover:bg-teal-800">Book a consultation <ArrowRight className="h-4 w-4" /></Link><Link href="#share-idea" className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-slate-300 px-5 font-bold text-slate-800 transition hover:border-teal-600 hover:text-teal-900"><Lightbulb className="h-4 w-4" /> Share your idea</Link></div>
+          </HubReveal>
+        </div>
+      </section>
+
+      <section className="relative isolate overflow-hidden bg-[#102638] px-5 py-20 text-white sm:px-8 sm:py-24 lg:px-10">
+        <div aria-hidden="true" className="absolute -right-40 top-0 -z-10 h-[34rem] w-[34rem] rounded-full bg-teal-500/10 blur-[100px]" />
+        <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.9fr_1.1fr]">
+          <HubReveal>
+            <SectionHeading kicker="Learning that moves with you" title="Build skills you can put to work." text="Explore ARTIC Academy for practical learning and training registration. Start as an individual or bring a programme to your team." light />
+            <div className="mt-8 flex flex-wrap gap-3"><Link href={`/${locale}/academy`} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-teal-400 px-5 font-bold text-slate-950 transition hover:-translate-y-0.5 hover:bg-teal-300">Explore Academy <ArrowRight className="h-4 w-4" /></Link><Link href={`/${locale}/academy/training-registration`} className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-white/25 px-5 font-bold text-white transition hover:bg-white/10">Register for training</Link></div>
+            <div className="mt-8 flex items-center gap-3 text-sm text-slate-300"><BookOpen className="h-5 w-5 text-teal-300" /> Courses · Team training · Skills development</div>
+          </HubReveal>
+          <HubReveal delay={100} className="relative">
+            <div className="relative min-h-[360px] overflow-hidden rounded-[2rem] border border-white/10 sm:min-h-[490px]">
+              <Image src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1500&q=85" alt="A group of learners sharing knowledge around a laptop" fill sizes="(max-width: 1024px) 100vw, 55vw" unoptimized className="object-cover" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0b1724]/70 to-transparent" />
+              <div className="absolute bottom-6 left-6 right-6 flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-200">Learn by doing</p><p className="mt-1 text-2xl font-black">A stronger skillset starts here.</p></div><span className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-teal-900"><GraduationCap className="h-6 w-6" /></span></div>
             </div>
+          </HubReveal>
+        </div>
+      </section>
+
+      <section className="px-5 py-20 sm:px-8 sm:py-24 lg:px-10">
+        <div className="mx-auto max-w-7xl">
+          <HubReveal><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><SectionHeading kicker="Shop ARTIC HUB" title="Find something useful for what’s next." text="Explore product categories, featured items, and current offers from the marketplace." /><Link href={`/${locale}/search`} className="inline-flex shrink-0 items-center gap-2 font-bold text-teal-900 hover:text-teal-700">Go to marketplace <ArrowRight className="h-4 w-4" /></Link></div></HubReveal>
+          <div className="mt-9"><Suspense fallback={<div className="h-40 animate-pulse rounded-2xl bg-slate-100" />}><CategoryGrid /></Suspense></div>
+          <div className="mt-14 space-y-14">
+            <Suspense fallback={<ProductGridSkeleton count={4} />}><FeaturedProducts /></Suspense>
+            <Suspense fallback={null}><ServicesStrip /></Suspense>
+            <Suspense fallback={<ProductGridSkeleton count={4} />}><DealsSection /></Suspense>
+            <Suspense fallback={<ProductGridSkeleton count={4} />}><TrendingSection /></Suspense>
           </div>
         </div>
+      </section>
 
-        {/* Browsing history */}
-        <Suspense fallback={null}>
-          <BrowsingHistorySection />
-        </Suspense>
-      </div>
+      <section id="share-idea" className="scroll-mt-24 bg-[#f3f7f7] px-5 py-20 sm:px-8 sm:py-24 lg:px-10">
+        <div className="mx-auto grid max-w-7xl items-start gap-10 lg:grid-cols-[0.85fr_1.15fr]">
+          <HubReveal className="lg:sticky lg:top-28">
+            <SectionHeading kicker="Shape what comes next" title="Your idea could become the next ARTIC service." text="Tell us what people need, what’s missing, or what you’d like to build with ARTIC. Our team reviews every suggestion and follows up when a conversation can move it forward." />
+            <div className="mt-7 flex items-center gap-4 rounded-2xl border border-teal-100 bg-white p-4"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-teal-50 text-teal-800"><Lightbulb className="h-6 w-6" /></span><p className="text-sm leading-6 text-slate-600">You don’t need a finished business plan. A clear problem and the people it could help are a great start.</p></div>
+            <div className="mt-7 grid gap-3 sm:grid-cols-3 lg:grid-cols-1">{[['Listen', 'We learn the problem'], ['Explore', 'We shape the opportunity'], ['Build', 'We plan a practical next step']].map(([title, text]) => <div key={title} className="flex items-center gap-3 text-sm"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-teal-100 text-teal-900"><Check className="h-4 w-4" /></span><span><strong>{title}</strong><span className="ml-2 text-slate-500">{text}</span></span></div>)}</div>
+          </HubReveal>
+          <HubReveal delay={100}><IdeaSubmissionForm /></HubReveal>
+        </div>
+      </section>
+
+      <section className="relative isolate overflow-hidden bg-slate-950 px-5 py-20 text-white sm:px-8 sm:py-24 lg:px-10">
+        <Image src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1900&q=85" alt="People collaborating to develop a project" fill sizes="100vw" unoptimized className="-z-20 object-cover opacity-25" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-r from-slate-950 via-slate-950/90 to-[#102638]/85" />
+        <HubReveal className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_0.7fr] lg:items-end">
+          <div><SectionHeading kicker="Let’s connect" title="A question, a project, or a service to book?" text="Tell us what you need. We’ll help you find the right next step with ARTIC Group Ltd." light /><div className="mt-8 flex flex-wrap gap-3"><Link href={`/${locale}/customer-service`} className="inline-flex min-h-12 items-center gap-2 rounded-xl bg-teal-400 px-5 font-bold text-slate-950 transition hover:bg-teal-300"><Headphones className="h-4 w-4" /> Contact ARTIC</Link><Link href={`/${locale}/services`} className="inline-flex min-h-12 items-center gap-2 rounded-xl border border-white/30 px-5 font-bold text-white transition hover:bg-white/10"><CalendarDays className="h-4 w-4" /> Browse & book services</Link></div></div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">{[
+            { icon: Mail, label: 'Email our team', value: 'articltd1@gmail.com', href: 'mailto:articltd1@gmail.com' },
+            { icon: Phone, label: 'Call ARTIC', value: '+250 787 585 826', href: 'tel:+250787585826' },
+            { icon: MapPin, label: 'Based in', value: 'Kigali, Rwanda', href: `/${locale}/customer-service` },
+          ].map(({ icon: Icon, label, value, href }) => <a key={label} href={href} className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4 backdrop-blur transition hover:border-teal-300/40 hover:bg-white/10"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-teal-200 transition group-hover:bg-teal-300 group-hover:text-slate-950"><Icon className="h-5 w-5" /></span><span><span className="block text-xs text-slate-400">{label}</span><span className="mt-1 block font-semibold text-white">{value}</span></span><ArrowUpRight className="ml-auto h-4 w-4 text-slate-500 transition group-hover:text-teal-200" /></a>)}</div>
+        </HubReveal>
+      </section>
+
+      <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-10"><Suspense fallback={null}><BrowsingHistorySection /></Suspense></div>
     </main>
   );
 }
