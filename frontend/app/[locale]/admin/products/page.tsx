@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
@@ -22,7 +22,7 @@ interface ApiData {
   pagination: { total: number; totalPages: number; page: number };
 }
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/v1';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:5000/api/v1');
 
 function resolveImageUrl(url: string): string {
   if (!url) return '/images/placeholder.jpg';

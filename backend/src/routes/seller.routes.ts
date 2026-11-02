@@ -94,7 +94,7 @@ router.put('/:id/status', authenticate, authorize('ADMIN'), async (req, res) => 
     subject: isApproved ? '🎉 Your Seller Application is Approved!' : 'Seller Application Update',
     template: 'seller-status',
     html: isApproved
-      ? `<h2>Congratulations, ${app.user.name}!</h2><p>Your seller application has been approved. You can now list products on ARTIC Marketplace.</p>`
+      ? `<h2>Congratulations, ${app.user.name}!</h2><p>Your seller application has been approved. You can now list products on ARTIC HUB.</p>`
       : `<h2>Application Update</h2><p>Hi ${app.user.name}, your seller application has been reviewed. Status: <b>${status}</b>.</p>${adminNotes ? `<p>Notes: ${adminNotes}</p>` : ''}`,
   });
 

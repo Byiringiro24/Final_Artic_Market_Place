@@ -8,20 +8,25 @@ import '../globals.css';
 
 export const metadata: Metadata = {
   title: {
-    default: 'ARTIC Marketplace',
-    template: '%s | ARTIC Marketplace',
+    default: 'ARTIC Group Ltd | ARTIC HUB',
+    template: '%s | ARTIC HUB',
   },
-  description: 'Your one-stop marketplace for products and professional services — ARTIC',
+  description: 'ARTIC HUB — Enterprise Management Platform. A product of ARTIC Group Ltd. Engineering • Technology • Innovation.',
   keywords: ['ecommerce', 'marketplace', 'shopping', 'services', 'Rwanda', 'Africa'],
   manifest: '/manifest.json',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://artichub.ddnsgeek.com'),
+  applicationName: 'ARTIC HUB',
+  icons: { icon: '/icon.svg', apple: '/icon.svg' },
+  authors: [{ name: 'ARTIC Group Ltd' }],
+  publisher: 'ARTIC Group Ltd',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'ARTIC Marketplace',
+    title: 'ARTIC HUB',
   },
   openGraph: {
     type: 'website',
-    siteName: 'ARTIC Marketplace',
+    siteName: 'ARTIC Group Ltd | ARTIC HUB',
   },
 };
 

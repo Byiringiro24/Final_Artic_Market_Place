@@ -34,7 +34,7 @@
     "sellProducts": "Vendez vos produits",
     "becomeAffiliate": "Devenez affilié",
     "advertise": "Annoncez vos produits",
-    "copyright": "© {year} ARTIC Marketplace. Tous droits réservés."
+    "copyright": "Copyright © 2026 ARTIC Group Ltd. All rights reserved."
   },
   "Nav": {
     "home": "Accueil",
@@ -92,7 +92,7 @@
     "fullName": "Nom complet",
     "forgotPassword": "Mot de passe oublié ?",
     "resetPassword": "Réinitialiser le mot de passe",
-    "noAccount": "Nouveau sur ARTIC Marketplace ?",
+    "noAccount": "Nouveau sur ARTIC HUB ?",
     "createAccount": "Créez votre compte ARTIC",
     "haveAccount": "Vous avez déjà un compte ?",
     "orContinueWith": "Ou continuer avec",

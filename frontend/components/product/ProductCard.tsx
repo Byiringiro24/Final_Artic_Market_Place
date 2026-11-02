@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
@@ -11,7 +11,7 @@ import { useCartStore } from '@/store/cart.store';
 import { cn } from '@/lib/utils';
 import StarRating from './StarRating';
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/v1').replace('/api/v1', '');
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:5000/api/v1')).replace('/api/v1', '');
 
 function resolveImageUrl(url: string): string {
   if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=400&q=80';

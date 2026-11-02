@@ -6,11 +6,11 @@ const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
     info: {
-      title: 'ARTIC Marketplace API',
+      title: 'ARTIC HUB API',
       version: '1.0.0',
       description: 'Full e-commerce REST API — Amazon-grade marketplace',
       contact: {
-        name: 'ARTIC Marketplace',
+        name: 'ARTIC HUB',
         email: 'articltd1@gmail.com',
       },
     },

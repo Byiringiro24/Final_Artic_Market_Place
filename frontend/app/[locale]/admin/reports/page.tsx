@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -42,7 +42,7 @@ async function exportPDF(d: DashboardData, days: number) {
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(20);
   doc.setFont('helvetica', 'bold');
-  doc.text('ARTIC Marketplace', 40, 36);
+  doc.text('ARTIC Group Ltd | ARTIC HUB', 40, 36);
   doc.setFontSize(11);
   doc.setFont('helvetica', 'normal');
   doc.text('Sales & Performance Report', 40, 52);
@@ -172,7 +172,7 @@ async function exportPDF(d: DashboardData, days: number) {
     doc.setFontSize(8);
     doc.setTextColor(150);
     doc.text(
-      `© ${new Date().getFullYear()} ARTIC Marketplace — Confidential  ·  Page ${i} of ${pageCount}`,
+      `Copyright © 2026 ARTIC Group Ltd. All rights reserved. · Confidential · Page ${i} of ${pageCount}`,
       W / 2,
       doc.internal.pageSize.getHeight() - 18,
       { align: 'center' }
@@ -191,7 +191,7 @@ async function exportExcel(d: DashboardData, days: number) {
   XLSX.utils.book_append_sheet(
     wb,
     XLSX.utils.aoa_to_sheet([
-      ['ARTIC Marketplace — Sales Report'],
+      ['ARTIC Group Ltd | ARTIC HUB — Sales Report'],
       [`Period: Last ${days} days`],
       [`Generated: ${new Date().toLocaleString()}`],
       [],

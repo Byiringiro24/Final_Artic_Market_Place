@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import { getLocale } from 'next-intl/server';
 import { Home, Search } from 'lucide-react';
 
@@ -8,7 +8,7 @@ export default async function NotFound() {
   return (
     <div className="min-h-screen bg-artic-light-bg flex flex-col items-center justify-center px-4 text-center">
       {/* Brand */}
-      <div className="text-artic-teal text-4xl font-black mb-6">ARTIC</div>
+      <div className="text-center mb-6"><div className="text-artic-teal text-4xl font-black">ARTIC HUB</div><div className="text-xs text-gray-500">ARTIC Group Ltd</div></div>
 
       {/* 404 illustration text */}
       <h1 className="text-8xl font-black text-gray-200 select-none leading-none">404</h1>

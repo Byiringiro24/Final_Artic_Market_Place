@@ -8,11 +8,11 @@ export function ReviewRequestEmail({ customerName, items, reviewBaseUrl }: Props
   return (
     <Html>
       <Head />
-      <Preview>How was your ARTIC Marketplace order? Leave a review!</Preview>
+      <Preview>How was your ARTIC HUB order? Leave a review!</Preview>
       <Body style={{ backgroundColor: '#f4f4f4', fontFamily: 'sans-serif' }}>
         <Container style={{ maxWidth: 600, margin: '0 auto', backgroundColor: '#fff', borderRadius: 8, overflow: 'hidden' }}>
           <Section style={{ backgroundColor: '#131921', padding: '20px 40px' }}>
-            <Text style={{ color: '#FF9900', fontSize: 24, fontWeight: 900, margin: 0 }}>ARTIC marketplace</Text>
+            <Text style={{ color: '#18A89A', fontSize: 24, fontWeight: 900, margin: 0 }}>ARTIC HUB</Text><Text style={{ color: '#fff', fontSize: 12, margin: '4px 0 0' }}>ARTIC Group Ltd · Engineering • Technology • Innovation</Text>
           </Section>
           <Section style={{ padding: '40px' }}>
             <Text style={{ fontSize: 22, fontWeight: 700, color: '#131921' }}>How was your order?</Text>
@@ -40,7 +40,7 @@ export function ReviewRequestEmail({ customerName, items, reviewBaseUrl }: Props
           </Section>
           <Hr style={{ borderColor: '#eee' }} />
           <Section style={{ padding: '16px 40px', textAlign: 'center' }}>
-            <Text style={{ color: '#999', fontSize: 12 }}>© {new Date().getFullYear()} ARTIC Marketplace</Text>
+            <Text style={{ color: '#999', fontSize: 12 }}>Copyright © 2026 ARTIC Group Ltd. All rights reserved.</Text>
           </Section>
         </Container>
       </Body>

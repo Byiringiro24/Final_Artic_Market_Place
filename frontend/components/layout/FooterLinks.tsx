@@ -5,7 +5,7 @@ import { useLocale } from 'next-intl';
 
 const COLUMNS = [
   {
-    heading: 'ARTIC Marketplace',
+    heading: 'ARTIC HUB',
     links: [
       { label: 'About Us', href: '/page/about-us' },
       { label: 'Services', href: '/services' },

@@ -36,7 +36,7 @@ async function getTransporter() {
 }
 
 async function getFromAddress(): Promise<string> {
-  const fromName = process.env.SMTP_FROM_NAME || 'ARTIC Marketplace';
+  const fromName = process.env.SMTP_FROM_NAME || 'ARTIC Group Ltd | ARTIC HUB';
   const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.SMTP_USER || '';
   return `"${fromName}" <${fromEmail}>`;
 }

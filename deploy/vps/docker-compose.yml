@@ -1,0 +1,80 @@
+name: artic-hub
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?Set POSTGRES_USER in the root .env file}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in the root .env file}
+      POSTGRES_DB: ${POSTGRES_DB:?Set POSTGRES_DB in the root .env file}
+    volumes:
+      - artic_hub_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ['redis-server', '--appendonly', 'yes']
+    volumes:
+      - artic_hub_redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../../backend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ../../backend/.env.production.local
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      FRONTEND_URL: https://artichub.ddnsgeek.com
+      APP_URL: https://artichub.ddnsgeek.com
+      DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in the root .env file}
+      REDIS_URL: redis://redis:6379
+    volumes:
+      - artic_hub_uploads:/app/uploads
+      - artic_hub_logs:/app/logs
+    ports:
+      - '127.0.0.1:5000:5000'
+
+  frontend:
+    build:
+      context: ../../frontend
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      - backend
+    env_file:
+      - ../../frontend/.env.production.local
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: /api/v1
+      NEXT_PUBLIC_APP_URL: https://artichub.ddnsgeek.com
+      NEXT_PUBLIC_APP_NAME: ARTIC HUB
+      NEXTAUTH_URL: https://artichub.ddnsgeek.com
+      AUTH_URL: https://artichub.ddnsgeek.com
+      ARTIC_BACKEND_INTERNAL_URL: http://backend:5000/api/v1
+    ports:
+      - '127.0.0.1:3010:3000'
+
+volumes:
+  artic_hub_postgres_data:
+  artic_hub_redis_data:
+  artic_hub_uploads:
+  artic_hub_logs:

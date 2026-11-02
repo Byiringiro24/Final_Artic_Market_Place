@@ -1,8 +1,7 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
 import { createHmac, randomUUID } from 'crypto';
-
-const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+import { backendApiUrl } from '@/lib/backend-url';
 const hasGoogleCredentials = Boolean(process.env.AUTH_GOOGLE_ID && process.env.AUTH_GOOGLE_SECRET);
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -48,7 +47,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       const signature = createHmac('sha256', bridgeSecret).update(claims).digest('base64url');
 
       try {
-        const response = await fetch(`${apiBaseUrl}/auth/google`, {
+        const response = await fetch(backendApiUrl('auth/google'), {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

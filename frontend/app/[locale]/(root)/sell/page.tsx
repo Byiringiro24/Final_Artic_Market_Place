@@ -83,7 +83,7 @@ export default function SellPage() {
             <Store className="h-4 w-4" /> Seller Program
           </div>
           <h1 className="text-4xl md:text-5xl font-black mb-4">
-            Start Selling on <span className="text-artic-teal">ARTIC Marketplace</span>
+            Start Selling on <span className="text-artic-teal">ARTIC HUB</span>
           </h1>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-8">
             Join thousands of sellers growing their business on ARTIC. Apply today and reach customers across the region.
@@ -273,7 +273,7 @@ export default function SellPage() {
                 {[1,2,3,4,5].map((i) => <Star key={i} className="h-4 w-4 fill-artic-gold text-artic-gold" />)}
               </div>
               <p className="text-sm text-gray-700 italic">
-                &ldquo;ARTIC Marketplace helped us grow our customer base by 300% in just 6 months!&rdquo;
+                &ldquo;ARTIC HUB helped us grow our customer base by 300% in just 6 months!&rdquo;
               </p>
               <p className="text-xs text-gray-500 mt-2 font-medium">— Seller on ARTIC</p>
             </div>

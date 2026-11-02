@@ -34,7 +34,7 @@
     "sellProducts": "بيع منتجاتك معنا",
     "becomeAffiliate": "كن شريكاً",
     "advertise": "أعلن عن منتجاتك",
-    "copyright": "© {year} ARTIC Marketplace. جميع الحقوق محفوظة."
+    "copyright": "Copyright © 2026 ARTIC Group Ltd. All rights reserved."
   },
   "Nav": {
     "home": "الرئيسية",
@@ -92,7 +92,7 @@
     "fullName": "الاسم الكامل",
     "forgotPassword": "نسيت كلمة المرور؟",
     "resetPassword": "إعادة تعيين كلمة المرور",
-    "noAccount": "جديد في ARTIC Marketplace؟",
+    "noAccount": "جديد في ARTIC HUB؟",
     "createAccount": "أنشئ حسابك في ARTIC",
     "haveAccount": "هل لديك حساب بالفعل؟",
     "orContinueWith": "أو تابع مع",

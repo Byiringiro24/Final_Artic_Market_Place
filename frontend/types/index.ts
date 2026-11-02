@@ -1,4 +1,4 @@
-// ARTIC Marketplace — Shared TypeScript types
+// ARTIC HUB — Shared TypeScript types
 
 export type Locale = 'en-US' | 'fr' | 'ar';
 

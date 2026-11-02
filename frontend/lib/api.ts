@@ -1,10 +1,9 @@
 /**
- * ARTIC Marketplace — Axios API client
+ * ARTIC HUB — Axios API client
  * Handles auth headers, token refresh, and consistent error formatting
  */
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+import { API_URL } from './constants';
 
 export const api = axios.create({
   baseURL: API_URL,

@@ -19,7 +19,7 @@ const DEFAULT_CONTACT: Record<string, { value: string; label: string }> = {
   tiktok: { value: 'https://tiktok.com/@articmarketplace', label: 'TikTok' },
   address: { value: 'Kigali, Rwanda', label: 'Physical Address' },
   support_hours: { value: 'Mon–Fri: 8AM–6PM | Sat: 9AM–3PM', label: 'Support Hours' },
-  tagline: { value: 'Your one-stop marketplace for products and services', label: 'Tagline' },
+  tagline: { value: 'Engineering • Technology • Innovation', label: 'Tagline' },
 };
 
 // ─── GET all contact info (public) ───────────────────────────────────────────

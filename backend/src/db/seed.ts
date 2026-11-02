@@ -1,5 +1,5 @@
 /**
- * ARTIC Marketplace — Database Seeder
+ * ARTIC HUB — Database Seeder
  * Uses real Unsplash/Pexels CDN images as product templates
  */
 import { PrismaClient, Role } from '@prisma/client';
@@ -76,7 +76,7 @@ const PRODUCT_IMAGES = {
 };
 
 async function main() {
-  console.log('🌱 Seeding ARTIC Marketplace database...\n');
+  console.log('🌱 Seeding ARTIC HUB database...\n');
 
   // ─── Clean up ─────────────────────────────────────────────────────────────
   await prisma.orderStatusHistory.deleteMany();
@@ -384,8 +384,8 @@ async function main() {
   // ─── Settings ─────────────────────────────────────────────────────────────
   await prisma.setting.createMany({
     data: [
-      { key: 'site_name', value: 'ARTIC Marketplace', group: 'site', label: 'Site Name' },
-      { key: 'site_description', value: 'Your one-stop marketplace for products and services', group: 'site' },
+      { key: 'site_name', value: 'ARTIC HUB', group: 'site', label: 'Site Name' },
+      { key: 'site_description', value: 'Engineering • Technology • Innovation', group: 'site' },
       { key: 'site_email', value: 'articltd1@gmail.com', group: 'site' },
       { key: 'site_phone', value: '0787585826 / 0785424098', group: 'site' },
       { key: 'default_currency', value: 'USD', group: 'site' },
@@ -403,8 +403,8 @@ async function main() {
   // ─── Web Pages ────────────────────────────────────────────────────────────
   await prisma.webPage.createMany({
     data: [
-      { title: 'About Us', slug: 'about-us', content: '# About ARTIC Marketplace\n\nWe are a premier e-commerce platform connecting buyers with quality products and professional services across Africa and beyond.\n\n## Our Mission\n\nTo make quality products and professional services accessible to everyone, anywhere.\n\n## Our Values\n\n- **Trust**: Verified sellers and service providers\n- **Quality**: Curated products and services\n- **Speed**: Fast delivery and instant booking\n- **Innovation**: AI-powered recommendations', isPublished: true, sortOrder: 1 },
-      { title: 'Terms of Service', slug: 'terms-of-service', content: '# Terms of Service\n\nBy using ARTIC Marketplace, you agree to these terms and conditions...', isPublished: true, sortOrder: 2 },
+      { title: 'About Us', slug: 'about-us', content: '# About ARTIC HUB\n\nWe are a premier e-commerce platform connecting buyers with quality products and professional services across Africa and beyond.\n\n## Our Mission\n\nTo make quality products and professional services accessible to everyone, anywhere.\n\n## Our Values\n\n- **Trust**: Verified sellers and service providers\n- **Quality**: Curated products and services\n- **Speed**: Fast delivery and instant booking\n- **Innovation**: AI-powered recommendations', isPublished: true, sortOrder: 1 },
+      { title: 'Terms of Service', slug: 'terms-of-service', content: '# Terms of Service\n\nBy using ARTIC HUB, you agree to these terms and conditions...', isPublished: true, sortOrder: 2 },
       { title: 'Privacy Policy', slug: 'privacy-policy', content: '# Privacy Policy\n\nYour privacy matters to us. This policy describes how we collect and use your data.', isPublished: true, sortOrder: 3 },
       { title: 'FAQ', slug: 'faq', content: '# Frequently Asked Questions\n\n## How do I track my order?\nLog in to your account and visit Orders section.\n\n## What is your return policy?\n30-day returns on most items.', isPublished: true, sortOrder: 4 },
       { title: 'Returns Policy', slug: 'returns', content: '# Returns & Refunds\n\nWe offer 30-day returns on most items. Items must be in original condition.', isPublished: true, sortOrder: 5 },

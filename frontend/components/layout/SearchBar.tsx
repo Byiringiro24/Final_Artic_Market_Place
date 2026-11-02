@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -93,7 +93,7 @@ export default function SearchBar() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           onFocus={() => suggestions.length > 0 && setIsOpen(true)}
-          placeholder="Search ARTIC Marketplace..."
+          placeholder="Search ARTIC HUB..."
           className="flex-1 px-4 py-2 text-black text-sm focus:outline-none focus:ring-2 focus:ring-[#18A89A] bg-white"
           aria-label="Search products"
           aria-autocomplete="list"

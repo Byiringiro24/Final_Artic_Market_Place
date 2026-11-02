@@ -75,10 +75,10 @@ export async function register(req: Request, res: Response) {
   await sendEmail({
     to: email,
     toName: name,
-    subject: 'Verify your ARTIC Marketplace email',
+    subject: 'Verify your ARTIC HUB email',
     template: 'email-verification',
     html: `
-      <h1>Welcome to ARTIC Marketplace, ${name}!</h1>
+      <h1>Welcome to ARTIC HUB, ${name}!</h1>
       <p>Click the link below to verify your email address:</p>
       <a href="${verifyUrl}" style="background:#f90;padding:12px 24px;color:#000;text-decoration:none;border-radius:4px;">Verify Email</a>
       <p>Link expires in 24 hours.</p>
@@ -328,7 +328,7 @@ export async function forgotPassword(req: Request, res: Response) {
   await sendEmail({
     to: email,
     toName: user.name,
-    subject: 'Reset your ARTIC Marketplace password',
+    subject: 'Reset your ARTIC HUB password',
     template: 'password-reset',
     html: `
       <h1>Password Reset Request</h1>

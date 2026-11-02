@@ -34,7 +34,7 @@
     "sellProducts": "Uza Bidhaa Nawe",
     "becomeAffiliate": "Kuwa Mshirika",
     "advertise": "Tangaza Bidhaa Zako",
-    "copyright": "© {year} ARTIC Marketplace. Haki zote zimehifadhiwa."
+    "copyright": "Copyright © 2026 ARTIC Group Ltd. All rights reserved."
   },
   "Nav": {
     "home": "Nyumbani",
@@ -92,7 +92,7 @@
     "fullName": "Jina kamili",
     "forgotPassword": "Umesahau nywila?",
     "resetPassword": "Weka upya nywila",
-    "noAccount": "Mpya kwenye ARTIC Marketplace?",
+    "noAccount": "Mpya kwenye ARTIC HUB?",
     "createAccount": "Fungua akaunti yako ya ARTIC",
     "haveAccount": "Una akaunti tayari?",
     "orContinueWith": "Au endelea na",

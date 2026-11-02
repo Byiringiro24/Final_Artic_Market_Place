@@ -1,8 +1,10 @@
-// ARTIC Marketplace — Shared frontend constants
+// ARTIC HUB — Shared frontend constants
 
-export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'ARTIC Marketplace';
-export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000';
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+export const APP_NAME = process.env.NEXT_PUBLIC_APP_NAME || 'ARTIC HUB';
+export const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://artichub.ddnsgeek.com';
+export const API_URL = process.env.NEXT_PUBLIC_API_URL || (
+  process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:5000/api/v1'
+);
 
 export const SUPPORTED_LOCALES = ['en-US', 'fr', 'ar'] as const;
 export const DEFAULT_LOCALE = 'en-US';

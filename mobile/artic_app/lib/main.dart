@@ -12,7 +12,7 @@ class ArticApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        title: 'ARTIC Group',
+        title: 'ARTIC Group Ltd | ARTIC HUB',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: articTeal),
@@ -46,7 +46,7 @@ class _PlatformHomeState extends State<PlatformHome> {
       appBar: AppBar(
         backgroundColor: articNavy,
         foregroundColor: Colors.white,
-        title: const Text('ARTIC Group', style: TextStyle(fontWeight: FontWeight.w800)),
+        title: const Text('ARTIC HUB', style: TextStyle(fontWeight: FontWeight.w800)),
       ),
       body: IndexedStack(index: _tab, children: pages),
       bottomNavigationBar: NavigationBar(
@@ -68,7 +68,14 @@ class _PlatformHomeState extends State<PlatformHome> {
             padding: const EdgeInsets.all(24),
             decoration: BoxDecoration(color: articNavy, borderRadius: BorderRadius.circular(24)),
             child: const Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text('One platform. More ways to grow.', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800)),
+              Text('ARTIC Group Ltd', style: TextStyle(color: Colors.white70, fontSize: 13, fontWeight: FontWeight.w700)),
+              SizedBox(height: 4),
+              Text('Engineering • Technology • Innovation', style: TextStyle(color: Colors.white70, fontSize: 11)),
+              SizedBox(height: 10),
+              Text('ARTIC HUB', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.w800)),
+              SizedBox(height: 4),
+              Text('Enterprise Management Platform', style: TextStyle(color: Colors.white70, fontSize: 14)),
+              SizedBox(height: 10),
               SizedBox(height: 10),
               Text('Shop, learn, find services, and connect with ARTIC.', style: TextStyle(color: Colors.white70, height: 1.5)),
             ]),

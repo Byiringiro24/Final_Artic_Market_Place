@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
@@ -102,7 +102,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           {sidebarOpen && (
             <Link href={`/${locale}/admin/overview`} className="flex items-center gap-2">
               <div className="bg-artic-teal rounded px-1.5 py-0.5 text-black font-black text-sm">A</div>
-              <span className="font-semibold text-sm">Admin Panel</span>
+              <span className="font-semibold text-sm">ARTIC HUB Admin</span>
             </Link>
           )}
         </div>

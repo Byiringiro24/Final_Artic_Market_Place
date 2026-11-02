@@ -46,7 +46,7 @@ export function OrderConfirmationEmail({
         <Container style={{ maxWidth: 600, margin: '0 auto', backgroundColor: '#fff', borderRadius: 8, overflow: 'hidden' }}>
           {/* Header */}
           <Section style={{ backgroundColor: '#131921', padding: '20px 40px' }}>
-            <Text style={{ color: '#FF9900', fontSize: 24, fontWeight: 900, margin: 0 }}>ARTIC marketplace</Text>
+            <Text style={{ color: '#18A89A', fontSize: 24, fontWeight: 900, margin: 0 }}>ARTIC HUB</Text><Text style={{ color: '#fff', fontSize: 12, margin: '4px 0 0' }}>ARTIC Group Ltd · Engineering • Technology • Innovation</Text>
           </Section>
 
           {/* Hero */}
@@ -128,7 +128,7 @@ export function OrderConfirmationEmail({
           <Section style={{ padding: '20px 40px', textAlign: 'center' }}>
             <Text style={{ color: '#999', fontSize: 12 }}>
               Questions? Contact us at articltd1@gmail.com<br />
-              © {new Date().getFullYear()} ARTIC Marketplace. All rights reserved.
+              Copyright © 2026 ARTIC Group Ltd. All rights reserved.
             </Text>
           </Section>
         </Container>

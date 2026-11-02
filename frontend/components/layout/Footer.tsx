@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import Image from 'next/image';
 import { Facebook, Twitter, Instagram, Linkedin, Youtube } from 'lucide-react';
 import BackToTop from './BackToTop';
@@ -21,8 +21,6 @@ const SOCIALS = [
 ];
 
 export default function Footer() {
-  const year = new Date().getFullYear();
-
   return (
     <footer className="bg-artic-navy text-white mt-auto">
       <BackToTop />
@@ -41,6 +39,11 @@ export default function Footer() {
               height={56}
               className="h-12 w-auto object-contain brightness-110"
             />
+            <div className="leading-tight">
+              <p className="font-semibold">ARTIC HUB</p>
+              <p className="text-xs text-gray-300">Enterprise Management Platform</p>
+              <p className="text-[10px] text-gray-400">A product of ARTIC Group Ltd</p>
+            </div>
           </div>
 
           <div className="flex items-center gap-4">
@@ -61,7 +64,7 @@ export default function Footer() {
 
         {/* Legal row */}
         <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-gray-400">
-          <p>© {year} ARTIC Marketplace. All rights reserved.</p>
+          <p>Copyright © 2026 ARTIC Group Ltd. All rights reserved.</p>
           <div className="flex gap-4 flex-wrap justify-center">
             {LEGAL_LINKS.map((l) => (
               <FooterLocalLink key={l.href} href={l.href} label={l.label} />

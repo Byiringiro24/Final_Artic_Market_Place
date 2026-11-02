@@ -7,7 +7,7 @@ Place the following files in this directory before running the app:
 | File | Description |
 |------|-------------|
 | `images/placeholder.jpg` | Default product image (400×400 recommended) |
-| `icons/logo.svg` | ARTIC Marketplace logo |
+| `icons/logo.svg` | ARTIC HUB logo |
 | `icons/logo.png` | PNG version of logo |
 | `favicon.ico` | Browser favicon |
 

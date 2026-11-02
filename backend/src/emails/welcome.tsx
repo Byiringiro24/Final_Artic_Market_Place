@@ -13,13 +13,14 @@ export function WelcomeEmail({ name, verifyUrl }: Props) {
   return (
     <Html>
       <Head />
-      <Preview>Welcome to ARTIC Marketplace — verify your email</Preview>
+      <Preview>Welcome to ARTIC HUB — verify your email</Preview>
       <Body style={{ backgroundColor: '#f4f4f4', fontFamily: 'sans-serif' }}>
         <Container style={{ maxWidth: 600, margin: '0 auto', backgroundColor: '#fff', borderRadius: 8, overflow: 'hidden' }}>
           {/* Header */}
           <Section style={{ backgroundColor: '#131921', padding: '20px 40px' }}>
-            <Text style={{ color: '#FF9900', fontSize: 28, fontWeight: 900, margin: 0 }}>
-              ARTIC marketplace
+            <Text style={{ color: '#18A89A', fontSize: 28, fontWeight: 900, margin: 0 }}>ARTIC HUB</Text>
+            <Text style={{ color: '#fff', fontSize: 12, margin: '4px 0 0' }}>
+              ARTIC Group Ltd · Engineering • Technology • Innovation
             </Text>
           </Section>
 
@@ -29,7 +30,7 @@ export function WelcomeEmail({ name, verifyUrl }: Props) {
               Welcome, {name}! 👋
             </Text>
             <Text style={{ color: '#555', lineHeight: 1.6 }}>
-              Your ARTIC Marketplace account has been created. Please verify your email address to
+              Your ARTIC HUB account has been created. Please verify your email address to
               activate your account and start shopping.
             </Text>
 
@@ -57,7 +58,7 @@ export function WelcomeEmail({ name, verifyUrl }: Props) {
           <Hr style={{ borderColor: '#eee' }} />
           <Section style={{ padding: '20px 40px', backgroundColor: '#f9f9f9' }}>
             <Text style={{ color: '#999', fontSize: 12, textAlign: 'center' }}>
-              © {new Date().getFullYear()} ARTIC Marketplace. All rights reserved.
+              Copyright © 2026 ARTIC Group Ltd. All rights reserved.
             </Text>
           </Section>
         </Container>

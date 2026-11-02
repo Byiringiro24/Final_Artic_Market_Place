@@ -49,7 +49,7 @@ export function useAdminNotifications(onEvent: EventCallback) {
     const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
     if (!token) return;
 
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/v1';
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:5000/api/v1');
     const url = `${apiUrl}/notifications/stream?token=${encodeURIComponent(token)}`;
 
     const es = new EventSource(url);

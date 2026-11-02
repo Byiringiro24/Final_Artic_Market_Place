@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect } from 'react';
 import { AlertTriangle, RefreshCw, Home } from 'lucide-react';
@@ -17,7 +17,7 @@ export default function ErrorPage({ error, reset }: Props) {
 
   return (
     <div className="min-h-screen bg-artic-light-bg flex flex-col items-center justify-center px-4 text-center">
-      <div className="text-artic-teal text-3xl font-black mb-6">ARTIC</div>
+      <div className="text-center mb-6"><div className="text-artic-teal text-3xl font-black">ARTIC HUB</div><div className="text-xs text-gray-500">ARTIC Group Ltd</div></div>
 
       <div className="bg-white border rounded-2xl p-10 max-w-md w-full shadow-sm">
         <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mx-auto mb-4">

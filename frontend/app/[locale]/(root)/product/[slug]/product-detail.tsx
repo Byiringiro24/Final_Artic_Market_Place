@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
@@ -29,7 +29,7 @@ interface Product {
   variants: Variant[];
 }
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/v1').replace(/\/api\/v1$/, '');
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:5000/api/v1')).replace(/\/api\/v1$/, '');
 
 function resolveMediaUrl(url?: string) {
   if (!url) return 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=1200&q=80';
@@ -338,7 +338,7 @@ export default function ProductDetail({ slug }: { slug: string }) {
 
             <div className="space-y-2 text-xs text-gray-600">
               <div className="flex items-center gap-2"><Shield className="h-4 w-4 text-green-600" /> Secure transaction</div>
-              <div className="flex items-center gap-2"><Truck className="h-4 w-4" /> Ships from ARTIC Marketplace</div>
+              <div className="flex items-center gap-2"><Truck className="h-4 w-4" /> Ships from ARTIC HUB</div>
               <div className="flex items-center gap-2"><RotateCcw className="h-4 w-4" /> 30-day return policy</div>
             </div>
           </div>

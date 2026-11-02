@@ -1,4 +1,4 @@
-﻿import Link from 'next/link';
+import Link from 'next/link';
 import Image from 'next/image';
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -15,6 +15,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             className="h-11 w-auto max-w-[130px] object-contain logo-mark"
             priority
           />
+          <span className="ml-3 flex flex-col leading-tight">
+            <span className="font-bold text-gray-900">ARTIC HUB</span>
+            <span className="text-[10px] text-gray-500">A product of ARTIC Group Ltd</span>
+          </span>
         </Link>
       </header>
 
@@ -28,7 +32,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
           <Link href="/page/privacy-policy" className="hover:underline">Privacy</Link>
           <Link href="/page/faq" className="hover:underline">Help</Link>
         </div>
-        <p className="mt-2">© {new Date().getFullYear()} ARTIC Marketplace</p>
+        <p className="mt-2">Copyright © 2026 ARTIC Group Ltd. All rights reserved.</p>
       </footer>
     </div>
   );

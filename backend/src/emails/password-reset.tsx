@@ -7,17 +7,17 @@ export function PasswordResetEmail({ name, resetUrl }: Props) {
   return (
     <Html>
       <Head />
-      <Preview>Reset your ARTIC Marketplace password</Preview>
+      <Preview>Reset your ARTIC HUB password</Preview>
       <Body style={{ backgroundColor: '#f4f4f4', fontFamily: 'sans-serif' }}>
         <Container style={{ maxWidth: 600, margin: '0 auto', backgroundColor: '#fff', borderRadius: 8, overflow: 'hidden' }}>
           <Section style={{ backgroundColor: '#131921', padding: '20px 40px' }}>
-            <Text style={{ color: '#FF9900', fontSize: 24, fontWeight: 900, margin: 0 }}>ARTIC marketplace</Text>
+            <Text style={{ color: '#18A89A', fontSize: 24, fontWeight: 900, margin: 0 }}>ARTIC HUB</Text><Text style={{ color: '#fff', fontSize: 12, margin: '4px 0 0' }}>ARTIC Group Ltd · Engineering • Technology • Innovation</Text>
           </Section>
           <Section style={{ padding: '40px' }}>
             <Text style={{ fontSize: 22, fontWeight: 700, color: '#131921' }}>Password Reset Request</Text>
             <Text style={{ color: '#555', lineHeight: 1.6 }}>
               Hi {name},<br /><br />
-              We received a request to reset the password for your ARTIC Marketplace account.
+              We received a request to reset the password for your ARTIC HUB account.
               Click the button below to create a new password. This link expires in <strong>1 hour</strong>.
             </Text>
             <Button
@@ -33,7 +33,7 @@ export function PasswordResetEmail({ name, resetUrl }: Props) {
           </Section>
           <Hr style={{ borderColor: '#eee' }} />
           <Section style={{ padding: '16px 40px', textAlign: 'center' }}>
-            <Text style={{ color: '#999', fontSize: 12 }}>© {new Date().getFullYear()} ARTIC Marketplace</Text>
+            <Text style={{ color: '#999', fontSize: 12 }}>Copyright © 2026 ARTIC Group Ltd. All rights reserved.</Text>
           </Section>
         </Container>
       </Body>

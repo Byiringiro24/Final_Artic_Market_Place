@@ -1,5 +1,5 @@
 /**
- * ARTIC Marketplace — Background job scheduler
+ * ARTIC HUB — Background job scheduler
  * Handles post-delivery review requests, low-stock alerts, etc.
  * Uses simple setInterval (replace with node-cron or bull in production)
  */

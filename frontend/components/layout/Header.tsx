@@ -38,6 +38,11 @@ export default function Header() {
             />
           </Link>
 
+          <div className="hidden xl:flex flex-col flex-shrink-0 text-white leading-tight -ml-1 mr-2" aria-label="ARTIC Group Ltd, Engineering, Technology, Innovation">
+            <span className="text-xs font-bold tracking-wide">ARTIC Group Ltd</span>
+            <span className="text-[9px] text-gray-300">Engineering • Technology • Innovation</span>
+          </div>
+
           {/* Search — takes most space */}
           <div className="flex-1 max-w-3xl">
             <SearchBar />

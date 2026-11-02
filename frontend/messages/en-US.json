@@ -6,7 +6,7 @@
     "orders": "& Orders",
     "cart": "Cart",
     "allCategories": "All",
-    "search": "Search ARTIC Marketplace...",
+    "search": "Search ARTIC HUB...",
     "signIn": "Sign In",
     "account": "Account",
     "hello": "Hello",
@@ -34,7 +34,7 @@
     "sellProducts": "Sell Products with Us",
     "becomeAffiliate": "Become an Affiliate",
     "advertise": "Advertise Your Products",
-    "copyright": "© {year} ARTIC Marketplace. All rights reserved."
+    "copyright": "Copyright © 2026 ARTIC Group Ltd. All rights reserved."
   },
   "Nav": {
     "home": "Home",
@@ -92,7 +92,7 @@
     "fullName": "Full name",
     "forgotPassword": "Forgot your password?",
     "resetPassword": "Reset Password",
-    "noAccount": "New to ARTIC Marketplace?",
+    "noAccount": "New to ARTIC HUB?",
     "createAccount": "Create your ARTIC account",
     "haveAccount": "Already have an account?",
     "orContinueWith": "Or continue with",
@@ -180,7 +180,7 @@
     "thankYou": "Thank you for your review!"
   },
   "Search": {
-    "placeholder": "Search ARTIC Marketplace...",
+    "placeholder": "Search ARTIC HUB...",
     "results": "{count} results for \"{query}\"",
     "noResults": "No results found for \"{query}\"",
     "suggestions": "Search suggestions",

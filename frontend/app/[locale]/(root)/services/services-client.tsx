@@ -20,7 +20,7 @@ interface Service {
   isFeatured: boolean;
 }
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/v1').replace(/\/api\/v1$/, '');
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:5000/api/v1')).replace(/\/api\/v1$/, '');
 
 const CATEGORY_ICONS: Record<string, string> = {
   Photography: '📸',
@@ -70,7 +70,7 @@ export default function ServicesClient() {
             <span className="text-artic-teal">grow your business</span>
           </h1>
           <p className="text-gray-300 text-lg max-w-2xl mx-auto mb-8">
-            From product photography to last-mile delivery — ARTIC Marketplace connects you with trusted professionals.
+            From product photography to last-mile delivery — ARTIC HUB connects you with trusted professionals.
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Button asChild className="bg-artic-teal hover:bg-artic-teal-dark text-white rounded-full px-8 font-semibold">
@@ -147,7 +147,7 @@ export default function ServicesClient() {
         <section className="bg-gradient-to-r from-artic-teal to-[#0F7A70] rounded-2xl p-8 text-white text-center">
           <h2 className="text-2xl font-bold mb-3">Offer your services on ARTIC</h2>
           <p className="text-teal-100 mb-6">
-            Are you a professional? Join ARTIC Marketplace as a service provider and reach thousands of customers.
+            Are you a professional? Join ARTIC HUB as a service provider and reach thousands of customers.
           </p>
           <div className="flex gap-3 justify-center flex-wrap">
             <Button asChild className="bg-white text-artic-teal hover:bg-gray-100 font-bold rounded-full px-8">

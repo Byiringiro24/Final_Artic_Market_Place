@@ -1,13 +1,14 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
+import { backendApiUrl } from '@/lib/backend-url';
 
 interface Props { params: Promise<{ slug: string }> }
 
 async function fetchPage(slug: string) {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/pages/${slug}`,
+      backendApiUrl(`pages/${encodeURIComponent(slug)}`),
       { next: { revalidate: 300 } }
     );
     if (!res.ok) return null;

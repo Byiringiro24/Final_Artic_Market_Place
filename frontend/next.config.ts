@@ -13,9 +13,8 @@ const nextConfig: NextConfig = {
   },
   images: {
     remotePatterns: [
-      // Production server — backend runs on :5010
-      { protocol: 'http', hostname: '102.37.128.81', port: '5010' },
-      { protocol: 'http', hostname: '102.37.128.81' },
+      // ARTIC HUB production domain
+      { protocol: 'https', hostname: 'artichub.ddnsgeek.com' },
       // Development
       { protocol: 'http', hostname: 'localhost', port: '5010' },
       { protocol: 'http', hostname: 'localhost', port: '5000' },

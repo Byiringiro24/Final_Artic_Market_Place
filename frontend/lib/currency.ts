@@ -1,5 +1,5 @@
 /**
- * ARTIC Marketplace — Multi-currency support
+ * ARTIC HUB — Multi-currency support
  *
  * Rates are fetched live from the backend (/api/v1/currency/rates) which
  * pulls from open.er-api.com and caches in Redis for 1 hour.
@@ -86,7 +86,9 @@ export interface LiveRatesResponse {
 }
 
 export async function fetchLiveRates(): Promise<Record<CurrencyCode, number>> {
-  const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api/v1';
+  const apiUrl = process.env.NEXT_PUBLIC_API_URL || (
+    process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:5000/api/v1'
+  );
   try {
     const res = await fetch(`${apiUrl}/currency/rates`, {
       next:  { revalidate: 3600 },   // Next.js ISR cache for 1 hour

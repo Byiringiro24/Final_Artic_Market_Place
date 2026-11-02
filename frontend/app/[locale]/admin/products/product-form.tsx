@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 /**
  * ProductForm — Create / Edit product
@@ -33,7 +33,7 @@ import { cn } from '@/lib/utils';
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5010/api/v1').replace('/api/v1', '');
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || (process.env.NODE_ENV === 'production' ? '/api/v1' : 'http://localhost:5000/api/v1')).replace('/api/v1', '');
 
 const ACCEPT_ALL = [
   'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/avif',
