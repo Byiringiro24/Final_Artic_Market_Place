@@ -11,7 +11,7 @@
 
 ## 1. Executive status
 
-ARTIC HUB is **not deployed** to the VPS yet. The domain now resolves to the VPS. ARTIC VMS is already running in its own Docker Compose project and has a valid HTTPS certificate. Certbot issued a certificate for ARTIC HUB and scheduled automatic renewal, but could not install it because no matching Nginx server block existed. A later attempt created a dangling `/etc/nginx/sites-enabled/artichub` link before its target file existed; the latest `nginx -t` failed because that target file is missing. No ARTIC HUB containers were observed in the supplied checks.
+ARTIC HUB is **not deployed** to the VPS yet. The repository deployment changes have been pushed to GitHub `main` in commit `3b8541f`. The domain resolves to the VPS. ARTIC VMS is already running in its own Docker Compose project and has a valid HTTPS certificate. Certbot issued a certificate for ARTIC HUB and scheduled automatic renewal, but could not install it because no matching Nginx server block existed. A later attempt created a dangling `/etc/nginx/sites-enabled/artichub` link before its target file existed; the latest `nginx -t` failed because that target file is missing. No ARTIC HUB containers were observed in the supplied checks.
 
 The VPS has suitable unused application ports for a separate HUB frontend and API, but the repository's default Compose configuration must not be used on this host unchanged: it publishes PostgreSQL on host port `5432`, which is already used by ARTIC VMS. There are also old, credential-bearing deployment scripts in the repository that must not be run.
 
@@ -44,8 +44,8 @@ Port availability can change. Recheck ports immediately before starting HUB cont
 
 - The frontend production URL settings were updated locally to use `https://artichub.ddnsgeek.com` and the same-domain API path `/api/v1` in [`frontend/.env.production`](../frontend/.env.production).
 - ARTIC Group Ltd / ARTIC HUB branding was changed across frontend metadata, navigation, authentication, admin, reports, emails, seeded defaults, translations, PWA manifest, mobile UI, and an SVG favicon.
-- VPS deployment files have been added under [`deploy/vps`](../deploy/vps): an isolated Compose project, safe environment templates, and a separate Nginx site template. They have not yet been pushed or run on the VPS.
-- These changes are still **uncommitted** in the local worktree. The last recorded commit is `a24aaed` (`Merge origin/main and remove injected loader`). They have not been pushed or deployed.
+- VPS deployment files have been added under [`deploy/vps`](../deploy/vps): an isolated Compose project, safe environment templates, and a separate Nginx site template. They are pushed to GitHub but have not been run on the VPS.
+- Branding and VPS deployment changes are committed and pushed in `3b8541f` (`Prepare ARTIC HUB VPS deployment and branding`).
 - A local `vercel.json` and Vercel-related API helper are present as uncommitted draft work. The selected host is now the VPS; do not treat that draft as the VPS deployment configuration.
 - No post-branding build or test run has been performed.
 
@@ -101,7 +101,7 @@ Use a distinct Docker Compose project name and distinct persistent volumes for H
 - [ ] Ensure frontend build-time public URLs are `NEXT_PUBLIC_API_URL=/api/v1` and `NEXT_PUBLIC_APP_URL=https://artichub.ddnsgeek.com`; set `NEXTAUTH_URL` / `AUTH_URL` to the HTTPS domain and backend `FRONTEND_URL` to the exact HTTPS origin.
 - [ ] Check image URL handling, upload persistence, payment/webhook URLs, email verification/reset URLs, and authentication redirects for the new domain.
 - [ ] Build and review the app locally; run the project's applicable checks before deployment.
-- [ ] Commit and push only reviewed code and safe configuration. Do not commit secret files.
+- [x] Commit and push reviewed code and safe configuration in `3b8541f`; private `.env.production.local` files were excluded.
 
 ### Phase B — Prepare the VPS without disturbing VMS
 
