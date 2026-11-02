@@ -15,7 +15,13 @@ for required_file in .env backend/.env.production.local frontend/.env.production
   fi
 done
 
-compose=(docker compose --project-name artic-hub --file "$COMPOSE_FILE")
+if grep --quiet --extended-regexp 'REPLACE_WITH|replace_on_server|URL_ENCODED_PASSWORD' \
+  .env backend/.env.production.local frontend/.env.production.local; then
+  echo 'Replace all template values in .env and the protected service env files before deploying.' >&2
+  exit 1
+fi
+
+compose=(docker compose --env-file "$PROJECT_DIR/.env" --project-name artic-hub --file "$COMPOSE_FILE")
 
 echo 'Validating ARTIC HUB Compose configuration...'
 "${compose[@]}" config --quiet
