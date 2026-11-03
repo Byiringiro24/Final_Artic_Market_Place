@@ -2,10 +2,10 @@
 
 import { useState } from 'react';
 import { motion, useReducedMotion } from 'motion/react';
-import { ArrowUpRight, BookOpen, CarFront, Cpu, GraduationCap, ShoppingBag, Wrench } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Building2, CarFront, Cpu, GraduationCap, Wrench } from 'lucide-react';
 
 const SERVICE_NODES = [
-  { key: 'shop', title: 'Shop', detail: 'Products & sellers', href: '#marketplace', x: '18%', y: '18%', color: 'amber', Icon: ShoppingBag },
+  { key: 'explore', title: 'Explore', detail: 'ARTIC services', href: '#service-portfolio', x: '18%', y: '18%', color: 'amber', Icon: Building2 },
   { key: 'academy', title: 'Learn', detail: 'Courses & training', href: '#academy', x: '82%', y: '18%', color: 'violet', Icon: GraduationCap },
   { key: 'engineering', title: 'Build', detail: 'Engineering & services', href: '#engineering', x: '18%', y: '82%', color: 'teal', Icon: Wrench },
   { key: 'vms', title: 'Track', detail: 'ARTIC VMS · separate sign-in', href: 'https://articvms.ddnsgeek.com', x: '82%', y: '82%', color: 'blue', Icon: CarFront, external: true },
@@ -24,7 +24,7 @@ export default function ConnectedHubScene({ pauseMotion = false }: { pauseMotion
   const [active, setActive] = useState('hub');
 
   const diagram = (
-    <svg viewBox="0 0 600 390" className="absolute inset-0 h-full w-full" role="img" aria-label="Illustration of ARTIC HUB connecting shopping, learning, technical services, and ARTIC VMS">
+    <svg viewBox="0 0 600 390" className="absolute inset-0 h-full w-full" role="img" aria-label="Illustration of ARTIC HUB connecting ARTIC services, learning, engineering, and ARTIC VMS">
       <defs>
         <radialGradient id="hubCore"><stop stopColor="#8ef8e7" stopOpacity=".38" /><stop offset="1" stopColor="#8ef8e7" stopOpacity="0" /></radialGradient>
         <linearGradient id="hubLine"><stop stopColor="#38d8c1" stopOpacity=".08" /><stop offset=".5" stopColor="#a5f3fc" stopOpacity=".72" /><stop offset="1" stopColor="#38d8c1" stopOpacity=".12" /></linearGradient>
@@ -57,7 +57,7 @@ export default function ConnectedHubScene({ pauseMotion = false }: { pauseMotion
         return external ? (
           <div key={key} className="absolute z-10 -translate-x-1/2 -translate-y-1/2" style={{ left: x, top: y }}><motion.a href={href} target="_blank" rel="noopener noreferrer" aria-label={`${title}: ${detail}, opens ARTIC VMS in a new site`} className={classes} onHoverStart={() => setActive(key)} onFocus={() => setActive(key)} whileHover={reduceMotion ? undefined : { y: -5 }} whileTap={{ scale: 0.98 }} initial={reduceMotion ? false : { opacity: 0, scale: 0.86 }} animate={{ opacity: 1, scale: active === key ? 1.04 : 1 }} transition={{ duration: 0.45, delay: key === 'shop' ? 0.25 : 0.4 }}>{content}</motion.a></div>
         ) : (
-          <div key={key} className="absolute z-10 -translate-x-1/2 -translate-y-1/2" style={{ left: x, top: y }}><motion.a href={href} className={classes} onHoverStart={() => setActive(key)} onFocus={() => setActive(key)} whileHover={reduceMotion ? undefined : { y: -5 }} whileTap={{ scale: 0.98 }} initial={reduceMotion ? false : { opacity: 0, scale: 0.86 }} animate={{ opacity: 1, scale: active === key ? 1.04 : 1 }} transition={{ duration: 0.45, delay: key === 'shop' ? 0.25 : 0.4 }}>{content}</motion.a></div>
+          <div key={key} className="absolute z-10 -translate-x-1/2 -translate-y-1/2" style={{ left: x, top: y }}><motion.a href={href} className={classes} onHoverStart={() => setActive(key)} onFocus={() => setActive(key)} whileHover={reduceMotion ? undefined : { y: -5 }} whileTap={{ scale: 0.98 }} initial={reduceMotion ? false : { opacity: 0, scale: 0.86 }} animate={{ opacity: 1, scale: active === key ? 1.04 : 1 }} transition={{ duration: 0.45, delay: key === 'explore' ? 0.25 : 0.4 }}>{content}</motion.a></div>
         );
       })}
       <motion.div className="absolute left-1/2 top-1/2 z-10 w-[150px] -translate-x-1/2 -translate-y-1/2 text-center" initial={reduceMotion ? false : { opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35, duration: 0.6 }} aria-live="polite">

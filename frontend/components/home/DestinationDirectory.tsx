@@ -21,10 +21,16 @@ type Destination = {
 };
 
 const MORE_SERVICES = [
-  'Business directory', 'Jobs & internships', 'Events & webinars', 'Digital products',
-  'Memberships & subscriptions', 'Hotel management', 'Property & tenant tools',
-  'Health companion (separate product)', 'Agricultural IoT (separate product)',
-  'AI service layer',
+  { name: 'Business directory', detail: 'Business profiles, service areas, search, and moderated reviews.' },
+  { name: 'Jobs & opportunities', detail: 'Jobs, internships, freelance projects, and candidate applications.' },
+  { name: 'Events & webinars', detail: 'Event listings, reservations or tickets, attendee updates, and reminders.' },
+  { name: 'Digital products & resources', detail: 'Guides, eBooks, manuals, templates, software, and downloads.' },
+  { name: 'Memberships & subscriptions', detail: 'Learning collections, member benefits, events, and recurring plans.' },
+  { name: 'Hotel management', detail: 'Reservations, guest operations, housekeeping, maintenance, and reporting.' },
+  { name: 'Property & tenant management', detail: 'Units, leases, rent, maintenance requests, and tenant access.' },
+  { name: 'Digital health companion · separate product', detail: 'Personal monitoring and alerts; not a diagnostic service.' },
+  { name: 'Agricultural IoT · separate product', detail: 'Farm sensing, dashboards, irrigation alerts, and field workflows.' },
+  { name: 'AI-assisted solutions', detail: 'Project-based AI integration, workflow support, and edge AI enquiries.' },
 ];
 
 export default function DestinationDirectory({ locale }: { locale: string }) {
@@ -100,8 +106,8 @@ export default function DestinationDirectory({ locale }: { locale: string }) {
         {filtered.length === 0 && <p className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center text-sm text-slate-500">No pages match that search. Try another word or choose “All”.</p>}
 
         <div className="mt-14 rounded-[1.75rem] border border-dashed border-slate-300 bg-white p-5 sm:p-7">
-          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-slate-500">Planned modules · not live pages</p><h3 className="mt-2 text-2xl font-black text-slate-950">The ARTIC ecosystem is designed to grow.</h3></div><span className="text-xs text-slate-500">We’ll publish each module when it’s ready.</span></div>
-          <div className="mt-5 flex flex-wrap gap-2">{MORE_SERVICES.map((name) => <span key={name} className="rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600"><span className="mr-1.5 text-amber-600">◌</span>{name}</span>)}</div>
+          <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-end"><div><p className="text-[10px] font-bold uppercase tracking-[.18em] text-slate-500">Planned modules · not live pages</p><h3 className="mt-2 text-2xl font-black text-slate-950">More of the ARTIC ecosystem.</h3></div><span className="text-xs text-slate-500">These ideas have no live destination yet.</span></div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{MORE_SERVICES.map(({ name, detail }) => <article key={name} className="rounded-xl bg-slate-50 p-4"><h4 className="text-sm font-bold text-slate-800"><span className="mr-1.5 text-amber-600">◌</span>{name}</h4><p className="mt-2 text-xs leading-5 text-slate-500">{detail}</p></article>)}</div>
         </div>
       </div>
     </section>

@@ -1,85 +1,25 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Suspense } from 'react';
 import { getLocale } from 'next-intl/server';
 import {
-  ArrowRight, ArrowUpRight, BookOpen, Boxes, Building2,
-  CalendarDays, Check, Cpu, GraduationCap, Headphones, Lightbulb,
-  Mail, MapPin, Phone, Radio, ShoppingBag, Sparkles, Wrench,
+  ArrowRight, ArrowUpRight, BookOpen, Boxes, Building2, CalendarDays, Check,
+  Cpu, GraduationCap, Headphones, Lightbulb, Mail, MapPin, Phone,
+  Radio, Search, ShoppingBag, Wrench,
 } from 'lucide-react';
-import type { LucideIcon } from 'lucide-react';
-import CategoryGrid from '@/components/home/CategoryGrid';
-import FeaturedProducts from '@/components/home/FeaturedProducts';
-import DealsSection from '@/components/home/DealsSection';
-import TrendingSection from '@/components/home/TrendingSection';
-import ServicesStrip from '@/components/home/ServicesStrip';
-import BrowsingHistorySection from '@/components/home/BrowsingHistorySection';
 import HubReveal from '@/components/home/HubReveal';
 import HubHero from '@/components/home/HubHero';
 import HubScrollProgress from '@/components/home/HubScrollProgress';
 import HubServiceTicker from '@/components/home/HubServiceTicker';
 import DestinationDirectory from '@/components/home/DestinationDirectory';
+import ServicePortfolio from '@/components/home/ServicePortfolio';
 import HomeQuickNav from '@/components/home/HomeQuickNav';
 import IdeaSubmissionForm from '@/components/home/IdeaSubmissionForm';
-import { ProductGridSkeleton } from '@/components/skeletons/ProductGridSkeleton';
 
 export const metadata: Metadata = {
-  description: 'Explore ARTIC HUB: marketplace, practical learning, engineering services, and connected technology from ARTIC Group Ltd.',
+  title: 'ARTIC Group Ltd | ARTIC HUB',
+  description: 'Discover ARTIC Group Ltd: practical education, engineering and technology services, business support, and connected products through ARTIC HUB.',
 };
-
-const offerings: {
-  title: string;
-  category: string;
-  description: string;
-  image: string;
-  imageAlt: string;
-  icon: LucideIcon;
-  href?: (locale: string) => string;
-  external?: string;
-  status: 'Available' | 'Coming next';
-}[] = [
-  {
-    title: 'Marketplace', category: 'Shop & discover',
-    description: 'Find useful products, explore offers, and connect with sellers in one convenient place.',
-    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=900&q=75',
-    imageAlt: 'Customer completing a purchase at a modern checkout', icon: ShoppingBag,
-    href: (locale) => `/${locale}/search`, status: 'Available',
-  },
-  {
-    title: 'ARTIC Academy', category: 'Learn & grow',
-    description: 'Build practical skills with courses and training registration for individuals and teams.',
-    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=900&q=75',
-    imageAlt: 'Learners collaborating around a laptop', icon: GraduationCap,
-    href: (locale) => `/${locale}/academy`, status: 'Available',
-  },
-  {
-    title: 'Professional services', category: 'Plan & deliver',
-    description: 'Explore ARTIC services, view project details, and request a booking or consultation.',
-    image: 'https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=900&q=75',
-    imageAlt: 'Engineers collaborating on a technical project', icon: Wrench,
-    href: (locale) => `/${locale}/services`, status: 'Available',
-  },
-  {
-    title: 'ARTIC VMS', category: 'Connected operations',
-    description: 'Open ARTIC’s vehicle monitoring system for fleet visibility and operational tracking.',
-    image: 'https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=900&q=75',
-    imageAlt: 'Modern vehicle on an open road', icon: Radio,
-    external: 'https://articvms.ddnsgeek.com', status: 'Available',
-  },
-  {
-    title: 'Business directory', category: 'Find local expertise',
-    description: 'Discover trusted businesses and professionals by location, service, and expertise.',
-    image: 'https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=75',
-    imageAlt: 'Small team discussing a project together', icon: Building2, status: 'Coming next',
-  },
-  {
-    title: 'Digital products', category: 'Resources & tools',
-    description: 'Access digital guides, templates, software, and resources from the ARTIC community.',
-    image: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=900&q=75',
-    imageAlt: 'Laptop and workspace for digital work', icon: Boxes, status: 'Coming next',
-  },
-];
 
 function SectionHeading({ kicker, title, text, light = false }: { kicker: string; title: string; text?: string; light?: boolean }) {
   return (
@@ -88,44 +28,6 @@ function SectionHeading({ kicker, title, text, light = false }: { kicker: string
       <h2 className={`mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl ${light ? 'text-white' : 'text-slate-950'}`}>{title}</h2>
       {text && <p className={`mt-4 max-w-2xl text-base leading-7 ${light ? 'text-slate-300' : 'text-slate-600'}`}>{text}</p>}
     </div>
-  );
-}
-
-function OfferingCard({ item, locale, index }: { item: (typeof offerings)[number]; locale: string; index: number }) {
-  const Icon = item.icon;
-  const image = (
-    <>
-      <div className="relative h-64 overflow-hidden sm:h-72">
-        <Image src={item.image} alt={item.imageAlt} fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" unoptimized className="object-cover transition duration-700 group-hover:scale-105" />
-        <div className="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-slate-950/5 to-transparent" />
-        <div className="absolute left-5 right-5 top-5 flex items-center justify-between">
-          <span className="rounded-full border border-white/30 bg-slate-950/35 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white backdrop-blur">{item.status}</span>
-          <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-slate-900 transition duration-300 group-hover:-translate-y-1 group-hover:rotate-6"><Icon className="h-5 w-5" aria-hidden="true" /></span>
-        </div>
-        <div className="absolute bottom-5 left-5 right-5 text-white">
-          <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-teal-200">{item.category}</p>
-          <h3 className="mt-2 text-2xl font-black">{item.title}</h3>
-        </div>
-      </div>
-      <div className="flex min-h-[148px] flex-col p-5">
-        <p className="text-sm leading-6 text-slate-600">{item.description}</p>
-        {item.status === 'Available' && <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-bold text-teal-900">Explore service <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" /></span>}
-        {item.status === 'Coming next' && <span className="mt-auto inline-flex items-center gap-2 pt-5 text-sm font-bold text-slate-500"><Sparkles className="h-4 w-4" /> In development</span>}
-      </div>
-    </>
-  );
-
-  const className = `group block overflow-hidden rounded-[1.65rem] border bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl ${item.status === 'Available' ? 'border-slate-200 hover:border-teal-200' : 'border-dashed border-slate-300'}`;
-  return (
-    <HubReveal className="h-full" delay={index * 70}>
-      {item.external ? (
-        <a href={item.external} target="_blank" rel="noopener noreferrer" className={className}>{image}</a>
-      ) : item.href ? (
-        <Link href={item.href(locale)} className={className}>{image}</Link>
-      ) : (
-        <article className={className}>{image}</article>
-      )}
-    </HubReveal>
   );
 }
 
@@ -149,35 +51,19 @@ export default async function HomePage() {
           </HubReveal>
           <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {[
-              { title: 'Shop', label: 'Marketplace', copy: 'Browse products, categories, and offers.', icon: ShoppingBag, href: `/${locale}/search`, tone: 'from-amber-950/90', image: offerings[0].image },
-              { title: 'Learn', label: 'ARTIC Academy', copy: 'Explore courses and register for training.', icon: GraduationCap, href: `/${locale}/academy`, tone: 'from-violet-950/90', image: offerings[1].image },
-              { title: 'Hire ARTIC', label: 'Services & projects', copy: 'Explore technical services and request a booking.', icon: Wrench, href: `/${locale}/services`, tone: 'from-teal-950/90', image: offerings[2].image },
-              { title: 'Manage a fleet', label: 'ARTIC VMS', copy: 'Open VMS. A separate account is used there.', icon: Radio, href: 'https://articvms.ddnsgeek.com', external: true, tone: 'from-blue-950/90', image: offerings[3].image },
-            ].map(({ title, label, copy, icon: Icon, href, external, tone, image }, index) => {
-              const card = <><Image src={image} alt="" fill sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 25vw" unoptimized className="object-cover transition duration-700 group-hover:scale-105" /><div className={`absolute inset-0 bg-gradient-to-t ${tone} via-slate-950/25 to-slate-950/10`} /><div className="relative flex min-h-56 flex-col justify-between p-5 text-white"><div className="flex items-start justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/20 bg-white/10 backdrop-blur"><Icon className="h-5 w-5" /></span><ArrowUpRight className="h-4 w-4 text-white/60 transition group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white" /></div><div><p className="text-[10px] font-bold uppercase tracking-[.17em] text-teal-200">{label}</p><h3 className="mt-1 text-2xl font-black">{title}</h3><p className="mt-2 text-xs leading-5 text-white/80">{copy}</p></div></div></>;
-              return <HubReveal key={title} delay={index * 60}>{external ? <a href={href} target="_blank" rel="noopener noreferrer" className="group relative block overflow-hidden rounded-2xl bg-slate-900 shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500">{card}</a> : <Link href={href} className="group relative block overflow-hidden rounded-2xl bg-slate-900 shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500">{card}</Link>}</HubReveal>;
+              { title: 'Explore the marketplace', label: 'Marketplace', copy: 'Open the marketplace when you are ready to browse.', icon: ShoppingBag, href: `/${locale}/search`, tone: 'from-sky-950 to-slate-900' },
+              { title: 'Learn practical skills', label: 'ARTIC Academy', copy: 'Explore courses and register for training.', icon: GraduationCap, href: `/${locale}/academy`, tone: 'from-violet-950 to-slate-900' },
+              { title: 'Build with ARTIC', label: 'Services & projects', copy: 'Explore engineering services and request a consultation.', icon: Wrench, href: `/${locale}/services`, tone: 'from-teal-950 to-slate-900' },
+              { title: 'Manage a fleet', label: 'ARTIC VMS', copy: 'Open the separate VMS product and account.', icon: Radio, href: 'https://articvms.ddnsgeek.com', external: true, tone: 'from-blue-950 to-slate-900' },
+            ].map(({ title, label, copy, icon: Icon, href, external, tone }, index) => {
+              const card = <div className={`relative flex min-h-56 flex-col justify-between overflow-hidden rounded-2xl bg-gradient-to-br ${tone} p-5 text-white`}><div aria-hidden="true" className="absolute -right-9 -top-10 h-36 w-36 rounded-full border border-white/10 transition duration-500 group-hover:scale-125 group-hover:border-teal-200/30" /><div aria-hidden="true" className="absolute -right-3 -top-4 h-24 w-24 rounded-full border border-white/10 transition duration-500 group-hover:scale-125" /><div className="relative flex items-start justify-between"><span className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/20 bg-white/10"><Icon className="h-5 w-5" /></span><ArrowUpRight className="h-4 w-4 text-white/60 transition group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-white" /></div><div className="relative"><p className="text-[10px] font-bold uppercase tracking-[.17em] text-teal-200">{label}</p><h3 className="mt-1 text-xl font-black">{title}</h3><p className="mt-2 text-xs leading-5 text-white/75">{copy}</p></div></div>;
+              return <HubReveal key={title} delay={index * 60}>{external ? <a href={href} target="_blank" rel="noopener noreferrer" className="group block rounded-2xl shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500">{card}</a> : <Link href={href} className="group block rounded-2xl shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500">{card}</Link>}</HubReveal>;
             })}
           </div>
         </div>
       </section>
 
-      <section id="hub-services" className="scroll-mt-24 px-5 py-20 sm:px-8 sm:py-24 lg:px-10">
-        <div className="mx-auto max-w-7xl">
-          <HubReveal>
-            <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
-              <SectionHeading kicker="One hub · Many ways forward" title="A connected place to get things moving." text="ARTIC brings useful services together—from everyday needs to practical skills and technical projects." />
-              <Link href={`/${locale}/customer-service`} className="inline-flex shrink-0 items-center gap-2 pb-1 text-sm font-bold text-teal-900 hover:text-teal-700">Talk with our team <ArrowRight className="h-4 w-4" /></Link>
-            </div>
-          </HubReveal>
-          <div className="mt-10 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-            {offerings.map((item, index) => <OfferingCard key={item.title} item={item} locale={locale} index={index} />)}
-          </div>
-          <div className="mt-7 flex flex-wrap gap-2 text-xs font-semibold text-slate-500">
-            <span className="mr-1 self-center">In development:</span>
-            {['Business directory', 'Jobs & internships', 'Events & webinars', 'Digital products', 'Memberships', 'Hotel management', 'Property & tenant tools', 'Digital health · separate product', 'Agricultural IoT · separate product', 'AI-assisted services'].map((service) => <span key={service} className="rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5">{service}</span>)}
-          </div>
-        </div>
-      </section>
+      <ServicePortfolio locale={locale} />
 
       <section id="how-it-works" className="scroll-mt-24 border-y border-slate-200 bg-white px-5 py-16 sm:px-8 sm:py-20 lg:px-10">
         <div className="mx-auto max-w-7xl">
@@ -232,7 +118,7 @@ export default async function HomePage() {
           </HubReveal>
           <HubReveal delay={100} className="relative">
             <div className="relative overflow-hidden rounded-[1.75rem] border border-white/15 bg-slate-900/70 p-3 shadow-2xl sm:p-5">
-              <Image src={offerings[3].image} alt="Vehicle on a road, representing fleet operations" width={1000} height={680} sizes="(max-width: 1024px) 100vw, 45vw" unoptimized className="h-[300px] w-full rounded-2xl object-cover opacity-80 sm:h-[390px]" />
+              <Image src="https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=1000&q=70" alt="Vehicle on a road, representing fleet operations" width={1000} height={680} sizes="(max-width: 1024px) 100vw, 45vw" unoptimized className="h-[300px] w-full rounded-2xl object-cover opacity-80 sm:h-[390px]" />
               <div className="absolute inset-x-8 bottom-8 rounded-xl border border-white/20 bg-slate-950/80 px-4 py-3 backdrop-blur"><p className="text-[10px] font-bold uppercase tracking-[.17em] text-blue-200">ARTIC VMS</p><p className="mt-1 text-xs text-white">Separate product · separate sign-in</p></div>
             </div>
             <p className="mt-3 text-center text-[10px] text-slate-400">Product photograph only. This is not live VMS data or a dashboard preview.</p>
@@ -255,19 +141,6 @@ export default async function HomePage() {
               <div className="absolute bottom-6 left-6 right-6 flex flex-wrap items-end justify-between gap-4"><div><p className="text-xs font-bold uppercase tracking-[0.18em] text-teal-200">Learn by doing</p><p className="mt-1 text-2xl font-black">A stronger skillset starts here.</p></div><span className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-teal-900"><GraduationCap className="h-6 w-6" /></span></div>
             </div>
           </HubReveal>
-        </div>
-      </section>
-
-      <section id="marketplace" className="scroll-mt-24 px-5 py-20 sm:px-8 sm:py-24 lg:px-10">
-        <div className="mx-auto max-w-7xl">
-          <HubReveal><div className="flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><SectionHeading kicker="Shop ARTIC HUB" title="Find something useful for what’s next." text="Explore product categories, featured items, and current offers from the marketplace." /><Link href={`/${locale}/search`} className="inline-flex shrink-0 items-center gap-2 font-bold text-teal-900 hover:text-teal-700">Go to marketplace <ArrowRight className="h-4 w-4" /></Link></div></HubReveal>
-          <div className="mt-9"><Suspense fallback={<div className="h-40 animate-pulse rounded-2xl bg-slate-100" />}><CategoryGrid /></Suspense></div>
-          <div className="mt-14 space-y-14">
-            <Suspense fallback={<ProductGridSkeleton count={4} />}><FeaturedProducts /></Suspense>
-            <Suspense fallback={null}><ServicesStrip /></Suspense>
-            <Suspense fallback={<ProductGridSkeleton count={4} />}><DealsSection /></Suspense>
-            <Suspense fallback={<ProductGridSkeleton count={4} />}><TrendingSection /></Suspense>
-          </div>
         </div>
       </section>
 
@@ -296,8 +169,6 @@ export default async function HomePage() {
           ].map(({ icon: Icon, label, value, href }) => <a key={label} href={href} className="group flex items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.06] p-4 backdrop-blur transition hover:border-teal-300/40 hover:bg-white/10"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-white/10 text-teal-200 transition group-hover:bg-teal-300 group-hover:text-slate-950"><Icon className="h-5 w-5" /></span><span><span className="block text-xs text-slate-400">{label}</span><span className="mt-1 block font-semibold text-white">{value}</span></span><ArrowUpRight className="ml-auto h-4 w-4 text-slate-500 transition group-hover:text-teal-200" /></a>)}</div>
         </HubReveal>
       </section>
-
-      <div className="mx-auto max-w-7xl px-5 py-12 sm:px-8 lg:px-10"><Suspense fallback={null}><BrowsingHistorySection /></Suspense></div>
 
       <HomeQuickNav locale={locale} />
     </main>

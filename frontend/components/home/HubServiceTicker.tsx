@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Pause, Play } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 
-const SERVICE_LABELS = ['Marketplace', 'ARTIC Academy', 'Technical services', 'Embedded systems', 'Networking & IoT', 'ARTIC VMS'];
+const SERVICE_LABELS = ['ARTIC Academy', 'Engineering services', 'Embedded systems', 'Networking & IoT', 'AI integration', 'Business support', 'ARTIC VMS'];
 
 export default function HubServiceTicker() {
   const reduceMotion = useReducedMotion();

@@ -44,7 +44,7 @@ export default function HubHero({ locale }: { locale: string }) {
             </span>
           </motion.h1>
           <motion.p initial={reduceMotion ? false : { opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.22 }} className="mt-6 max-w-xl text-base leading-7 text-slate-200 sm:text-lg sm:leading-8">
-            ARTIC Group brings together a marketplace, practical training, engineering and IoT services, and fleet monitoring—so you can find the right next step in one place.
+            ARTIC Group brings practical learning, engineering, AI and IoT expertise, business support, and connected products together in one service hub.
           </motion.p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link href="#choose-path" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-teal-300 px-5 font-bold text-[#081521] shadow-lg shadow-teal-950/40 transition hover:-translate-y-0.5 hover:bg-teal-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white">Explore ARTIC services <ArrowDown className="h-4 w-4" /></Link>
@@ -53,7 +53,7 @@ export default function HubHero({ locale }: { locale: string }) {
           <Link href="#how-it-works" className="mt-5 inline-flex min-h-10 items-center gap-2 text-sm font-medium text-slate-300 transition hover:text-white">See how ARTIC HUB connects <ArrowDown className="h-3.5 w-3.5" /></Link>
           <Link href={`/${locale}/services`} className="ml-4 inline-flex min-h-10 items-center gap-2 text-sm font-semibold text-teal-200 underline decoration-teal-200/40 underline-offset-4 transition hover:text-white"><CalendarDays className="h-3.5 w-3.5" /> Request a service</Link>
           <p className="mt-5 text-[11px] text-slate-400">ARTIC VMS opens separately and uses its own sign-in.</p>
-          <div className="mt-8 flex flex-wrap gap-2 text-[10px] font-mono uppercase tracking-wider text-slate-300 sm:text-xs"><span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5">IoT</span><span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5">Embedded</span><span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5">Academy</span><span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5">Marketplace</span></div>
+          <div className="mt-8 flex flex-wrap gap-2 text-[10px] font-mono uppercase tracking-wider text-slate-300 sm:text-xs"><span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5">IoT</span><span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5">Embedded</span><span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5">Academy</span><span className="rounded-md border border-white/10 bg-white/5 px-2.5 py-1.5">AI integration</span></div>
         </div>
         <div className="relative -mx-3 mt-0 sm:mx-0 lg:ml-0 lg:mt-0">
           <ConnectedHubScene pauseMotion={motionPaused} />
