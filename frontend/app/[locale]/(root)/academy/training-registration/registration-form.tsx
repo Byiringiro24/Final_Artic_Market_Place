@@ -69,7 +69,7 @@ export default function TrainingRegistrationForm({ courseId }: { courseId?: stri
               <label className="flex items-start gap-3 rounded-lg bg-slate-50 p-3 text-sm leading-5 text-slate-700"><input name="consent" type="checkbox" required className="mt-1 accent-[#18A89A]" /><span>I agree that ARTIC may use these details to respond to my training enquiry and manage this registration. *</span></label>
               <label className="flex items-start gap-3 text-sm leading-5 text-slate-600"><input type="checkbox" checked={whatsappOptIn} onChange={(event) => setWhatsappOptIn(event.target.checked)} className="mt-1 accent-[#18A89A]" /><span>Optionally, send me course updates and community invitations through WhatsApp. I can opt out later.</span></label>
               {error && <p role="alert" className="rounded-lg bg-red-50 p-3 text-sm text-red-700">{error}</p>}
-              <button type="submit" disabled={submitting} className="inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-[#18A89A] px-5 font-bold text-white hover:bg-[#0F7A70] disabled:cursor-wait disabled:opacity-60">{submitting ? 'Submitting…' : 'Submit registration'}</button>
+              <button type="submit" disabled={submitting} className="inline-flex min-h-12 w-full items-center justify-center rounded-lg bg-[#0F7A70] px-5 font-bold text-white hover:bg-[#0B625A] disabled:cursor-wait disabled:opacity-60">{submitting ? 'Submitting…' : 'Submit registration'}</button>
               <p className="text-center text-xs text-slate-500">WhatsApp contact is optional. Registration does not add you to a group automatically.</p>
             </form>
           )}

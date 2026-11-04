@@ -99,7 +99,7 @@ export default function BookingModal({ serviceId, serviceTitle, onClose }: Props
             <h3 className="font-bold text-lg mb-2">Sign in to book</h3>
             <p className="text-gray-500 text-sm mb-5">You need an account to book this service.</p>
             <div className="flex gap-3 justify-center">
-              <Button asChild className="bg-[#18A89A] hover:bg-[#0F7A70] text-white rounded-full">
+              <Button asChild className="bg-[#0F7A70] hover:bg-[#0B625A] text-white rounded-full">
                 <Link href={`/${locale}/sign-in`} onClick={onClose}>Sign In</Link>
               </Button>
               <Button variant="outline" onClick={onClose} className="rounded-full">Cancel</Button>
@@ -169,7 +169,7 @@ export default function BookingModal({ serviceId, serviceTitle, onClose }: Props
                 {TIME_SLOTS.map((slot) => (
                   <label key={slot}
                     className={`border rounded-lg py-1.5 px-2 text-center cursor-pointer text-xs font-medium transition-all ${
-                      selectedTime === slot ? 'bg-[#18A89A] text-white border-[#18A89A]' : 'hover:border-[#18A89A]/50 hover:bg-[#18A89A]/5'
+                      selectedTime === slot ? 'bg-[#0F7A70] text-white border-[#0F7A70]' : 'hover:border-[#18A89A]/50 hover:bg-[#18A89A]/5'
                     }`}>
                     <input type="radio" value={slot} {...register('time')} className="sr-only" />
                     {slot}
@@ -222,7 +222,7 @@ export default function BookingModal({ serviceId, serviceTitle, onClose }: Props
 
             <div className="flex gap-3 pt-2">
               <Button type="submit" disabled={isPending}
-                className="flex-1 bg-[#18A89A] hover:bg-[#0F7A70] text-white rounded-full h-11 font-semibold">
+                className="flex-1 bg-[#0F7A70] hover:bg-[#0B625A] text-white rounded-full h-11 font-semibold">
                 {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : <Calendar className="h-4 w-4 mr-2" />}
                 Confirm Booking
               </Button>

@@ -10,7 +10,7 @@
     --card-foreground: 215 28% 17%;
     --popover: 0 0% 100%;
     --popover-foreground: 215 28% 17%;
-    --primary: 174 72% 38%;       /* ARTIC Teal #18A89A */
+    --primary: 174 78% 27%;       /* Accessible ARTIC teal for light text */
     --primary-foreground: 0 0% 100%;
     --secondary: 215 28% 17%;     /* ARTIC Dark Navy */
     --secondary-foreground: 0 0% 100%;
@@ -34,7 +34,7 @@
     --popover: 215 28% 15%;
     --popover-foreground: 210 40% 98%;
     --primary: 174 72% 44%;
-    --primary-foreground: 0 0% 100%;
+    --primary-foreground: 215 28% 12%;
     --secondary: 215 28% 22%;
     --secondary-foreground: 210 40% 98%;
     --muted: 215 28% 20%;
@@ -56,8 +56,8 @@
 
 /* ─── ARTIC Brand Colors ──────────────────────────────────────────────────── */
 :root {
-  --artic-primary: #18A89A;       /* Main teal */
-  --artic-primary-dark: #0F7A70;  /* Darker teal for hover */
+  --artic-primary: #0F7A70;       /* Accessible teal for links and controls */
+  --artic-primary-dark: #0B625A;  /* Darker teal for hover */
   --artic-navy: #1A2332;          /* Deep navy header */
   --artic-navy-light: #243044;    /* Lighter navy sub-header */
   --artic-gold: #FFB800;          /* Gold accent (deals/badges) */
@@ -186,4 +186,94 @@ img[alt="ARTIC Group Ltd"],
 .product-card-hover:hover {
   box-shadow: 0 4px 20px rgba(24, 168, 154, 0.15);
   transform: translateY(-2px);
+}
+
+/*
+ * Legacy pages use fixed Tailwind colors alongside the semantic theme tokens.
+ * Re-map common light surfaces and text utilities when dark mode is selected
+ * so inherited white foregrounds cannot sit on white cards and pale page fills.
+ */
+@layer utilities {
+  .dark { color-scheme: dark; }
+
+  .dark .bg-white,
+  .dark .bg-gray-100,
+  .dark .bg-slate-100,
+  .dark .bg-gray-200,
+  .dark .bg-slate-200 {
+    background-color: hsl(var(--card));
+  }
+
+  .dark .bg-gray-50,
+  .dark .bg-slate-50,
+  .dark .bg-artic-light,
+  .dark [class~="bg-[#F0F4F8]"],
+  .dark [class~="bg-[#f8fafb]"],
+  .dark [class~="bg-[#f7fafb]"],
+  .dark [class~="bg-[#f3f7f7]"] {
+    background-color: hsl(var(--background));
+  }
+
+  .dark .text-gray-950,
+  .dark .text-gray-900,
+  .dark .text-gray-800,
+  .dark .text-gray-700,
+  .dark .text-gray-600,
+  .dark .text-slate-950,
+  .dark .text-slate-900,
+  .dark .text-slate-800,
+  .dark .text-slate-700,
+  .dark .text-slate-600,
+  .dark [class~="text-[#1A2332]"],
+  .dark [class~="text-[#102638]"] {
+    color: hsl(var(--foreground));
+  }
+
+  .dark .text-gray-500,
+  .dark .text-gray-400,
+  .dark .text-slate-500,
+  .dark .text-slate-400 {
+    color: hsl(var(--muted-foreground));
+  }
+
+  .dark .text-artic-primary,
+  .dark [class~="text-[#0F7A70]"],
+  .dark [class~="text-[#18A89A]"] {
+    color: #5eead4;
+  }
+
+  .dark .border-gray-100,
+  .dark .border-gray-200,
+  .dark .border-slate-100,
+  .dark .border-slate-200 {
+    border-color: hsl(var(--border));
+  }
+
+  .dark input::placeholder,
+  .dark textarea::placeholder {
+    color: hsl(var(--muted-foreground));
+    opacity: 1;
+  }
+}
+
+/* The original bright teal is a decorative/accent color; use the darker ARTIC
+ * teal for small text on light surfaces to maintain readable link contrast. */
+:root:not(.dark) [class~="text-[#18A89A]"],
+:root:not(.dark) [class~="hover:text-[#18A89A]"]:hover,
+:root:not(.dark) [class~="group-hover:text-[#18A89A]"]:hover {
+  color: var(--artic-primary);
+}
+
+:root:not(.dark) .text-artic-teal { color: var(--artic-primary); }
+.dark .text-artic-teal { color: #5eead4; }
+
+/* Keep white labels on teal controls above the contrast threshold. */
+[class~="bg-artic-teal"][class~="text-white"] {
+  background-color: var(--artic-primary);
+}
+
+[class~="bg-artic-teal"][class~="text-black"]:hover,
+[class~="hover:bg-artic-teal-dark"][class~="text-black"]:hover {
+  background-color: var(--artic-primary);
+  color: #fff;
 }

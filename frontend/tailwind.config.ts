@@ -46,8 +46,8 @@ const config: Config = {
         },
         // ARTIC Brand
         artic: {
-          primary: '#18A89A',
-          'primary-dark': '#0F7A70',
+          primary: '#0F7A70',
+          'primary-dark': '#0B625A',
           navy: '#1A2332',
           'navy-light': '#243044',
           gold: '#FFB800',

@@ -52,7 +52,7 @@ export default function HeroCarousel() {
             </h2>
             <p className="text-gray-300 text-lg mb-8">Explore the ARTIC HUB marketplace and services.</p>
             <Link href={`/${locale}/search`}
-              className="inline-flex items-center gap-2 bg-[#18A89A] hover:bg-[#0F7A70] text-white font-bold px-8 py-3.5 rounded-full transition-all hover:scale-105 shadow-xl">
+              className="inline-flex items-center gap-2 bg-[#0F7A70] hover:bg-[#0B625A] text-white font-bold px-8 py-3.5 rounded-full transition-all hover:scale-105 shadow-xl">
               Shop Now <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
@@ -88,7 +88,7 @@ export default function HeroCarousel() {
                   {banner.linkUrl && (
                     <Link
                       href={`/${locale}${banner.linkUrl.startsWith('/') ? banner.linkUrl : '/' + banner.linkUrl}`}
-                      className="inline-flex items-center gap-2 bg-[#18A89A] hover:bg-[#0F7A70] text-white font-bold px-8 py-3.5 rounded-full transition-all hover:scale-105 shadow-xl text-sm"
+                      className="inline-flex items-center gap-2 bg-[#0F7A70] hover:bg-[#0B625A] text-white font-bold px-8 py-3.5 rounded-full transition-all hover:scale-105 shadow-xl text-sm"
                     >
                       {banner.buttonText || 'Shop Now'} <ArrowRight className="h-4 w-4" />
                     </Link>

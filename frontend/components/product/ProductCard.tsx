@@ -100,7 +100,7 @@ export default function ProductCard({
           <span className="bg-gray-400 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">SOLD OUT</span>
         )}
         {numSales && numSales > 1000 && (
-          <span className="bg-[#18A89A] text-white text-[10px] font-bold px-2 py-0.5 rounded-md">{(numSales / 1000).toFixed(1)}K+ sold</span>
+          <span className="bg-[#0F7A70] text-white text-[10px] font-bold px-2 py-0.5 rounded-md">{(numSales / 1000).toFixed(1)}K+ sold</span>
         )}
       </div>
 
@@ -174,8 +174,8 @@ export default function ProductCard({
                 : added
                 ? 'bg-green-500 text-white'
                 : inCart
-                ? 'bg-[#18A89A]/10 text-[#18A89A] border border-[#18A89A]/30 hover:bg-[#18A89A] hover:text-white'
-                : 'bg-[#1A2332] text-white hover:bg-[#18A89A] active:scale-95'
+                ? 'bg-[#18A89A]/10 text-[#0F7A70] border border-[#18A89A]/30 hover:bg-[#0F7A70] hover:text-white'
+                : 'bg-[#1A2332] text-white hover:bg-[#0F7A70] active:scale-95'
             )}
           >
             <ShoppingCart className="h-3.5 w-3.5" />

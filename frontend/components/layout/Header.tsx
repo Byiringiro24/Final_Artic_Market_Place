@@ -93,7 +93,7 @@ export default function Header() {
               <div className="relative">
                 <ShoppingCart className="h-6 w-6" />
                 {cartCount > 0 && (
-                  <span className="absolute -top-2.5 -right-2 h-5 min-w-[20px] flex items-center justify-center rounded-full bg-[#18A89A] text-white text-[10px] font-bold px-1">
+                  <span className="absolute -top-2.5 -right-2 h-5 min-w-[20px] flex items-center justify-center rounded-full bg-[#0F7A70] text-white text-[10px] font-bold px-1">
                     {cartCount > 99 ? '99+' : cartCount}
                   </span>
                 )}

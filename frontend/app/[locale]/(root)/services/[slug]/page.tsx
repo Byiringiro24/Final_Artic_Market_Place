@@ -209,7 +209,7 @@ export default function ServiceDetailPage({ params }: { params: Promise<{ slug: 
               {/* Book button */}
               <Button
                 onClick={() => setShowBooking(true)}
-                className="w-full bg-[#18A89A] hover:bg-[#0F7A70] text-white rounded-full h-12 font-bold text-base mb-3 gap-2"
+                className="w-full bg-[#0F7A70] hover:bg-[#0B625A] text-white rounded-full h-12 font-bold text-base mb-3 gap-2"
               >
                 <Calendar className="h-5 w-5" />
                 Book Now

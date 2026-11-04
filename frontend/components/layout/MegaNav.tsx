@@ -100,7 +100,7 @@ export default function MegaNav() {
         onClick={() => { setOpen((v) => !v); if (!activeSlug && categories.length) setActiveSlug(categories[0]?.slug); }}
         onMouseEnter={() => { setOpen(true); if (!activeSlug && categories.length) setActiveSlug(categories[0]?.slug); }}
         className={`flex items-center gap-2 px-4 text-sm font-bold transition-colors self-stretch ${
-          open ? 'bg-[#18A89A] text-white' : 'text-white hover:bg-white/10'
+          open ? 'bg-[#0F7A70] text-white' : 'text-white hover:bg-white/10'
         }`}
         aria-haspopup="true"
         aria-expanded={open}
@@ -131,7 +131,7 @@ export default function MegaNav() {
                   onMouseEnter={() => setActiveSlug(cat.slug)}
                   onClick={() => setOpen(false)}
                   className={`flex items-center justify-between w-full px-4 py-2.5 text-sm text-left transition-colors ${
-                    isActive ? 'bg-[#18A89A] text-white font-semibold' : 'text-gray-300 hover:bg-white/10 hover:text-white'
+                    isActive ? 'bg-[#0F7A70] text-white font-semibold' : 'text-gray-300 hover:bg-white/10 hover:text-white'
                   }`}
                 >
                   <span className="flex items-center gap-3">

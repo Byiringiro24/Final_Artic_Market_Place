@@ -103,7 +103,7 @@ export default function SearchBar() {
         {/* Submit button */}
         <button
           type="submit"
-          className="bg-[#18A89A] hover:bg-[#0F7A70] text-black px-4 rounded-r-md transition-colors flex items-center"
+          className="bg-[#0F7A70] hover:bg-[#0B625A] text-white px-4 rounded-r-md transition-colors flex items-center"
           aria-label="Search"
         >
           <Search className="h-5 w-5" />

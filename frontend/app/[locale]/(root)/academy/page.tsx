@@ -51,7 +51,7 @@ export default function AcademyPage() {
               Discover online courses and instructor-led training from ARTIC. Learn individually or register your team for a programme.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a href="#courses" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#18A89A] px-6 font-bold text-white hover:bg-[#0F7A70]">
+              <a href="#courses" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-lg bg-[#0F7A70] px-6 font-bold text-white hover:bg-[#0B625A]">
                 Explore courses <ArrowRight className="h-4 w-4" />
               </a>
               <Link href={`/${locale}/academy/training-registration`} className="inline-flex min-h-12 items-center justify-center rounded-lg border border-white/25 px-6 font-semibold hover:bg-white/10">
@@ -112,7 +112,7 @@ export default function AcademyPage() {
             <GraduationCap className="mx-auto h-10 w-10 text-[#18A89A]" />
             <h3 className="mt-4 text-xl font-bold text-[#1A2332]">Course catalogue is being prepared</h3>
             <p className="mx-auto mt-2 max-w-xl text-sm leading-6 text-slate-600">Register your interest in ARTIC training and we’ll contact you about upcoming classes and team programmes.</p>
-            <Link href={`/${locale}/academy/training-registration`} className="mt-5 inline-flex min-h-11 items-center justify-center rounded-lg bg-[#18A89A] px-5 font-bold text-white hover:bg-[#0F7A70]">Register for training</Link>
+            <Link href={`/${locale}/academy/training-registration`} className="mt-5 inline-flex min-h-11 items-center justify-center rounded-lg bg-[#0F7A70] px-5 font-bold text-white hover:bg-[#0B625A]">Register for training</Link>
           </div>
         )}
       </section>
