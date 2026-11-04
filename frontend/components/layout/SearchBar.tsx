@@ -6,14 +6,10 @@ import { useLocale } from 'next-intl';
 import { Search } from 'lucide-react';
 import { useDebounce } from '@/hooks/use-debounce';
 import { get } from '@/lib/api';
-import { cn } from '@/lib/utils';
 
-interface SearchSuggestion {
-  id: string;
-  name: string;
-  slug: string;
-  category: { name: string };
-}
+interface DiscoveryItem { id: string; name?: string; title?: string; slug: string; summary?: string | null; shortDesc?: string | null; category?: string | { name: string } | null }
+interface DiscoveryResponse { products: DiscoveryItem[]; services: DiscoveryItem[]; courses: DiscoveryItem[] }
+interface SearchSuggestion extends DiscoveryItem { kind: 'Product' | 'Service' | 'Academy course'; href: string; location: string }
 
 export default function SearchBar() {
   const router = useRouter();
@@ -21,36 +17,31 @@ export default function SearchBar() {
   const [query, setQuery] = useState('');
   const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [category, setCategory] = useState('all');
   const [isLoading, setIsLoading] = useState(false);
   const debouncedQuery = useDebounce(query, 300);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  // Fetch suggestions
   useEffect(() => {
-    if (debouncedQuery.length < 2) {
-      setSuggestions([]);
-      setIsOpen(false);
-      return;
-    }
-
+    if (debouncedQuery.trim().length < 2) { setSuggestions([]); setIsOpen(false); return; }
+    let active = true;
     setIsLoading(true);
-    get<SearchSuggestion[]>('/products', { search: debouncedQuery, limit: '5' })
-      .then((res) => {
-        setSuggestions(Array.isArray(res.data) ? res.data : []);
-        setIsOpen(true);
+    get<DiscoveryResponse>('/discovery/search', { q: debouncedQuery.trim() })
+      .then(({ data }) => {
+        if (!active) return;
+        const entries: SearchSuggestion[] = [
+          ...(data.products ?? []).map((item) => ({ ...item, title: item.title ?? item.name ?? 'Product', summary: item.summary ?? item.shortDesc, kind: 'Product' as const, href: `/${locale}/product/${item.slug}`, location: 'Marketplace' })),
+          ...(data.services ?? []).map((item) => ({ ...item, title: item.title ?? item.name ?? 'Service', summary: item.summary ?? item.shortDesc, kind: 'Service' as const, href: `/${locale}/services/${item.slug}`, location: 'Services' })),
+          ...(data.courses ?? []).map((item) => ({ ...item, title: item.title ?? item.name ?? 'Course', kind: 'Academy course' as const, href: `/${locale}/academy/training-registration?course=${encodeURIComponent(item.id)}`, location: 'ARTIC Academy · training registration' })),
+        ];
+        setSuggestions(entries.slice(0, 8)); setIsOpen(true);
       })
-      .catch(() => setSuggestions([]))
-      .finally(() => setIsLoading(false));
-  }, [debouncedQuery]);
+      .catch(() => { if (active) { setSuggestions([]); setIsOpen(true); } })
+      .finally(() => { if (active) setIsLoading(false); });
+    return () => { active = false; };
+  }, [debouncedQuery, locale]);
 
-  // Close on outside click
   useEffect(() => {
-    const handleClick = (e: MouseEvent) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) {
-        setIsOpen(false);
-      }
-    };
+    const handleClick = (e: MouseEvent) => { if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setIsOpen(false); };
     document.addEventListener('mousedown', handleClick);
     return () => document.removeEventListener('mousedown', handleClick);
   }, []);
@@ -59,88 +50,26 @@ export default function SearchBar() {
     e.preventDefault();
     if (!query.trim()) return;
     setIsOpen(false);
-    const params = new URLSearchParams({ search: query });
-    if (category !== 'all') params.set('category', category);
-    router.push(`/${locale}/search?${params.toString()}`);
+    router.push(`/${locale}/discover?q=${encodeURIComponent(query.trim())}`);
   }
 
-  function handleSelect(suggestion: SearchSuggestion) {
-    setIsOpen(false);
-    setQuery('');
-    router.push(`/${locale}/product/${suggestion.slug}`);
+  function handleSelect(item: SearchSuggestion) {
+    setIsOpen(false); setQuery(''); router.push(item.href);
   }
 
   return (
     <div ref={wrapperRef} className="relative w-full">
       <form onSubmit={handleSubmit} className="flex h-10">
-        {/* Category selector */}
-        <select
-          value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="hidden sm:block bg-gray-200 text-gray-800 text-xs px-2 rounded-l-md border-r border-gray-300 cursor-pointer min-w-[80px] max-w-[120px] focus:outline-none"
-          aria-label="Search category"
-        >
-          <option value="all">All</option>
-          <option value="electronics">Electronics</option>
-          <option value="fashion">Fashion</option>
-          <option value="home-kitchen">Home & Kitchen</option>
-          <option value="sports-outdoors">Sports</option>
-        </select>
-
-        {/* Input */}
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          onFocus={() => suggestions.length > 0 && setIsOpen(true)}
-          placeholder="Search ARTIC HUB..."
-          className="flex-1 px-4 py-2 text-black text-sm focus:outline-none focus:ring-2 focus:ring-[#18A89A] bg-white"
-          aria-label="Search products"
-          aria-autocomplete="list"
-          aria-expanded={isOpen}
-        />
-
-        {/* Submit button */}
-        <button
-          type="submit"
-          className="bg-[#0F7A70] hover:bg-[#0B625A] text-white px-4 rounded-r-md transition-colors flex items-center"
-          aria-label="Search"
-        >
-          <Search className="h-5 w-5" />
-        </button>
+        <input type="search" value={query} onChange={(e) => setQuery(e.target.value)} onFocus={() => suggestions.length > 0 && setIsOpen(true)} placeholder="Search products, services, courses, and more…" className="min-w-0 flex-1 rounded-l-md bg-white px-4 py-2 text-sm text-slate-950 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-[#18A89A]" aria-label="Search all of ARTIC HUB" aria-autocomplete="list" aria-expanded={isOpen} />
+        <button type="submit" className="flex items-center rounded-r-md bg-[#0F7A70] px-4 text-white transition-colors hover:bg-[#0B625A]" aria-label="Search all of ARTIC HUB"><Search className="h-5 w-5" /></button>
       </form>
-
-      {/* Suggestions dropdown */}
-      {isOpen && (
-        <div className="absolute top-full left-0 right-0 bg-white shadow-xl rounded-b-md z-50 border border-gray-200 max-h-80 overflow-y-auto">
-          {isLoading ? (
-            <div className="p-3 text-sm text-gray-500">Searching...</div>
-          ) : suggestions.length > 0 ? (
-            <ul role="listbox">
-              {suggestions.map((s) => (
-                <li key={s.id}>
-                  <button
-                    onClick={() => handleSelect(s)}
-                    className="w-full text-left px-4 py-3 hover:bg-gray-50 text-sm flex items-center justify-between group"
-                    role="option"
-                  >
-                    <span className="flex items-center gap-2">
-                      <Search className="h-3 w-3 text-gray-400" />
-                      <span className="text-gray-800">{s.name}</span>
-                    </span>
-                    <span className="text-xs text-gray-400">{s.category?.name}</span>
-                  </button>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <div className="p-3 text-sm text-gray-500">
-              No suggestions for &quot;{query}&quot;
-            </div>
-          )}
-        </div>
-      )}
+      {isOpen && <div className="absolute left-0 right-0 top-full z-50 max-h-96 overflow-y-auto rounded-b-md border border-slate-200 bg-white text-slate-900 shadow-xl">
+        {isLoading ? <div className="p-3 text-sm text-slate-600">Searching across ARTIC HUB…</div> : suggestions.length ? <>
+          <div className="border-b border-slate-100 px-4 py-2 text-xs font-semibold uppercase tracking-wide text-slate-500">Choose a destination</div>
+          <ul role="listbox">{suggestions.map((item) => <li key={`${item.kind}-${item.id}`}><button onClick={() => handleSelect(item)} className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-sm hover:bg-slate-50" role="option"><span className="min-w-0"><span className="block truncate font-medium text-slate-900">{item.title}</span><span className="block truncate text-xs text-slate-600">{item.summary || item.location}</span></span><span className="shrink-0 text-right"><span className="block rounded-full bg-teal-50 px-2 py-1 text-[10px] font-semibold text-teal-900">{item.kind}</span><span className="mt-1 block text-[10px] text-slate-500">{item.location}</span></span></button></li>)}</ul>
+          <button onClick={() => router.push(`/${locale}/discover?q=${encodeURIComponent(query.trim())}`)} className="w-full border-t border-slate-100 px-4 py-3 text-left text-xs font-semibold text-teal-800 hover:bg-teal-50">See all results across ARTIC HUB →</button>
+        </> : <div className="p-3 text-sm text-slate-600">No live products, services, or courses found. Press Enter to search all destinations.</div>}
+      </div>}
     </div>
   );
 }
-

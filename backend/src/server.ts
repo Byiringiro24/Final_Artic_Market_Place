@@ -46,6 +46,7 @@ import bookingRoutes from './routes/booking.routes';
 import currencyRoutes from './routes/currency.routes';
 import academyRoutes from './routes/academy.routes';
 import ideaRoutes from './routes/idea.routes';
+import discoveryRoutes from './routes/discovery.routes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -121,6 +122,7 @@ app.use(`${API}/bookings`, bookingRoutes);
 app.use(`${API}/currency`, currencyRoutes);
 app.use(`${API}/academy`, academyRoutes);
 app.use(`${API}/ideas`, ideaRoutes);
+app.use(`${API}/discovery`, discoveryRoutes);
 
 // ─── Swagger Docs ──────────────────────────────────────────────────────────────
 setupSwagger(app);
