@@ -3,7 +3,7 @@ import Stripe from 'stripe';
 import { prisma } from '../db/prisma';
 import { sendEmail } from '../lib/email';
 import { logger } from '../lib/logger';
-import { stripe } from '../lib/stripe';
+import { getStripeClient } from '../lib/stripe';
 
 const router = Router();
 
@@ -12,6 +12,13 @@ router.post(
   // Stripe verifies the exact request bytes; parse JSON only after this route.
   express.raw({ type: 'application/json' }),
   async (req: Request, res: Response) => {
+    let stripe: Stripe;
+    try {
+      stripe = getStripeClient();
+    } catch {
+      return res.status(503).json({ message: 'Stripe payments are not configured' });
+    }
+
     const sig = req.headers['stripe-signature'];
     if (!sig) {
       return res.status(400).json({ message: 'Missing stripe-signature header' });

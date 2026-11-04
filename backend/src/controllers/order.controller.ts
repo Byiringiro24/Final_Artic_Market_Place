@@ -8,7 +8,7 @@ import { AuthRequest } from '../middleware/auth.middleware';
 import { sendEmail } from '../lib/email';
 import { createOrderNotification, createNotification } from '../lib/notifications';
 import { format } from 'date-fns';
-import { stripe } from '../lib/stripe';
+import { getStripeClient } from '../lib/stripe';
 
 // ─── SSE: Admin broadcast ─────────────────────────────────────────────────────
 // Map of connected admin SSE clients: userId → Response
@@ -34,6 +34,7 @@ export interface AdminSseEvent {
 async function cancelUnpaidStripeIntent(order: { paymentMethod: PaymentMethod; stripePaymentIntentId: string | null }) {
   if (order.paymentMethod !== PaymentMethod.STRIPE || !order.stripePaymentIntentId) return;
   try {
+    const stripe = getStripeClient();
     const intent = await stripe.paymentIntents.retrieve(order.stripePaymentIntentId);
     if (intent.status === 'succeeded') {
       throw new AppError('This card payment has completed. Refund assistance is required.', 409);

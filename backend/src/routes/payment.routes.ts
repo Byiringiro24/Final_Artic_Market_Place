@@ -4,7 +4,7 @@ import { ApiResponse } from '../lib/apiResponse';
 import { AppError } from '../middleware/error.middleware';
 import { authenticate } from '../middleware/auth.middleware';
 import { AuthRequest } from '../middleware/auth.middleware';
-import { stripe } from '../lib/stripe';
+import { getStripeClient } from '../lib/stripe';
 
 const router = Router();
 
@@ -37,6 +37,7 @@ router.post('/create-intent', authenticate, async (req: AuthRequest, res) => {
   if (order.paymentMethod !== 'STRIPE') {
     throw new AppError('This order does not use Stripe payment', 400);
   }
+  const stripe = getStripeClient();
 
   const amountInCents = Math.round(Number(order.totalPrice) * 100);
   if (amountInCents < 50) throw new AppError('Stripe requires a payment of at least $0.50', 400);

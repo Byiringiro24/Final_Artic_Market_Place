@@ -45,7 +45,7 @@ const MOMO_NUMBERS = [
 
 const PAYMENT_METHODS = [
   { id: 'MTN_MOMO',          label: 'MTN MoMo',            icon: '📱', description: 'Pay via MTN Mobile Money' },
-  { id: 'STRIPE',            label: 'Credit / Debit Card',  icon: '💳', description: null },
+  ...(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ? [{ id: 'STRIPE', label: 'Credit / Debit Card', icon: '💳', description: null }] : []),
   { id: 'CASH_ON_DELIVERY',  label: 'Cash on Delivery',     icon: '💵', description: 'Pay when your order arrives' },
 ];
 
