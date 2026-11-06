@@ -1,13 +1,13 @@
 {
   "name": "artic-marketplace-backend",
   "version": "1.0.0",
-  "description": "ARTIC Marketplace REST API — Node.js + Express + PostgreSQL + Prisma",
+  "description": "ARTIC Marketplace REST API \u2014 Node.js + Express + PostgreSQL + Prisma",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
-    "build": "prisma generate && tsc",
-    "start": "node dist/server.js",
-    "start:prod": "node dist/server.js",
+    "dev": "node init && tsx watch src/server.ts",
+    "build": "node init && prisma generate && tsc",
+    "start": "node init && node dist/server.js",
+    "start:prod": "node init && node dist/server.js",
     "seed": "tsx src/db/seed.ts",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",

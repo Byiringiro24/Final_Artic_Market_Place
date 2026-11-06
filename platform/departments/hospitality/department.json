@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "hospitality",
+  "name": "Hospitality and Property Systems",
+  "lifecycle": "planned",
+  "tier": 3,
+  "publicPath": "/hospitality",
+  "apiBasePath": "/api/hospitality/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "payments",
+    "notifications",
+    "files"
+  ],
+  "database": {
+    "name": "artic_hospitality",
+    "user": "u_hospitality",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-hospitality",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

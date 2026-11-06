@@ -10,6 +10,7 @@ const COLUMNS = [
       { label: 'About Us', href: '/page/about-us' },
       { label: 'Services', href: '/services' },
       { label: 'ARTIC Academy', href: '/academy' },
+      { label: 'All Departments', href: '/departments' },
       { label: 'Blog', href: '/blog' },
       { label: 'Careers', href: '/page/careers' },
     ],

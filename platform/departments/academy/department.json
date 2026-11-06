@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "academy",
+  "name": "ARTIC Academy",
+  "lifecycle": "migration",
+  "tier": 1,
+  "publicPath": "/academy",
+  "apiBasePath": "/api/academy/v1",
+  "currentPath": "/academy",
+  "currentApiBasePath": "/api/v1/academy",
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "payments",
+    "files",
+    "notifications",
+    "ai"
+  ],
+  "database": {
+    "name": "artic_academy",
+    "user": "u_academy",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-academy",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

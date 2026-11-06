@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "security",
+  "name": "Cybersecurity and Information Assurance",
+  "lifecycle": "planned",
+  "tier": 3,
+  "publicPath": "/security",
+  "apiBasePath": "/api/security/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "files",
+    "audit",
+    "project-hub"
+  ],
+  "database": {
+    "name": "artic_security",
+    "user": "u_security",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-security",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

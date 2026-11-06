@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "consulting",
+  "name": "Business Solutions and Consulting",
+  "lifecycle": "planned",
+  "tier": 3,
+  "publicPath": "/consulting",
+  "apiBasePath": "/api/consulting/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "files",
+    "payments",
+    "project-hub"
+  ],
+  "database": {
+    "name": "artic_consulting",
+    "user": "u_consulting",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-consulting",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "replace-with-department-id",
+  "name": "Replace with department name",
+  "lifecycle": "planned",
+  "tier": 3,
+  "publicPath": null,
+  "apiBasePath": null,
+  "owner": null,
+  "dependencies": ["identity", "notifications", "files", "audit"],
+  "database": {
+    "name": "artic_replace_me",
+    "user": "u_replace_me",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-replace-me",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

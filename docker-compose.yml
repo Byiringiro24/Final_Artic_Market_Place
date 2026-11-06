@@ -53,9 +53,11 @@ services:
       APP_URL: ${APP_URL:-http://localhost:5000}
       DATABASE_URL: ${DATABASE_URL:-postgresql://artic_user:artic_dev_password_change_me@postgres:5432/artic_marketplace?schema=public}
       REDIS_URL: redis://redis:6379
+      DEPARTMENT_REGISTRY_PATH: /app/platform/control-plane/registry.json
     volumes:
       - artic_uploads:/app/uploads
       - artic_logs:/app/logs
+      - ./platform/control-plane/registry.json:/app/platform/control-plane/registry.json:ro
     ports:
       - '5000:5000'
 

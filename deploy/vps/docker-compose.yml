@@ -47,9 +47,11 @@ services:
       APP_URL: https://artichub.ddnsgeek.com
       DATABASE_URL: ${DATABASE_URL:?Set DATABASE_URL in the root .env file}
       REDIS_URL: redis://redis:6379
+      DEPARTMENT_REGISTRY_PATH: /app/platform/control-plane/registry.json
     volumes:
       - artic_hub_uploads:/app/uploads
       - artic_hub_logs:/app/logs
+      - ../../platform/control-plane/registry.json:/app/platform/control-plane/registry.json:ro
     ports:
       - '127.0.0.1:5000:5000'
 

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "community",
+  "name": "Community and Opportunities",
+  "lifecycle": "planned",
+  "tier": 2,
+  "publicPath": "/community",
+  "apiBasePath": "/api/community/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "payments",
+    "notifications",
+    "search"
+  ],
+  "database": {
+    "name": "artic_community",
+    "user": "u_community",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-community",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

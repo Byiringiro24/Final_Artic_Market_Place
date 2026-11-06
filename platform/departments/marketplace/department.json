@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "marketplace",
+  "name": "ARTIC Marketplace",
+  "lifecycle": "migration",
+  "tier": 1,
+  "publicPath": "/marketplace",
+  "apiBasePath": "/api/marketplace/v1",
+  "currentPath": "/search",
+  "currentApiBasePath": "/api/v1",
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "payments",
+    "files",
+    "notifications",
+    "search"
+  ],
+  "database": {
+    "name": "artic_marketplace",
+    "user": "u_marketplace",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-marketplace",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

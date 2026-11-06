@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "design",
+  "name": "Digital Design and Media",
+  "lifecycle": "planned",
+  "tier": 3,
+  "publicPath": "/design",
+  "apiBasePath": "/api/design/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "files",
+    "payments",
+    "project-hub"
+  ],
+  "database": {
+    "name": "artic_design",
+    "user": "u_design",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-design",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}
