@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "engineering",
+  "name": "Engineering and Electronics",
+  "lifecycle": "planned",
+  "tier": 2,
+  "publicPath": "/engineering",
+  "apiBasePath": "/api/engineering/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "files",
+    "project-hub"
+  ],
+  "database": {
+    "name": "artic_engineering",
+    "user": "u_engineering",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-engineering",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "field",
+  "name": "Technical Operations and Field Services",
+  "lifecycle": "planned",
+  "tier": 2,
+  "publicPath": "/field",
+  "apiBasePath": "/api/field/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "files",
+    "notifications",
+    "project-hub"
+  ],
+  "database": {
+    "name": "artic_field",
+    "user": "u_field",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-field",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

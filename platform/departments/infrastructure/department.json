@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "infrastructure",
+  "name": "IT Infrastructure and Cloud",
+  "lifecycle": "planned",
+  "tier": 2,
+  "publicPath": "/infrastructure",
+  "apiBasePath": "/api/infrastructure/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "files",
+    "notifications",
+    "project-hub"
+  ],
+  "database": {
+    "name": "artic_infrastructure",
+    "user": "u_infrastructure",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-infrastructure",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

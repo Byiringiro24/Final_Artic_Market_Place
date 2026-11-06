@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "sales",
+  "name": "Sales and Business Development",
+  "lifecycle": "planned",
+  "tier": 2,
+  "publicPath": "/sales",
+  "apiBasePath": "/api/sales/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "payments",
+    "notifications",
+    "project-hub"
+  ],
+  "database": {
+    "name": "artic_sales",
+    "user": "u_sales",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-sales",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

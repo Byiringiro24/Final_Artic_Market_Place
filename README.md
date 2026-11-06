@@ -59,6 +59,14 @@ Final_Artic_Market_Place/
 
 **Completely separated** — frontend calls backend REST API. Can be deployed independently.
 
+### ARTIC HUB multi-department target (migration in progress)
+
+The current Marketplace, Academy and Services still run in the existing shared Next.js + Express + PostgreSQL application. The target is the department-oriented architecture described in [the architecture implementation status](./Docs/ARTIC_HUB_Architecture_Implementation_Status.md): separate department frontends, APIs, databases, storage scopes and release lifecycles, joined through ARTIC ID, a gateway and shared platform services.
+
+The transition directory is available at `/<locale>/departments`, and the current API exposes its public-safe registry at `/api/v1/platform/departments`. The canonical catalogue and legacy-to-target route map are in [`platform/control-plane/registry.json`](./platform/control-plane/registry.json). Entries marked `migration` are still served through the legacy application; entries marked `planned` are not active services.
+
+Do not interpret the registry or generated department folders as proof of independent deployments. Marketplace, Academy, Services and Support still need their Tier 1 extraction, role-scoped identity, separate databases and the live checklist before the legacy routes can be retired.
+
 ### Backend Stack
 - **Runtime:** Node.js 20 LTS
 - **Framework:** Express 4 with TypeScript

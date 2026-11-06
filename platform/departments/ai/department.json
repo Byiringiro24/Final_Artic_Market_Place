@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "ai",
+  "name": "ARTIC AI",
+  "lifecycle": "planned",
+  "tier": 2,
+  "publicPath": "/ai",
+  "apiBasePath": "/api/ai/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "files",
+    "audit"
+  ],
+  "database": {
+    "name": "artic_ai",
+    "user": "u_ai",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-ai",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

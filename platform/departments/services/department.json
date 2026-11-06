@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "services",
+  "name": "ARTIC Services",
+  "lifecycle": "migration",
+  "tier": 1,
+  "publicPath": "/services",
+  "apiBasePath": "/api/services/v1",
+  "currentPath": "/services",
+  "currentApiBasePath": "/api/v1/services",
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "payments",
+    "notifications",
+    "files"
+  ],
+  "database": {
+    "name": "artic_services",
+    "user": "u_services",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-services",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

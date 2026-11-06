@@ -10,8 +10,6 @@ out/
 build/
 
 # Environment variables (NEVER commit these)
-.env
-.env.local
 .env.development.local
 .env.test.local
 .env.production.local
@@ -34,7 +32,6 @@ backend/uploads/
 backend/prisma/dev.db
 
 # Editor
-.vscode/
 .idea/
 *.swp
 
@@ -43,3 +40,4 @@ backend/prisma/dev.db
 branch_structure.json
 temp_auto_push.bat
 temp_interactive_push.bat
+config.bat

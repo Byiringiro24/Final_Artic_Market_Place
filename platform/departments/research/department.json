@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "research",
+  "name": "Research and Innovation",
+  "lifecycle": "planned",
+  "tier": 3,
+  "publicPath": "/research",
+  "apiBasePath": "/api/research/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "files",
+    "ai",
+    "project-hub"
+  ],
+  "database": {
+    "name": "artic_research",
+    "user": "u_research",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-research",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

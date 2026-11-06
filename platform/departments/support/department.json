@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "support",
+  "name": "Customer Success and Support",
+  "lifecycle": "planned",
+  "tier": 1,
+  "publicPath": "/support",
+  "apiBasePath": "/api/support/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "notifications",
+    "files",
+    "audit"
+  ],
+  "database": {
+    "name": "artic_support",
+    "user": "u_support",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-support",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

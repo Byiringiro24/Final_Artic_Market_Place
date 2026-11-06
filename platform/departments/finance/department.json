@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "finance",
+  "name": "Finance and Accounting",
+  "lifecycle": "planned",
+  "tier": 2,
+  "publicPath": "/finance",
+  "apiBasePath": "/api/finance/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "payments",
+    "audit",
+    "reporting"
+  ],
+  "database": {
+    "name": "artic_finance",
+    "user": "u_finance",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-finance",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

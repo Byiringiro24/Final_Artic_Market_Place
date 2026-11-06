@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "hr",
+  "name": "Human Resources and Administration",
+  "lifecycle": "planned",
+  "tier": 3,
+  "publicPath": "/hr",
+  "apiBasePath": "/api/hr/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "files",
+    "audit"
+  ],
+  "database": {
+    "name": "artic_hr",
+    "user": "u_hr",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-hr",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

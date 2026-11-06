@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "id": "procurement",
+  "name": "Procurement, Inventory and Supply Chain",
+  "lifecycle": "planned",
+  "tier": 3,
+  "publicPath": "/procurement",
+  "apiBasePath": "/api/procurement/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "payments",
+    "files",
+    "audit"
+  ],
+  "database": {
+    "name": "artic_procurement",
+    "user": "u_procurement",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-procurement",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

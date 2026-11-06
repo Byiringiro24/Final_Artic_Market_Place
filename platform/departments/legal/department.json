@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "legal",
+  "name": "Legal, Compliance and Governance",
+  "lifecycle": "planned",
+  "tier": 3,
+  "publicPath": "/legal",
+  "apiBasePath": "/api/legal/v1",
+  "currentPath": null,
+  "currentApiBasePath": null,
+  "owner": null,
+  "dependencies": [
+    "identity",
+    "files",
+    "audit"
+  ],
+  "database": {
+    "name": "artic_legal",
+    "user": "u_legal",
+    "isolated": true
+  },
+  "storage": {
+    "bucket": "artic-legal",
+    "privateByDefault": true
+  },
+  "health": {
+    "livenessPath": "/health",
+    "readinessPath": "/ready"
+  }
+}

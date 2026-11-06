@@ -47,6 +47,7 @@ import currencyRoutes from './routes/currency.routes';
 import academyRoutes from './routes/academy.routes';
 import ideaRoutes from './routes/idea.routes';
 import discoveryRoutes from './routes/discovery.routes';
+import platformRoutes from './routes/platform.routes';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -123,6 +124,7 @@ app.use(`${API}/currency`, currencyRoutes);
 app.use(`${API}/academy`, academyRoutes);
 app.use(`${API}/ideas`, ideaRoutes);
 app.use(`${API}/discovery`, discoveryRoutes);
+app.use(`${API}/platform`, platformRoutes);
 
 // ─── Swagger Docs ──────────────────────────────────────────────────────────────
 setupSwagger(app);
@@ -134,6 +136,17 @@ app.get('/health', (_req, res) => {
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV,
   });
+});
+
+// Readiness is separate from liveness so the gateway can stop routing traffic
+// to this API when its required datastore is unavailable.
+app.get('/ready', async (_req, res) => {
+  try {
+    await prisma.$queryRaw`SELECT 1`;
+    res.json({ status: 'READY', timestamp: new Date().toISOString() });
+  } catch {
+    res.status(503).json({ status: 'NOT_READY', timestamp: new Date().toISOString() });
+  }
 });
 
 // ─── 404 Handler ───────────────────────────────────────────────────────────────
